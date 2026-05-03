@@ -9,15 +9,15 @@ const pool = new Pool({
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { urunAdi, urunTipi, bolge, hasat, miktar, birim, aciklama, kullaniciId } = body;
+        const { urunAdi, urunTipi, bolge, hasat, miktar, birim, aciklama, kullaniciId, detaylar } = body;
 
         const veri = `${urunAdi}${urunTipi}${bolge}${hasat}${miktar}${birim}${Date.now()}`;
         const hash = crypto.createHash('sha256').update(veri).digest('hex');
 
         const result = await pool.query(
-            `INSERT INTO urunler (kullanici_id, urun_adi, urun_tipi, bolge, hasat_tarihi, miktar, birim, aciklama, hash)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-            [kullaniciId || 1, urunAdi, urunTipi, bolge, hasat, miktar, birim, aciklama, hash]
+            `INSERT INTO urunler (kullanici_id, urun_adi, urun_tipi, bolge, hasat_tarihi, miktar, birim, aciklama, hash, detaylar)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+            [kullaniciId || 1, urunAdi, urunTipi, bolge, hasat, miktar, birim, aciklama, hash, JSON.stringify(detaylar || {})]
         );
 
         return NextResponse.json({ basari: true, urun: result.rows[0], hash });
