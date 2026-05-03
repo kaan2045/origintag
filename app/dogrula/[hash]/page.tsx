@@ -1,11 +1,13 @@
 'use client';
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, use, useRef } from 'react';
+import QRCode from 'qrcode';
 
 export default function DogrulamaPage({ params }: { params: Promise<{ hash: string }> }) {
     const { hash } = use(params);
     const [urun, setUrun] = useState<any>(null);
     const [yukleniyor, setYukleniyor] = useState(true);
     const [bulunamadi, setBulunamadi] = useState(false);
+    const qrRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
         fetch(`/api/urun-dogrula/${hash}`)
@@ -17,6 +19,15 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
             })
             .catch(() => { setBulunamadi(true); setYukleniyor(false); });
     }, [hash]);
+
+    useEffect(() => {
+        if (urun && qrRef.current) {
+            QRCode.toCanvas(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, {
+                width: 180, margin: 2,
+                color: { dark: '#2D5A27', light: '#ffffff' }
+            });
+        }
+    }, [urun, hash]);
 
     if (yukleniyor) return (
         <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -62,6 +73,26 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                         <div style={{ fontWeight: 'bold', color: '#2D5A27', marginBottom: '4px' }}>Blockchain'de Kayitli</div>
                         <div style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: '#3B6D11', wordBreak: 'break-all' }}>{hash}</div>
                     </div>
+                </div>
+
+                {/* QR KOD */}
+                <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>
+                    <h2 style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.75rem', textAlign: 'left' }}>QR Kod</h2>
+                    <canvas ref={qrRef} style={{ borderRadius: '8px' }} />
+                    <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.75rem' }}>Bu QR kodu taratarak urunu dogrulayin</p>
+                    <button
+                        onClick={() => {
+                            const canvas = qrRef.current;
+                            if (!canvas) return;
+                            const link = document.createElement('a');
+                            link.download = `${urun.urun_adi}-qr.png`;
+                            link.href = canvas.toDataURL('image/png');
+                            link.click();
+                        }}
+                        style={{ marginTop: '0.75rem', padding: '0.5rem 1.5rem', background: '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem' }}
+                    >
+                        QR Indir
+                    </button>
                 </div>
 
                 {/* TEMEL BİLGİLER */}
