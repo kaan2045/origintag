@@ -2,8 +2,11 @@
 import { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import jsPDF from 'jspdf';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function UrunEkle() {
+    const { lang } = useLanguage();
     const [form, setForm] = useState({
         urunAdi: '', urunTipi: '', bolge: '', hasat: '', miktar: '', birim: 'kg', aciklama: ''
     });
@@ -40,11 +43,11 @@ export default function UrunEkle() {
                 setYukleniyor(false);
                 setTamamlandi(true);
             } else {
-                alert('Hata: ' + data.hata);
+                alert((lang === 'tr' ? 'Hata: ' : 'Error: ') + data.hata);
                 setYukleniyor(false);
             }
         } catch {
-            alert('Baglanti hatasi!');
+            alert(lang === 'tr' ? 'Bağlantı hatası!' : 'Connection error!');
             setYukleniyor(false);
         }
     };
@@ -69,45 +72,71 @@ export default function UrunEkle() {
     };
 
     const paylasUrl = `https://origintag.com.tr/dogrula/${hash}`;
-    const paylasMetin = `${urunAdiSonuc} urunumun blockchain dogrulamasi: ${paylasUrl}`;
+    const paylasMetin = lang === 'tr'
+        ? `${urunAdiSonuc} ürünümün blockchain doğrulaması: ${paylasUrl}`
+        : `Blockchain verification for ${urunAdiSonuc}: ${paylasUrl}`;
 
-    const zeytinCinsleri = ['Memecik', 'Ayvalik', 'Gemlik', 'Uslu', 'Domat', 'Nizip Yaglik', 'Diger'];
+    const zeytinCinsleri = ['Memecik', 'Ayvalık', 'Gemlik', 'Uslu', 'Domat', 'Nizip Yağlık', lang === 'tr' ? 'Diğer' : 'Other'];
 
+    // Tamamlandı ekranı
     if (tamamlandi) {
         return (
             <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4' }}>
-                <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#fff', borderBottom: '1px solid #eee' }}>
+                <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#2D5A27', borderBottom: '1px solid #1a3d18' }}>
                     <img src="/origin.png" alt="OriginTag" style={{ height: '50px' }} />
-                    <a href="/dashboard" style={{ color: '#2D5A27', textDecoration: 'none' }}>Dashboard'a Don</a>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <a href="/dashboard" style={{ color: '#fff', textDecoration: 'none' }}>
+                            {lang === 'tr' ? "Dashboard'a Dön" : 'Back to Dashboard'}
+                        </a>
+                        <LanguageSwitcher />
+                    </div>
                 </nav>
                 <div style={{ maxWidth: '500px', margin: '3rem auto', textAlign: 'center' }}>
                     <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '16px', padding: '2.5rem' }}>
                         <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✅</div>
-                        <h2 style={{ color: '#2D5A27', marginBottom: '0.5rem' }}>Blockchain'e Kaydedildi!</h2>
-                        <p style={{ color: '#888', marginBottom: '1.5rem' }}>{urunAdiSonuc} basariyla zincire eklendi.</p>
+                        <h2 style={{ color: '#2D5A27', marginBottom: '0.5rem' }}>
+                            {lang === 'tr' ? "Blockchain'e Kaydedildi!" : 'Recorded on Blockchain!'}
+                        </h2>
+                        <p style={{ color: '#888', marginBottom: '1.5rem' }}>
+                            {lang === 'tr'
+                                ? `${urunAdiSonuc} başarıyla zincire eklendi.`
+                                : `${urunAdiSonuc} has been successfully added to the chain.`}
+                        </p>
                         <div style={{ background: '#f9f7f4', borderRadius: '8px', padding: '1rem', marginBottom: '1rem', textAlign: 'left' }}>
                             <div style={{ fontSize: '0.8rem', color: '#888', marginBottom: '4px' }}>SHA-256 Hash</div>
                             <div style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: '#8B6914', wordBreak: 'break-all' }}>{hash}</div>
                         </div>
                         <div style={{ background: '#f9f7f4', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
-                            <div style={{ fontSize: '0.8rem', color: '#888', marginBottom: '8px' }}>QR Kod</div>
+                            <div style={{ fontSize: '0.8rem', color: '#888', marginBottom: '8px' }}>QR {lang === 'tr' ? 'Kod' : 'Code'}</div>
                             <canvas ref={qrRef} style={{ borderRadius: '8px' }} />
                         </div>
                         <button onClick={pdfIndir} style={{ width: '100%', padding: '0.85rem', background: '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', marginBottom: '0.75rem', fontWeight: 'bold' }}>
-                            PDF Olarak Indir
+                            {lang === 'tr' ? 'PDF Olarak İndir' : 'Download as PDF'}
                         </button>
                         <div style={{ marginBottom: '1.5rem' }}>
-                            <div style={{ fontSize: '0.85rem', color: '#888', marginBottom: '0.75rem' }}>Paylas</div>
+                            <div style={{ fontSize: '0.85rem', color: '#888', marginBottom: '0.75rem' }}>
+                                {lang === 'tr' ? 'Paylaş' : 'Share'}
+                            </div>
                             <div style={{ display: 'flex', gap: '0.75rem' }}>
-                                <a href={'https://wa.me/?text=' + encodeURIComponent(paylasMetin)} target="_blank" style={{ flex: 1, padding: '0.6rem', background: '#25D366', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontSize: '0.85rem', textAlign: 'center' }}>WhatsApp</a>
-                                <button onClick={() => { navigator.clipboard.writeText(paylasUrl); alert('Link kopyalandi!'); }} style={{ flex: 1, padding: '0.6rem', background: '#f0f0f0', color: '#333', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem' }}>Kopyala</button>
+                                <a href={'https://wa.me/?text=' + encodeURIComponent(paylasMetin)} target="_blank"
+                                    style={{ flex: 1, padding: '0.6rem', background: '#25D366', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontSize: '0.85rem', textAlign: 'center' }}>
+                                    WhatsApp
+                                </a>
+                                <button onClick={() => { navigator.clipboard.writeText(paylasUrl); alert(lang === 'tr' ? 'Link kopyalandı!' : 'Link copied!'); }}
+                                    style={{ flex: 1, padding: '0.6rem', background: '#f0f0f0', color: '#333', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem' }}>
+                                    {lang === 'tr' ? 'Kopyala' : 'Copy Link'}
+                                </button>
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '1rem' }}>
-                            <button onClick={() => { setTamamlandi(false); setForm({ urunAdi: '', urunTipi: '', bolge: '', hasat: '', miktar: '', birim: 'kg', aciklama: '' }); setDetaylar({}); }} style={{ flex: 1, padding: '0.75rem', background: 'transparent', color: '#2D5A27', border: '1px solid #2D5A27', borderRadius: '8px', cursor: 'pointer' }}>
-                                + Yeni Urun
+                            <button onClick={() => { setTamamlandi(false); setForm({ urunAdi: '', urunTipi: '', bolge: '', hasat: '', miktar: '', birim: 'kg', aciklama: '' }); setDetaylar({}); }}
+                                style={{ flex: 1, padding: '0.75rem', background: 'transparent', color: '#2D5A27', border: '1px solid #2D5A27', borderRadius: '8px', cursor: 'pointer' }}>
+                                + {lang === 'tr' ? 'Yeni Ürün' : 'New Product'}
                             </button>
-                            <a href="/dashboard" style={{ flex: 1, padding: '0.75rem', background: '#2D5A27', color: '#fff', borderRadius: '8px', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Dashboard</a>
+                            <a href="/dashboard"
+                                style={{ flex: 1, padding: '0.75rem', background: '#2D5A27', color: '#fff', borderRadius: '8px', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                Dashboard
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -115,105 +144,134 @@ export default function UrunEkle() {
         );
     }
 
+    // Ana form ekranı
     return (
         <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4' }}>
-            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#fff', borderBottom: '1px solid #eee' }}>
+            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#2D5A27', borderBottom: '1px solid #1a3d18' }}>
                 <img src="/origin.png" alt="OriginTag" style={{ height: '50px' }} />
-                <a href="/dashboard" style={{ color: '#2D5A27', textDecoration: 'none' }}>Dashboard'a Don</a>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <a href="/dashboard" style={{ color: '#fff', textDecoration: 'none' }}>
+                        {lang === 'tr' ? "Dashboard'a Dön" : 'Back to Dashboard'}
+                    </a>
+                    <LanguageSwitcher />
+                </div>
             </nav>
 
             <div style={{ maxWidth: '600px', margin: '3rem auto', background: '#fff', borderRadius: '16px', border: '1px solid #eee', padding: '2.5rem' }}>
-                <h1 style={{ fontSize: '1.8rem', color: '#1a1a1a', marginBottom: '0.5rem' }}>Yeni Urun Ekle</h1>
-                <p style={{ color: '#888', marginBottom: '2rem', fontSize: '0.95rem' }}>Urun bilgilerini gir, blockchain'e kaydet.</p>
+                <h1 style={{ fontSize: '1.8rem', color: '#1a1a1a', marginBottom: '0.5rem' }}>
+                    {lang === 'tr' ? 'Yeni Ürün Ekle' : 'Add New Product'}
+                </h1>
+                <p style={{ color: '#888', marginBottom: '2rem', fontSize: '0.95rem' }}>
+                    {lang === 'tr' ? "Ürün bilgilerini gir, blockchain'e kaydet." : 'Enter product details and record on blockchain.'}
+                </p>
 
                 <form onSubmit={handleSubmit}>
 
-                    {/* TEMEL BİLGİLER */}
+                    {/* ÜRÜN ADI */}
                     <div style={{ marginBottom: '1rem' }}>
-                        <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>Urun Adi</label>
-                        <input type="text" required placeholder="Mut Sizme Zeytinyagi"
+                        <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>
+                            {lang === 'tr' ? 'Ürün Adı' : 'Product Name'}
+                        </label>
+                        <input type="text" required placeholder={lang === 'tr' ? 'Mut Sızma Zeytinyağı' : 'Mut Extra Virgin Olive Oil'}
                             value={form.urunAdi} onChange={e => setForm({ ...form, urunAdi: e.target.value })}
                             style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
                         />
                     </div>
 
+                    {/* ÜRÜN TİPİ */}
                     <div style={{ marginBottom: '1rem' }}>
-                        <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>Urun Tipi</label>
+                        <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>
+                            {lang === 'tr' ? 'Ürün Tipi' : 'Product Type'}
+                        </label>
                         <select required value={form.urunTipi} onChange={e => { setForm({ ...form, urunTipi: e.target.value }); setDetaylar({}); }}
                             style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box', background: '#fff' }}>
-                            <option value="">Seciniz...</option>
-                            <option>Zeytinyagi</option>
-                            <option>Bal</option>
-                            <option>Peynir</option>
-                            <option>Sut Urunleri</option>
-                            <option>Sebze & Meyve</option>
-                            <option>Tahil</option>
-                            <option>Diger</option>
+                            <option value="">{lang === 'tr' ? 'Seçiniz...' : 'Select...'}</option>
+                            <option value="Zeytinyagi">{lang === 'tr' ? 'Zeytinyağı' : 'Olive Oil'}</option>
+                            <option value="Bal">{lang === 'tr' ? 'Bal' : 'Honey'}</option>
+                            <option value="Peynir">{lang === 'tr' ? 'Peynir' : 'Cheese'}</option>
+                            <option value="Sut Urunleri">{lang === 'tr' ? 'Süt Ürünleri' : 'Dairy Products'}</option>
+                            <option value="Sebze & Meyve">{lang === 'tr' ? 'Sebze & Meyve' : 'Vegetables & Fruits'}</option>
+                            <option value="Tahil">{lang === 'tr' ? 'Tahıl' : 'Grain'}</option>
+                            <option value="Diger">{lang === 'tr' ? 'Diğer' : 'Other'}</option>
                         </select>
                     </div>
 
                     {/* ZEYTİNYAĞI DETAYLARI */}
                     {form.urunTipi === 'Zeytinyagi' && (
                         <div style={{ background: '#f9f7f4', borderRadius: '12px', padding: '1.25rem', marginBottom: '1rem', border: '1px solid #e8e4dc' }}>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#2D5A27', marginBottom: '1rem' }}>Uretici Bilgileri</div>
-
+                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#2D5A27', marginBottom: '1rem' }}>
+                                {lang === 'tr' ? 'Üretici Bilgileri' : 'Producer Information'}
+                            </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Uretici Ad Soyad</label>
-                                    <input type="text" placeholder="Ahmet Yilmaz"
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Üretici Ad Soyad' : 'Producer Full Name'}
+                                    </label>
+                                    <input type="text" placeholder={lang === 'tr' ? 'Ahmet Yılmaz' : 'John Smith'}
                                         value={detaylar.ureticiAd || ''} onChange={e => setDetaylar({ ...detaylar, ureticiAd: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>TC Kimlik No</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'TC Kimlik No' : 'ID Number'}
+                                    </label>
                                     <input type="text" placeholder="12345678901" maxLength={11}
                                         value={detaylar.tc || ''} onChange={e => setDetaylar({ ...detaylar, tc: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                     />
                                 </div>
                             </div>
-
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Telefon</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Telefon' : 'Phone'}
+                                    </label>
                                     <input type="tel" placeholder="0532 000 00 00"
                                         value={detaylar.telefon || ''} onChange={e => setDetaylar({ ...detaylar, telefon: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Koy / Mahalle</label>
-                                    <input type="text" placeholder="Gokce Mahallesi"
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Köy / Mahalle' : 'Village / District'}
+                                    </label>
+                                    <input type="text" placeholder={lang === 'tr' ? 'Gökçe Mahallesi' : 'Gokce District'}
                                         value={detaylar.koy || ''} onChange={e => setDetaylar({ ...detaylar, koy: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                     />
                                 </div>
                             </div>
-
-                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#2D5A27', margin: '1rem 0 0.75rem' }}>Bahce / Kadastro Bilgileri</div>
-
+                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#2D5A27', margin: '1rem 0 0.75rem' }}>
+                                {lang === 'tr' ? 'Bahçe / Kadastro Bilgileri' : 'Garden / Cadastral Information'}
+                            </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Ada No</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Ada No' : 'Block No'}
+                                    </label>
                                     <input type="text" placeholder="123"
                                         value={detaylar.adaNo || ''} onChange={e => setDetaylar({ ...detaylar, adaNo: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Parsel No</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Parsel No' : 'Parcel No'}
+                                    </label>
                                     <input type="text" placeholder="45"
                                         value={detaylar.parselNo || ''} onChange={e => setDetaylar({ ...detaylar, parselNo: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                     />
                                 </div>
                             </div>
-
-                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#2D5A27', margin: '1rem 0 0.75rem' }}>Urun Ozellikleri</div>
-
+                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#2D5A27', margin: '1rem 0 0.75rem' }}>
+                                {lang === 'tr' ? 'Ürün Özellikleri' : 'Product Characteristics'}
+                            </div>
                             <div style={{ marginBottom: '0.75rem' }}>
-                                <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '6px' }}>Zeytin Cinsi</label>
+                                <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '6px' }}>
+                                    {lang === 'tr' ? 'Zeytin Cinsi' : 'Olive Variety'}
+                                </label>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                                     {zeytinCinsleri.map(cins => (
                                         <button key={cins} type="button"
@@ -233,20 +291,23 @@ export default function UrunEkle() {
                                     ))}
                                 </div>
                             </div>
-
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Cekim Tipi</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Çekim Tipi' : 'Extraction Type'}
+                                    </label>
                                     <select value={detaylar.cekimTipi || ''} onChange={e => setDetaylar({ ...detaylar, cekimTipi: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', background: '#fff', boxSizing: 'border-box' }}>
-                                        <option value="">Seciniz</option>
-                                        <option value="soguk">Soguk Sikim</option>
-                                        <option value="ikinci">Ikinci Sikim</option>
-                                        <option value="rafine">Rafine</option>
+                                        <option value="">{lang === 'tr' ? 'Seçiniz' : 'Select'}</option>
+                                        <option value="soguk">{lang === 'tr' ? 'Soğuk Sıkım' : 'Cold Press'}</option>
+                                        <option value="ikinci">{lang === 'tr' ? 'İkinci Sıkım' : 'Second Press'}</option>
+                                        <option value="rafine">{lang === 'tr' ? 'Rafine' : 'Refined'}</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Randiman (%)</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Randıman (%)' : 'Yield (%)'}
+                                    </label>
                                     <input type="number" placeholder="18"
                                         value={detaylar.randiman || ''} onChange={e => setDetaylar({ ...detaylar, randiman: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
@@ -259,17 +320,23 @@ export default function UrunEkle() {
                     {/* BAL DETAYLARI */}
                     {form.urunTipi === 'Bal' && (
                         <div style={{ background: '#fdf8e8', borderRadius: '12px', padding: '1.25rem', marginBottom: '1rem', border: '1px solid #f2d88e' }}>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#8B6914', marginBottom: '1rem' }}>Bal Detaylari</div>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#8B6914', marginBottom: '1rem' }}>
+                                {lang === 'tr' ? 'Bal Detayları' : 'Honey Details'}
+                            </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Uretici Ad Soyad</label>
-                                    <input type="text" placeholder="Ahmet Yilmaz"
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Üretici Ad Soyad' : 'Producer Full Name'}
+                                    </label>
+                                    <input type="text" placeholder={lang === 'tr' ? 'Ahmet Yılmaz' : 'John Smith'}
                                         value={detaylar.ureticiAd || ''} onChange={e => setDetaylar({ ...detaylar, ureticiAd: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Telefon</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Telefon' : 'Phone'}
+                                    </label>
                                     <input type="tel" placeholder="0532 000 00 00"
                                         value={detaylar.telefon || ''} onChange={e => setDetaylar({ ...detaylar, telefon: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
@@ -278,21 +345,25 @@ export default function UrunEkle() {
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Bal Turu</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Bal Türü' : 'Honey Type'}
+                                    </label>
                                     <select value={detaylar.balTuru || ''} onChange={e => setDetaylar({ ...detaylar, balTuru: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', background: '#fff', boxSizing: 'border-box' }}>
-                                        <option value="">Seciniz</option>
-                                        <option>Cicek Bali</option>
-                                        <option>Cam Bali</option>
-                                        <option>Kestane Bali</option>
-                                        <option>Ihlamur Bali</option>
-                                        <option>Anzer Bali</option>
-                                        <option>Diger</option>
+                                        <option value="">{lang === 'tr' ? 'Seçiniz' : 'Select'}</option>
+                                        <option>{lang === 'tr' ? 'Çiçek Balı' : 'Flower Honey'}</option>
+                                        <option>{lang === 'tr' ? 'Çam Balı' : 'Pine Honey'}</option>
+                                        <option>{lang === 'tr' ? 'Kestane Balı' : 'Chestnut Honey'}</option>
+                                        <option>{lang === 'tr' ? 'Ihlamur Balı' : 'Linden Honey'}</option>
+                                        <option>{lang === 'tr' ? 'Anzer Balı' : 'Anzer Honey'}</option>
+                                        <option>{lang === 'tr' ? 'Diğer' : 'Other'}</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Arlik Bolgesi</label>
-                                    <input type="text" placeholder="Kackar Daglari"
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Arılık Bölgesi' : 'Apiary Region'}
+                                    </label>
+                                    <input type="text" placeholder={lang === 'tr' ? 'Kaçkar Dağları' : 'Kackar Mountains'}
                                         value={detaylar.arlikBolgesi || ''} onChange={e => setDetaylar({ ...detaylar, arlikBolgesi: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                     />
@@ -301,32 +372,40 @@ export default function UrunEkle() {
                         </div>
                     )}
 
-                    {/* PEYNIR DETAYLARI */}
+                    {/* PEYNİR DETAYLARI */}
                     {form.urunTipi === 'Peynir' && (
                         <div style={{ background: '#faf9f5', borderRadius: '12px', padding: '1.25rem', marginBottom: '1rem', border: '1px solid #e0dbd0' }}>
-                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#555', marginBottom: '1rem' }}>Peynir Detaylari</div>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#555', marginBottom: '1rem' }}>
+                                {lang === 'tr' ? 'Peynir Detayları' : 'Cheese Details'}
+                            </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Uretici Ad Soyad</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Üretici Ad Soyad' : 'Producer Full Name'}
+                                    </label>
                                     <input type="text" value={detaylar.ureticiAd || ''} onChange={e => setDetaylar({ ...detaylar, ureticiAd: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Sut Turu</label>
+                                    <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                        {lang === 'tr' ? 'Süt Türü' : 'Milk Type'}
+                                    </label>
                                     <select value={detaylar.sutTuru || ''} onChange={e => setDetaylar({ ...detaylar, sutTuru: e.target.value })}
                                         style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', background: '#fff', boxSizing: 'border-box' }}>
-                                        <option value="">Seciniz</option>
-                                        <option>Inek Sutu</option>
-                                        <option>Koyun Sutu</option>
-                                        <option>Keci Sutu</option>
-                                        <option>Karisim</option>
+                                        <option value="">{lang === 'tr' ? 'Seçiniz' : 'Select'}</option>
+                                        <option>{lang === 'tr' ? 'İnek Sütü' : "Cow's Milk"}</option>
+                                        <option>{lang === 'tr' ? 'Koyun Sütü' : "Sheep's Milk"}</option>
+                                        <option>{lang === 'tr' ? 'Keçi Sütü' : "Goat's Milk"}</option>
+                                        <option>{lang === 'tr' ? 'Karışım' : 'Mixed'}</option>
                                     </select>
                                 </div>
                             </div>
                             <div>
-                                <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>Olgunlasma Suresi</label>
-                                <input type="text" placeholder="3 ay"
+                                <label style={{ fontSize: '0.8rem', color: '#666', display: 'block', marginBottom: '3px' }}>
+                                    {lang === 'tr' ? 'Olgunlaşma Süresi' : 'Aging Period'}
+                                </label>
+                                <input type="text" placeholder={lang === 'tr' ? '3 ay' : '3 months'}
                                     value={detaylar.olgunlasma || ''} onChange={e => setDetaylar({ ...detaylar, olgunlasma: e.target.value })}
                                     style={{ width: '100%', padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', boxSizing: 'border-box' }}
                                 />
@@ -336,7 +415,9 @@ export default function UrunEkle() {
 
                     {/* ORTAK ALANLAR */}
                     <div style={{ marginBottom: '1rem' }}>
-                        <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>Uretim Bolgesi</label>
+                        <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>
+                            {lang === 'tr' ? 'Üretim Bölgesi' : 'Production Region'}
+                        </label>
                         <input type="text" required placeholder="Mut / Mersin"
                             value={form.bolge} onChange={e => setForm({ ...form, bolge: e.target.value })}
                             style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
@@ -345,13 +426,17 @@ export default function UrunEkle() {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                         <div>
-                            <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>Hasat Tarihi</label>
+                            <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>
+                                {lang === 'tr' ? 'Hasat Tarihi' : 'Harvest Date'}
+                            </label>
                             <input type="date" required value={form.hasat} onChange={e => setForm({ ...form, hasat: e.target.value })}
                                 style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
                             />
                         </div>
                         <div>
-                            <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>Miktar</label>
+                            <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>
+                                {lang === 'tr' ? 'Miktar' : 'Amount'}
+                            </label>
                             <div style={{ display: 'flex', gap: '4px' }}>
                                 <input type="number" required placeholder="500" value={form.miktar} onChange={e => setForm({ ...form, miktar: e.target.value })}
                                     style={{ flex: 1, padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
@@ -360,7 +445,7 @@ export default function UrunEkle() {
                                     style={{ padding: '0.6rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.9rem', background: '#fff' }}>
                                     <option>kg</option>
                                     <option>lt</option>
-                                    <option>adet</option>
+                                    <option>{lang === 'tr' ? 'adet' : 'pcs'}</option>
                                     <option>ton</option>
                                 </select>
                             </div>
@@ -368,15 +453,20 @@ export default function UrunEkle() {
                     </div>
 
                     <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>Aciklama</label>
-                        <textarea placeholder="Ek bilgi..." value={form.aciklama} onChange={e => setForm({ ...form, aciklama: e.target.value })}
+                        <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '4px' }}>
+                            {lang === 'tr' ? 'Açıklama' : 'Description'}
+                        </label>
+                        <textarea placeholder={lang === 'tr' ? 'Ek bilgi...' : 'Additional info...'}
+                            value={form.aciklama} onChange={e => setForm({ ...form, aciklama: e.target.value })}
                             rows={3} style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box', resize: 'none' }}
                         />
                     </div>
 
                     <button type="submit" disabled={yukleniyor}
                         style={{ width: '100%', padding: '0.85rem', background: yukleniyor ? '#888' : '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '1rem', cursor: yukleniyor ? 'not-allowed' : 'pointer', fontWeight: 'bold' }}>
-                        {yukleniyor ? 'Blockchain\'e Kaydediliyor...' : 'Blockchain\'e Kaydet & QR Olustur'}
+                        {yukleniyor
+                            ? (lang === 'tr' ? "Blockchain'e Kaydediliyor..." : 'Recording on Blockchain...')
+                            : (lang === 'tr' ? "Blockchain'e Kaydet & QR Oluştur" : 'Save to Blockchain & Create QR')}
                     </button>
                 </form>
             </div>
