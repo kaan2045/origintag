@@ -1,8 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Dashboard() {
+    const { t, lang } = useLanguage();
     const [urunler, setUrunler] = useState<any[]>([]);
     const [yukleniyor, setYukleniyor] = useState(true);
     const [kullaniciAd, setKullaniciAd] = useState('');
@@ -35,6 +37,13 @@ export default function Dashboard() {
         window.location.href = '/login';
     };
 
+    const kartlar = [
+        { label: lang === 'tr' ? 'Toplam Ürün' : 'Total Products', value: urunler.length.toString(), icon: '📦' },
+        { label: lang === 'tr' ? 'Blockchain Kaydı' : 'Blockchain Records', value: urunler.length.toString(), icon: '🔗' },
+        { label: lang === 'tr' ? 'QR Tarama' : 'QR Scans', value: '0', icon: '📱' },
+        { label: lang === 'tr' ? 'Abonelik' : 'Subscription', value: lang === 'tr' ? 'Başlangıç' : 'Starter', icon: '⭐' },
+    ];
+
     return (
         <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4' }}>
 
@@ -43,19 +52,16 @@ export default function Dashboard() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <span style={{ fontSize: '0.9rem', color: '#fff' }}>{kullaniciAd}</span>
                     <LanguageSwitcher />
-                    <button onClick={cikisYap} style={{ padding: '0.4rem 1rem', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', color: '#fff', background: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>Çıkış</button>
+                    <button onClick={cikisYap} style={{ padding: '0.4rem 1rem', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', color: '#fff', background: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>
+                        {t('nav.logout')}
+                    </button>
                 </div>
             </nav>
 
             <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem' }}>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
-                    {[
-                        { label: 'Toplam Urun', value: urunler.length.toString(), icon: '📦' },
-                        { label: 'Blockchain Kaydi', value: urunler.length.toString(), icon: '🔗' },
-                        { label: 'QR Tarama', value: '0', icon: '📱' },
-                        { label: 'Abonelik', value: 'Baslangic', icon: '⭐' },
-                    ].map((k, i) => (
+                    {kartlar.map((k, i) => (
                         <div key={i} style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
                             <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{k.icon}</div>
                             <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#2D5A27' }}>{k.value}</div>
@@ -66,34 +72,34 @@ export default function Dashboard() {
 
                 <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '2rem', marginBottom: '2rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.3rem', color: '#1a1a1a', margin: 0 }}>Urunlerim</h2>
+                        <h2 style={{ fontSize: '1.3rem', color: '#1a1a1a', margin: 0 }}>{t('dashboard.title')}</h2>
                         <button onClick={() => window.location.href = '/urun-ekle'}
                             style={{ padding: '0.6rem 1.2rem', background: '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem' }}>
-                            + Yeni Urun Ekle
+                            + {t('dashboard.addNew')}
                         </button>
                     </div>
 
                     {yukleniyor ? (
                         <div style={{ textAlign: 'center', padding: '3rem', color: '#aaa' }}>
-                            <p>Yukleniyor...</p>
+                            <p>{lang === 'tr' ? 'Yükleniyor...' : 'Loading...'}</p>
                         </div>
                     ) : urunler.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '3rem', color: '#aaa' }}>
                             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📦</div>
-                            <p>Henuz urun eklenmedi.</p>
+                            <p>{t('dashboard.noProducts')}</p>
                             <button onClick={() => window.location.href = '/urun-ekle'}
                                 style={{ padding: '0.75rem 1.5rem', background: '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', marginTop: '1rem' }}>
-                                Ilk Urununu Ekle
+                                {lang === 'tr' ? 'İlk Ürününü Ekle' : 'Add Your First Product'}
                             </button>
                         </div>
                     ) : (
                         <div>
                             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '0.75rem 1rem', background: '#f9f7f4', borderRadius: '8px', marginBottom: '0.5rem', fontSize: '0.8rem', color: '#888' }}>
-                                <span>URUN ADI</span>
-                                <span>TIP</span>
-                                <span>BOLGE</span>
-                                <span>MIKTAR</span>
-                                <span>ISLEM</span>
+                                <span>{lang === 'tr' ? 'ÜRÜN ADI' : 'PRODUCT NAME'}</span>
+                                <span>{lang === 'tr' ? 'TİP' : 'TYPE'}</span>
+                                <span>{lang === 'tr' ? 'BÖLGE' : 'REGION'}</span>
+                                <span>{lang === 'tr' ? 'MİKTAR' : 'AMOUNT'}</span>
+                                <span>{lang === 'tr' ? 'İŞLEM' : 'ACTION'}</span>
                             </div>
                             {urunler.map((urun, i) => (
                                 <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1rem', borderBottom: '1px solid #f0f0f0', alignItems: 'center' }}>
@@ -106,7 +112,7 @@ export default function Dashboard() {
                                     <span style={{ fontSize: '0.85rem', color: '#555' }}>{urun.miktar} {urun.birim}</span>
                                     <a href={'/dogrula/' + urun.hash}
                                         style={{ padding: '0.3rem 0.75rem', background: '#EAF3DE', color: '#2D5A27', borderRadius: '6px', textDecoration: 'none', fontSize: '0.8rem', fontWeight: 'bold' }}>
-                                        Goruntule
+                                        {lang === 'tr' ? 'Görüntüle' : 'View'}
                                     </a>
                                 </div>
                             ))}
@@ -115,10 +121,12 @@ export default function Dashboard() {
                 </div>
 
                 <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '2rem' }}>
-                    <h2 style={{ fontSize: '1.3rem', color: '#1a1a1a', marginBottom: '1.5rem' }}>Son Islemler</h2>
+                    <h2 style={{ fontSize: '1.3rem', color: '#1a1a1a', marginBottom: '1.5rem' }}>
+                        {lang === 'tr' ? 'Son İşlemler' : 'Recent Transactions'}
+                    </h2>
                     {urunler.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '2rem', color: '#aaa' }}>
-                            <p>Henuz blockchain kaydi yok.</p>
+                            <p>{lang === 'tr' ? 'Henüz blockchain kaydı yok.' : 'No blockchain records yet.'}</p>
                         </div>
                     ) : (
                         <div>
@@ -128,11 +136,13 @@ export default function Dashboard() {
                                         <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#2D5A27' }}></div>
                                         <div>
                                             <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#1a1a1a' }}>{urun.urun_adi}</div>
-                                            <div style={{ fontSize: '0.75rem', color: '#aaa' }}>Blockchain kaydedildi</div>
+                                            <div style={{ fontSize: '0.75rem', color: '#aaa' }}>
+                                                {lang === 'tr' ? 'Blockchain kaydedildi' : 'Recorded on blockchain'}
+                                            </div>
                                         </div>
                                     </div>
                                     <div style={{ fontSize: '0.8rem', color: '#888' }}>
-                                        {new Date(urun.olusturma_tarihi).toLocaleDateString('tr-TR')}
+                                        {new Date(urun.olusturma_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB')}
                                     </div>
                                 </div>
                             ))}
