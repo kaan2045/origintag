@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'tr' | 'en';
 
@@ -42,7 +42,7 @@ const translations: Record<Language, Record<string, string>> = {
         'login.email': 'E-posta',
         'login.password': 'Şifre',
         'login.submit': 'Giriş',
-        'login.noAccount': 'Hesabınız yok mu?',
+        'login.noAccount': 'Hesabın yok mu?',
         'login.register': 'Kayıt Ol',
         'register.title': 'Kayıt Ol',
         'register.firstName': 'Ad',
@@ -51,7 +51,7 @@ const translations: Record<Language, Record<string, string>> = {
         'register.email': 'E-posta',
         'register.password': 'Şifre',
         'register.submit': 'Kayıt Ol',
-        'register.hasAccount': 'Zaten hesabınız var mı?',
+        'register.hasAccount': 'Zaten hesabın var mı?',
         'landing.hero': 'Tarım Ürünlerinizi Dijital Kimlikle Güvence Altına Alın',
         'landing.sub': 'QR kod ve blockchain teknolojisiyle üreticiden tüketiciye şeffaf izlenebilirlik.',
         'landing.cta': 'Ücretsiz Başla',
@@ -112,8 +112,24 @@ const LanguageContext = createContext<LanguageContextType>({
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-    const [lang, setLang] = useState<Language>('tr');
+    const [lang, setLangState] = useState<Language>('tr');
+
+    // Sayfa yüklenince localStorage'dan oku
+    useEffect(() => {
+        const kayitliDil = localStorage.getItem('origintag_lang') as Language;
+        if (kayitliDil === 'tr' || kayitliDil === 'en') {
+            setLangState(kayitliDil);
+        }
+    }, []);
+
+    // Dil değişince localStorage'a kaydet
+    const setLang = (yeniDil: Language) => {
+        setLangState(yeniDil);
+        localStorage.setItem('origintag_lang', yeniDil);
+    };
+
     const t = (key: string): string => translations[lang][key] ?? key;
+
     return (
         <LanguageContext.Provider value={{ lang, setLang, t }}>
             {children}
