@@ -4,6 +4,98 @@ import QRCode from 'qrcode';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { useLanguage } from '../../context/LanguageContext';
 
+function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
+    const [acik, setAcik] = useState<string | null>(null);
+
+    const isVideo = (url: string) =>
+        url.includes('/video/') || url.match(/\.(mp4|mov|avi|webm)(\?|$)/i);
+
+    return (
+        <>
+            <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.75rem' }}>
+                    {lang === 'tr' ? '📷 Fotoğraf & Video' : '📷 Photos & Videos'}
+                </h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+                    {urls.map((url, i) => (
+                        <div
+                            key={i}
+                            onClick={() => setAcik(url)}
+                            style={{
+                                borderRadius: '8px', overflow: 'hidden', cursor: 'pointer',
+                                border: '1px solid #eee', aspectRatio: '1', position: 'relative',
+                                background: '#f0f0f0'
+                            }}
+                        >
+                            {isVideo(url) ? (
+                                <>
+                                    <video
+                                        src={url}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        muted
+                                        playsInline
+                                    />
+                                    <div style={{
+                                        position: 'absolute', inset: 0, display: 'flex',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        background: 'rgba(0,0,0,0.3)'
+                                    }}>
+                                        <div style={{
+                                            width: '40px', height: '40px', background: 'rgba(255,255,255,0.9)',
+                                            borderRadius: '50%', display: 'flex', alignItems: 'center',
+                                            justifyContent: 'center', fontSize: '16px'
+                                        }}>▶</div>
+                                    </div>
+                                </>
+                            ) : (
+                                <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Lightbox */}
+            {acik && (
+                <div
+                    onClick={() => setAcik(null)}
+                    style={{
+                        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)',
+                        zIndex: 9999, display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', padding: '1rem'
+                    }}
+                >
+                    <button
+                        onClick={() => setAcik(null)}
+                        style={{
+                            position: 'absolute', top: '1rem', right: '1rem',
+                            background: 'rgba(255,255,255,0.15)', border: 'none',
+                            color: '#fff', width: '40px', height: '40px',
+                            borderRadius: '50%', fontSize: '18px', cursor: 'pointer'
+                        }}
+                    >✕</button>
+                    {isVideo(acik) ? (
+                        <video
+                            src={acik}
+                            controls
+                            autoPlay
+                            onClick={e => e.stopPropagation()}
+                            style={{ maxWidth: '100%', maxHeight: '90vh', borderRadius: '8px' }}
+                        />
+                    ) : (
+                        <img
+                            src={acik}
+                            alt=""
+                            onClick={e => e.stopPropagation()}
+                            style={{ maxWidth: '100%', maxHeight: '90vh', borderRadius: '8px', objectFit: 'contain' }}
+                        />
+                    )}
+                </div>
+            )}
+        </>
+    );
+}
+
 export default function DogrulamaPage({ params }: { params: Promise<{ hash: string }> }) {
     const { hash } = use(params);
     const { lang } = useLanguage();
@@ -199,6 +291,11 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                             {d.olgunlasma && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Olgunlaşma' : 'Aging Period'}</div><div style={{ fontWeight: 'bold' }}>{d.olgunlasma}</div></div>}
                         </div>
                     </div>
+                )}
+
+                {/* MEDYA GALERİSİ */}
+                {urun.medya_urls && urun.medya_urls.length > 0 && (
+                    <MedyaGalerisi urls={urun.medya_urls} lang={lang} />
                 )}
 
                 <div style={{ textAlign: 'center', padding: '1rem' }}>

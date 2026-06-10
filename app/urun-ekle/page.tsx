@@ -16,6 +16,9 @@ export default function UrunEkle() {
     const [hash, setHash] = useState('');
     const [urunAdiSonuc, setUrunAdiSonuc] = useState('');
     const qrRef = useRef<HTMLCanvasElement>(null);
+    const [medyaDosyalar, setMedyaDosyalar] = useState<File[]>([]);
+    const [medyaOnizleme, setMedyaOnizleme] = useState<string[]>([]);
+    const [medyaYukleniyor, setMedyaYukleniyor] = useState(false);
 
     useEffect(() => {
         if (tamamlandi && hash && qrRef.current) {
@@ -26,15 +29,51 @@ export default function UrunEkle() {
         }
     }, [tamamlandi, hash]);
 
+    const handleMedyaSec = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const secilen = Array.from(e.target.files || []);
+        if (medyaDosyalar.length + secilen.length > 10) {
+            alert(lang === 'tr' ? 'En fazla 10 dosya yükleyebilirsiniz.' : 'You can upload up to 10 files.');
+            return;
+        }
+        const yeniDosyalar = [...medyaDosyalar, ...secilen];
+        setMedyaDosyalar(yeniDosyalar);
+        const yeniOnizlemeler = secilen.map(f => URL.createObjectURL(f));
+        setMedyaOnizleme(prev => [...prev, ...yeniOnizlemeler]);
+    };
+
+    const medyaSil = (index: number) => {
+        setMedyaDosyalar(prev => prev.filter((_, i) => i !== index));
+        setMedyaOnizleme(prev => prev.filter((_, i) => i !== index));
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setYukleniyor(true);
         try {
             const kullaniciId = localStorage.getItem('kullanici_id');
+
+            // Önce medya dosyalarını yükle
+            let medyaUrls: string[] = [];
+            if (medyaDosyalar.length > 0) {
+                setMedyaYukleniyor(true);
+                const formData = new FormData();
+                medyaDosyalar.forEach(f => formData.append('dosyalar', f));
+                const medyaRes = await fetch('/api/medya-yukle', { method: 'POST', body: formData });
+                const medyaData = await medyaRes.json();
+                setMedyaYukleniyor(false);
+                if (medyaData.basari) {
+                    medyaUrls = medyaData.urls;
+                } else {
+                    alert(lang === 'tr' ? 'Medya yükleme hatası: ' + medyaData.hata : 'Media upload error: ' + medyaData.hata);
+                    setYukleniyor(false);
+                    return;
+                }
+            }
+
             const res = await fetch('/api/urun-ekle', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...form, kullaniciId, detaylar }),
+                body: JSON.stringify({ ...form, kullaniciId, detaylar, medyaUrls }),
             });
             const data = await res.json();
             if (data.basari) {
@@ -462,11 +501,77 @@ export default function UrunEkle() {
                         />
                     </div>
 
-                    <button type="submit" disabled={yukleniyor}
-                        style={{ width: '100%', padding: '0.85rem', background: yukleniyor ? '#888' : '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '1rem', cursor: yukleniyor ? 'not-allowed' : 'pointer', fontWeight: 'bold' }}>
-                        {yukleniyor
-                            ? (lang === 'tr' ? "Blockchain'e Kaydediliyor..." : 'Recording on Blockchain...')
-                            : (lang === 'tr' ? "Blockchain'e Kaydet & QR Oluştur" : 'Save to Blockchain & Create QR')}
+                    {/* MEDYA YÜKLEME */}
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <label style={{ fontSize: '0.85rem', color: '#555', display: 'block', marginBottom: '8px' }}>
+                            {lang === 'tr' ? 'Fotoğraf & Video (max 10 dosya)' : 'Photos & Videos (max 10 files)'}
+                        </label>
+
+                        {/* Yükleme alanı */}
+                        <label style={{
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                            border: '2px dashed #c0dd97', borderRadius: '12px', padding: '1.5rem',
+                            cursor: 'pointer', background: '#f9fdf5', marginBottom: '1rem',
+                            transition: 'background 0.2s'
+                        }}>
+                            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📷</div>
+                            <span style={{ fontSize: '0.9rem', color: '#2D5A27', fontWeight: 'bold' }}>
+                                {lang === 'tr' ? 'Dosya Seç veya Sürükle' : 'Select or Drop Files'}
+                            </span>
+                            <span style={{ fontSize: '0.8rem', color: '#888', marginTop: '4px' }}>
+                                {lang === 'tr' ? 'JPG, PNG, MP4, MOV — max 50MB' : 'JPG, PNG, MP4, MOV — max 50MB'}
+                            </span>
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*,video/*"
+                                onChange={handleMedyaSec}
+                                style={{ display: 'none' }}
+                            />
+                        </label>
+
+                        {/* Önizlemeler */}
+                        {medyaOnizleme.length > 0 && (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+                                {medyaOnizleme.map((url, i) => (
+                                    <div key={i} style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid #ddd', aspectRatio: '1' }}>
+                                        {medyaDosyalar[i]?.type.startsWith('video/') ? (
+                                            <div style={{ width: '100%', height: '100%', background: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>▶️</div>
+                                        ) : (
+                                            <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={() => medyaSil(i)}
+                                            style={{
+                                                position: 'absolute', top: '4px', right: '4px',
+                                                background: 'rgba(0,0,0,0.6)', color: '#fff',
+                                                border: 'none', borderRadius: '50%', width: '22px', height: '22px',
+                                                cursor: 'pointer', fontSize: '12px', lineHeight: '22px', textAlign: 'center'
+                                            }}
+                                        >✕</button>
+                                        <div style={{ position: 'absolute', bottom: '4px', left: '4px', background: 'rgba(0,0,0,0.5)', color: '#fff', fontSize: '10px', padding: '1px 5px', borderRadius: '4px' }}>
+                                            {medyaDosyalar[i]?.type.startsWith('video/') ? '🎥' : '🖼️'}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {medyaYukleniyor && (
+                            <div style={{ textAlign: 'center', padding: '1rem', color: '#2D5A27', fontSize: '0.9rem' }}>
+                                ☁️ {lang === 'tr' ? 'Cloudinary\'ye yükleniyor...' : 'Uploading to Cloudinary...'}
+                            </div>
+                        )}
+                    </div>
+
+                    <button type="submit" disabled={yukleniyor || medyaYukleniyor}
+                        style={{ width: '100%', padding: '0.85rem', background: (yukleniyor || medyaYukleniyor) ? '#888' : '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '1rem', cursor: (yukleniyor || medyaYukleniyor) ? 'not-allowed' : 'pointer', fontWeight: 'bold' }}>
+                        {medyaYukleniyor
+                            ? (lang === 'tr' ? '☁️ Medya Yükleniyor...' : '☁️ Uploading Media...')
+                            : yukleniyor
+                                ? (lang === 'tr' ? "Blockchain'e Kaydediliyor..." : 'Recording on Blockchain...')
+                                : (lang === 'tr' ? "Blockchain'e Kaydet & QR Oluştur" : 'Save to Blockchain & Create QR')}
                     </button>
                 </form>
             </div>
