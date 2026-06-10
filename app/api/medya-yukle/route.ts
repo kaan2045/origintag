@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
 export async function POST(req: NextRequest) {
+    // Config'i her request'te yeniden yükle
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+
     console.log('ENV CHECK:', {
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? 'OK' : 'MISSING',
-        api_key: process.env.CLOUDINARY_API_KEY ? 'OK' : 'MISSING',
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'MISSING',
+        api_key: process.env.CLOUDINARY_API_KEY || 'MISSING',
         api_secret: process.env.CLOUDINARY_API_SECRET ? 'OK' : 'MISSING',
     });
 
@@ -29,7 +30,6 @@ export async function POST(req: NextRequest) {
             const buffer = Buffer.from(bytes);
             const base64 = buffer.toString('base64');
             const dataUri = `data:${dosya.type};base64,${base64}`;
-
             const isVideo = dosya.type.startsWith('video/');
 
             const sonuc = await new Promise<any>((resolve, reject) => {
@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ basari: true, urls: yuklenenUrller });
     } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
+        console.error('Upload error:', message);
         return NextResponse.json({ basari: false, hata: message }, { status: 500 });
     }
 }
