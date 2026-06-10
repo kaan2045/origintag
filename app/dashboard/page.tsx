@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function Dashboard() {
     const [urunler, setUrunler] = useState<any[]>([]);
@@ -37,11 +38,12 @@ export default function Dashboard() {
     return (
         <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4' }}>
 
-            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#fff', borderBottom: '1px solid #eee' }}>
+            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#2D5A27', borderBottom: '1px solid #1a3d18' }}>
                 <img src="/origin.png" alt="OriginTag" style={{ height: '50px' }} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <span style={{ fontSize: '0.9rem', color: '#555' }}>{kullaniciAd}</span>
-                    <button onClick={cikisYap} style={{ padding: '0.4rem 1rem', border: '1px solid #ddd', borderRadius: '6px', color: '#888', background: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>Cikis</button>
+                    <span style={{ fontSize: '0.9rem', color: '#fff' }}>{kullaniciAd}</span>
+                    <LanguageSwitcher />
+                    <button onClick={cikisYap} style={{ padding: '0.4rem 1rem', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', color: '#fff', background: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>Çıkış</button>
                 </div>
             </nav>
 
