@@ -8,6 +8,12 @@ cloudinary.config({
 });
 
 export async function POST(req: NextRequest) {
+    console.log('ENV CHECK:', {
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? 'OK' : 'MISSING',
+        api_key: process.env.CLOUDINARY_API_KEY ? 'OK' : 'MISSING',
+        api_secret: process.env.CLOUDINARY_API_SECRET ? 'OK' : 'MISSING',
+    });
+
     try {
         const formData = await req.formData();
         const dosyalar = formData.getAll('dosyalar') as File[];
@@ -43,7 +49,7 @@ export async function POST(req: NextRequest) {
                 );
             });
 
-            yuklenenUrller.push(sonuc.secure_url);
+            yuklenenUrller.push((sonuc as any).secure_url);
         }
 
         return NextResponse.json({ basari: true, urls: yuklenenUrller });
