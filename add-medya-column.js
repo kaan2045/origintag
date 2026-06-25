@@ -1,36 +1,22 @@
-// Bu scripti bir kez çalıştır: node add-medya-column.js
-
 const { Pool } = require('pg');
-
 require('dotenv').config({ path: '.env.local' });
+
+console.log('DATABASE_URL var mi:', process.env.DATABASE_URL ? 'EVET' : 'HAYIR - .env.local kontrol et');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function migrate() {
-
     try {
-
         await pool.query(`
-
       ALTER TABLE urunler 
-
       ADD COLUMN IF NOT EXISTS medya_urls TEXT[] DEFAULT '{}';
-
     `);
-
-        console.log('✅ medya_urls kolonu eklendi!');
-
+        console.log('medya_urls kolonu basariyla eklendi!');
     } catch (err) {
-
-        console.error('Hata:', err.message);
-
+        console.error('HATA OLUSTU:', err);
     } finally {
-
         await pool.end();
-
     }
-
 }
 
 migrate();
-
