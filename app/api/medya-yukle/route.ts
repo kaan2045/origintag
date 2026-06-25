@@ -2,17 +2,25 @@ import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 
 export async function POST(req: NextRequest) {
-    // Config'i her request'te yeniden yükle
+    const envDebug = {
+        CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+        CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+        CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET ? '***SET***' : undefined,
+        allEnvKeys: Object.keys(process.env).filter(k => k.includes('CLOUD')),
+    };
+
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+        return NextResponse.json({
+            basari: false,
+            hata: 'Cloudinary env eksik',
+            debug: envDebug
+        }, { status: 500 });
+    }
+
     cloudinary.config({
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
         api_key: process.env.CLOUDINARY_API_KEY,
         api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
-
-    console.log('ENV CHECK:', {
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'MISSING',
-        api_key: process.env.CLOUDINARY_API_KEY || 'MISSING',
-        api_secret: process.env.CLOUDINARY_API_SECRET ? 'OK' : 'MISSING',
     });
 
     try {
@@ -55,7 +63,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ basari: true, urls: yuklenenUrller });
     } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        console.error('Upload error:', message);
         return NextResponse.json({ basari: false, hata: message }, { status: 500 });
     }
 }
