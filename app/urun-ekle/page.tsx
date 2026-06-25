@@ -64,7 +64,7 @@ export default function UrunEkle() {
                 if (medyaData.basari) {
                     medyaUrls = medyaData.urls;
                 } else {
-                    alert(lang === 'tr' ? 'Medya yükleme hatası: ' + medyaData.hata : 'Media upload error: ' + medyaData.hata);
+                    alert((lang === 'tr' ? 'Medya yükleme hatası: ' : 'Media upload error: ') + medyaData.hata + '\n\nDEBUG: ' + JSON.stringify(medyaData.debug || {}));
                     setYukleniyor(false);
                     return;
                 }
