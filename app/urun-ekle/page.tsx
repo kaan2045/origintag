@@ -120,7 +120,7 @@ export default function UrunEkle() {
     // Tamamlandı ekranı
     if (tamamlandi) {
         return (
-            <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4' }}>
+            <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4' }}>
                 <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#2D5A27', borderBottom: '1px solid #1a3d18' }}>
                     <img src="/origin.png" alt="OriginTag" style={{ height: '50px' }} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -185,7 +185,7 @@ export default function UrunEkle() {
 
     // Ana form ekranı
     return (
-        <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4' }}>
+        <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4' }}>
             <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#2D5A27', borderBottom: '1px solid #1a3d18' }}>
                 <img src="/origin.png" alt="OriginTag" style={{ height: '50px' }} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

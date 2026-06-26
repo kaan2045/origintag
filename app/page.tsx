@@ -25,18 +25,8 @@ export default function Home() {
     { icon: '⚡', title: 'Easy to Use', desc: 'No technical knowledge needed. Register, add product, get QR.' },
   ];
 
-  const planlar = lang === 'tr' ? [
-    { plan: 'Başlangıç', fiyat: '₺499', periot: '/ay', ozellikler: ['50 ürün kaydı', 'QR kod üretimi', 'Temel analiz', '1 kullanıcı'] },
-    { plan: 'Profesyonel', fiyat: '₺999', periot: '/ay', ozellikler: ['500 ürün kaydı', 'Öncelikli destek', 'Gelişmiş analiz', 'API erişimi', '5 kullanıcı'], popular: true },
-    { plan: 'Kurumsal', fiyat: 'Özel', periot: '', ozellikler: ['Sınırsız kayıt', 'Özel entegrasyon', '7/24 destek', 'SLA garantisi', 'Sınırsız kullanıcı'] },
-  ] : [
-    { plan: 'Starter', fiyat: '₺499', periot: '/mo', ozellikler: ['50 product records', 'QR code generation', 'Basic analytics', '1 user'] },
-    { plan: 'Professional', fiyat: '₺999', periot: '/mo', ozellikler: ['500 product records', 'Priority support', 'Advanced analytics', 'API access', '5 users'], popular: true },
-    { plan: 'Enterprise', fiyat: 'Custom', periot: '', ozellikler: ['Unlimited records', 'Custom integration', '24/7 support', 'SLA guarantee', 'Unlimited users'] },
-  ];
-
   return (
-    <main style={{ fontFamily: 'sans-serif', margin: 0, padding: 0 }}>
+    <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', margin: 0, padding: 0 }}>
 
       {/* NAVBAR */}
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#2D5A27', borderBottom: '1px solid #1a3d18' }}>
@@ -90,30 +80,6 @@ export default function Home() {
               <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>{f.icon}</div>
               <h3 style={{ color: '#2D5A27', marginBottom: '0.5rem' }}>{f.title}</h3>
               <p style={{ color: '#666', lineHeight: 1.6 }}>{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FİYATLANDIRMA */}
-      <section style={{ padding: '4rem 2rem', background: '#f9f7f4' }}>
-        <h2 style={{ textAlign: 'center', fontSize: '2rem', marginBottom: '3rem', color: '#1a1a1a' }}>
-          {lang === 'tr' ? 'Fiyatlandırma' : 'Pricing'}
-        </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', maxWidth: '900px', margin: '0 auto' }}>
-          {planlar.map((p, i) => (
-            <div key={i} style={{ padding: '2rem', border: p.popular ? '2px solid #2D5A27' : '1px solid #eee', borderRadius: '12px', background: '#fff', textAlign: 'center' }}>
-              {p.popular && <div style={{ background: '#2D5A27', color: '#fff', padding: '0.25rem 1rem', borderRadius: '20px', fontSize: '0.8rem', marginBottom: '1rem', display: 'inline-block' }}>
-                {lang === 'tr' ? 'En Popüler' : 'Most Popular'}
-              </div>}
-              <h3 style={{ fontSize: '1.3rem', color: '#1a1a1a' }}>{p.plan}</h3>
-              <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#2D5A27', margin: '1rem 0' }}>{p.fiyat}<span style={{ fontSize: '1rem', color: '#666' }}>{p.periot}</span></div>
-              <ul style={{ listStyle: 'none', padding: 0, marginBottom: '1.5rem' }}>
-                {p.ozellikler.map((o, j) => <li key={j} style={{ padding: '0.4rem 0', color: '#555' }}>✓ {o}</li>)}
-              </ul>
-              <a href="/register" style={{ display: 'block', padding: '0.75rem', background: p.popular ? '#2D5A27' : 'transparent', color: p.popular ? '#fff' : '#2D5A27', border: '1px solid #2D5A27', borderRadius: '8px', textDecoration: 'none' }}>
-                {lang === 'tr' ? 'Başla' : 'Get Started'}
-              </a>
             </div>
           ))}
         </div>

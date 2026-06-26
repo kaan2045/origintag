@@ -125,7 +125,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
     }, [urun, hash]);
 
     if (yukleniyor) return (
-        <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
                 <p style={{ color: '#888' }}>
@@ -136,7 +136,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
     );
 
     if (bulunamadi) return (
-        <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ textAlign: 'center', background: '#fff', padding: '3rem', borderRadius: '16px', border: '1px solid #eee' }}>
                 <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>❌</div>
                 <h2 style={{ color: '#c0392b' }}>
@@ -152,7 +152,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
     const d = urun.detaylar || {};
 
     return (
-        <main style={{ fontFamily: 'sans-serif', minHeight: '100vh', background: '#f9f7f4' }}>
+        <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4' }}>
 
             <nav style={{ background: '#2D5A27', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <img src="/origin.png" alt="OriginTag" style={{ height: '45px' }} />
