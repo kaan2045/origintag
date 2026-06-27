@@ -182,11 +182,21 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
 
                 <div style={{ background: '#EAF3DE', border: '1px solid #c0dd97', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ fontSize: '2.5rem' }}>🔗</div>
-                    <div>
+                    <div style={{ flex: 1 }}>
                         <div style={{ fontWeight: 'bold', color: '#2D5A27', marginBottom: '4px' }}>
                             {lang === 'tr' ? "Blockchain'de Kayıtlı" : 'Recorded on Blockchain'}
                         </div>
                         <div style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: '#3B6D11', wordBreak: 'break-all' }}>{hash}</div>
+                        {urun.polygon_tx_hash && (
+                            <a
+                                href={`https://amoy.polygonscan.com/tx/${urun.polygon_tx_hash}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ display: 'inline-block', marginTop: '8px', fontSize: '0.8rem', color: '#fff', background: '#7B3FE4', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}
+                            >
+                                ⬡ {lang === 'tr' ? "Polygon'da Görüntüle" : 'View on Polygon'}
+                            </a>
+                        )}
                     </div>
                 </div>
 
