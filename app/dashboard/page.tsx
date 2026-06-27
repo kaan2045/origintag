@@ -6,9 +6,11 @@ import { useLanguage } from '../context/LanguageContext';
 export default function Dashboard() {
     const { t, lang } = useLanguage();
     const [urunler, setUrunler] = useState<any[]>([]);
+    const [taramalar, setTaramalar] = useState<any[]>([]);
     const [yukleniyor, setYukleniyor] = useState(true);
     const [kullaniciAd, setKullaniciAd] = useState('');
     const [kullaniciId, setKullaniciId] = useState('');
+    const [secilenUrun, setSecilenUrun] = useState<string>('');
 
     useEffect(() => {
         const ad = localStorage.getItem('kullanici_ad') || '';
@@ -28,6 +30,13 @@ export default function Dashboard() {
                 setYukleniyor(false);
             })
             .catch(() => setYukleniyor(false));
+
+        fetch('/api/taramalarim?kullanici_id=' + id)
+            .then(res => res.json())
+            .then(data => {
+                if (data.basari) setTaramalar(data.taramalar);
+            })
+            .catch(() => { });
     }, []);
 
     const cikisYap = () => {
@@ -40,9 +49,13 @@ export default function Dashboard() {
     const kartlar = [
         { label: lang === 'tr' ? 'Toplam Ürün' : 'Total Products', value: urunler.length.toString(), icon: '📦' },
         { label: lang === 'tr' ? 'Blockchain Kaydı' : 'Blockchain Records', value: urunler.length.toString(), icon: '🔗' },
-        { label: lang === 'tr' ? 'QR Tarama' : 'QR Scans', value: '0', icon: '📱' },
+        { label: lang === 'tr' ? 'QR Tarama' : 'QR Scans', value: taramalar.length.toString(), icon: '📱' },
         { label: lang === 'tr' ? 'Abonelik' : 'Subscription', value: lang === 'tr' ? 'Başlangıç' : 'Starter', icon: '⭐' },
     ];
+
+    const filtrelenmisTaramalar = secilenUrun
+        ? taramalar.filter(t => t.urun_hash === secilenUrun)
+        : taramalar;
 
     return (
         <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4' }}>
@@ -143,6 +156,57 @@ export default function Dashboard() {
                                     </div>
                                     <div style={{ fontSize: '0.8rem', color: '#888' }}>
                                         {new Date(urun.olusturma_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB')}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '2rem', marginBottom: '2rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <h2 style={{ fontSize: '1.3rem', color: '#1a1a1a', margin: 0 }}>
+                            {lang === 'tr' ? 'Son Taramalar' : 'Recent Scans'}
+                        </h2>
+                        {urunler.length > 0 && (
+                            <select value={secilenUrun} onChange={e => setSecilenUrun(e.target.value)}
+                                style={{ padding: '0.5rem 0.75rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.85rem', background: '#fff' }}>
+                                <option value="">{lang === 'tr' ? 'Tüm Ürünler' : 'All Products'}</option>
+                                {urunler.map((u, i) => (
+                                    <option key={i} value={u.hash}>{u.urun_adi}</option>
+                                ))}
+                            </select>
+                        )}
+                    </div>
+
+                    {filtrelenmisTaramalar.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '2rem', color: '#aaa' }}>
+                            <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📱</div>
+                            <p>{lang === 'tr' ? 'Henüz QR taraması yapılmadı.' : 'No QR scans yet.'}</p>
+                        </div>
+                    ) : (
+                        <div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr', gap: '1rem', padding: '0.75rem 1rem', background: '#f9f7f4', borderRadius: '8px', marginBottom: '0.5rem', fontSize: '0.8rem', color: '#888' }}>
+                                <span>{lang === 'tr' ? 'ÜRÜN' : 'PRODUCT'}</span>
+                                <span>{lang === 'tr' ? 'KONUM' : 'LOCATION'}</span>
+                                <span>{lang === 'tr' ? 'CİHAZ' : 'DEVICE'}</span>
+                                <span>{lang === 'tr' ? 'TARİH & SAAT' : 'DATE & TIME'}</span>
+                            </div>
+                            {filtrelenmisTaramalar.slice(0, 50).map((tarama, i) => (
+                                <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr', gap: '1rem', padding: '0.75rem 1rem', borderBottom: '1px solid #f0f0f0', alignItems: 'center' }}>
+                                    <div style={{ fontWeight: 'bold', color: '#1a1a1a', fontSize: '0.9rem' }}>{tarama.urun_adi}</div>
+                                    <div style={{ fontSize: '0.85rem', color: '#555' }}>
+                                        {tarama.ilce || tarama.sehir
+                                            ? `📍 ${[tarama.ilce, tarama.sehir].filter(Boolean).join(', ')}`
+                                            : (lang === 'tr' ? 'Bilinmiyor' : 'Unknown')}
+                                    </div>
+                                    <div style={{ fontSize: '0.85rem', color: '#555' }}>
+                                        {tarama.cihaz_tipi === 'Mobil' ? '📱' : '💻'} {tarama.cihaz_tipi}
+                                    </div>
+                                    <div style={{ fontSize: '0.8rem', color: '#888' }}>
+                                        {new Date(tarama.tarama_tarihi).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-GB', {
+                                            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                                        })}
                                     </div>
                                 </div>
                             ))}

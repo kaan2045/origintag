@@ -108,8 +108,17 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
         fetch(`/api/urun-dogrula/${hash}`)
             .then(res => res.json())
             .then(data => {
-                if (data.basari) setUrun(data.urun);
-                else setBulunamadi(true);
+                if (data.basari) {
+                    setUrun(data.urun);
+                    // Tarama kaydını arka planda gönder, kullanıcıyı bekletme
+                    fetch('/api/tarama-kaydet', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ hash }),
+                    }).catch(() => { /* tarama kaydı başarısız olsa da kullanıcı deneyimini bozma */ });
+                } else {
+                    setBulunamadi(true);
+                }
                 setYukleniyor(false);
             })
             .catch(() => { setBulunamadi(true); setYukleniyor(false); });
