@@ -2,7 +2,10 @@
 import { useState, useEffect, use, useRef } from 'react';
 import QRCode from 'qrcode';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
+import UrunIllustrasyonu from '../../components/UrunIllustrasyonu';
+import DogrulamaYolculugu from '../../components/DogrulamaYolculugu';
 import { useLanguage } from '../../context/LanguageContext';
+import { urunTemasiniAl } from '../../lib/urunTema';
 
 function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
     const [acik, setAcik] = useState<string | null>(null);
@@ -12,9 +15,9 @@ function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
 
     return (
         <>
-            <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem' }}>
-                <h2 style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.75rem' }}>
-                    {lang === 'tr' ? '📷 Fotoğraf & Video' : '📷 Photos & Videos'}
+            <div style={{ background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px', padding: '1.75rem', marginBottom: '1.25rem' }}>
+                <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '1rem' }}>
+                    {lang === 'tr' ? 'Fotoğraf & Video' : 'Photos & Videos'}
                 </h2>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
                     {urls.map((url, i) => (
@@ -22,9 +25,9 @@ function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
                             key={i}
                             onClick={() => setAcik(url)}
                             style={{
-                                borderRadius: '8px', overflow: 'hidden', cursor: 'pointer',
-                                border: '1px solid #eee', aspectRatio: '1', position: 'relative',
-                                background: '#f0f0f0'
+                                borderRadius: '10px', overflow: 'hidden', cursor: 'pointer',
+                                border: '1px solid #ece6d8', aspectRatio: '1', position: 'relative',
+                                background: '#f3efe4'
                             }}
                         >
                             {isVideo(url) ? (
@@ -60,7 +63,7 @@ function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
                 <div
                     onClick={() => setAcik(null)}
                     style={{
-                        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)',
+                        position: 'fixed', inset: 0, background: 'rgba(20,17,10,0.92)',
                         zIndex: 9999, display: 'flex', alignItems: 'center',
                         justifyContent: 'center', padding: '1rem'
                     }}
@@ -124,34 +127,41 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
             .catch(() => { setBulunamadi(true); setYukleniyor(false); });
     }, [hash]);
 
+    const tema = urunTemasiniAl(urun?.urun_tipi);
+
     useEffect(() => {
         if (urun && qrRef.current) {
             QRCode.toCanvas(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, {
-                width: 180, margin: 2,
-                color: { dark: '#2D5A27', light: '#ffffff' }
+                width: 176, margin: 1,
+                color: { dark: '#211f1a', light: '#ffffff' }
             });
         }
     }, [urun, hash]);
 
     if (yukleniyor) return (
-        <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <main style={{ minHeight: '100vh', background: 'var(--parchment)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
-                <p style={{ color: '#888' }}>
+                <div style={{
+                    width: '36px', height: '36px', margin: '0 auto 1.25rem', borderRadius: '50%',
+                    border: '2.5px solid #e4dcc8', borderTopColor: 'var(--brand)',
+                    animation: 'spin 0.9s linear infinite',
+                }} />
+                <p style={{ color: '#8a8377', fontSize: '0.95rem' }}>
                     {lang === 'tr' ? "Blockchain'de doğrulanıyor..." : 'Verifying on blockchain...'}
                 </p>
             </div>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </main>
     );
 
     if (bulunamadi) return (
-        <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ textAlign: 'center', background: '#fff', padding: '3rem', borderRadius: '16px', border: '1px solid #eee' }}>
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>❌</div>
-                <h2 style={{ color: '#c0392b' }}>
+        <main style={{ minHeight: '100vh', background: 'var(--parchment)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+            <div style={{ textAlign: 'center', background: '#fff', padding: '3rem 2.5rem', borderRadius: '20px', border: '1px solid #ece6d8', maxWidth: '380px' }}>
+                <div style={{ fontSize: '2.25rem', marginBottom: '1rem', color: '#b3453a' }}>◐</div>
+                <h2 className="font-display" style={{ color: '#b3453a', fontSize: '1.4rem', fontWeight: 600, marginBottom: '0.5rem' }}>
                     {lang === 'tr' ? 'Ürün Bulunamadı' : 'Product Not Found'}
                 </h2>
-                <p style={{ color: '#888' }}>
+                <p style={{ color: '#8a8377' }}>
                     {lang === 'tr' ? 'Bu QR kod geçersiz veya kayıt bulunamadı.' : 'This QR code is invalid or no record was found.'}
                 </p>
             </div>
@@ -160,39 +170,85 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
 
     const d = urun.detaylar || {};
 
+    const yolculukAdimlari = [
+        {
+            etiket: lang === 'tr' ? 'Hasat' : 'Harvest',
+            tarih: urun.hasat_tarihi ? new Date(urun.hasat_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB') : '—',
+        },
+        {
+            etiket: lang === 'tr' ? 'Blockchain Kaydı' : 'Blockchain Record',
+            tarih: new Date(urun.olusturma_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB'),
+        },
+        {
+            etiket: lang === 'tr' ? 'Bu Doğrulama' : 'This Verification',
+            tarih: new Date().toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB'),
+            aktif: true,
+        },
+    ];
+
     return (
-        <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4' }}>
+        <main style={{ minHeight: '100vh', background: 'var(--parchment)' }}>
 
-            <nav style={{ background: '#2D5A27', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <img src="/origin.png" alt="OriginTag" style={{ height: '45px' }} />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ background: '#fff', color: '#2D5A27', padding: '0.4rem 1rem', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold' }}>
-                        ✓ {lang === 'tr' ? 'Blockchain Doğrulandı' : 'Blockchain Verified'}
+            {/* HERO — ürün temasına göre renklenen sahne */}
+            <div style={{ position: 'relative', background: tema.gradient, color: tema.tint, overflow: 'hidden' }}>
+                <nav style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem' }}>
+                    <img src="/origin.png" alt="OriginTag" style={{ height: '32px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{
+                            background: 'rgba(255,255,255,0.14)', backdropFilter: 'blur(6px)',
+                            padding: '0.4rem 0.9rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 500,
+                            border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', gap: '0.4rem',
+                        }}>
+                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8fd67a', display: 'inline-block' }} />
+                            {lang === 'tr' ? 'Blockchain Doğrulandı' : 'Blockchain Verified'}
+                        </div>
+                        <LanguageSwitcher />
                     </div>
-                    <LanguageSwitcher />
-                </div>
-            </nav>
+                </nav>
 
-            <div style={{ background: '#2D5A27', padding: '2rem', textAlign: 'center', color: '#fff' }}>
-                <h1 style={{ fontSize: '2rem', margin: '0 0 0.5rem' }}>{urun.urun_adi}</h1>
-                <p style={{ opacity: 0.8, margin: 0 }}>{urun.urun_tipi} · {urun.bolge}</p>
+                <div style={{ position: 'absolute', inset: 0, opacity: 0.9, pointerEvents: 'none' }}>
+                    <UrunIllustrasyonu tema={tema.anahtar} />
+                </div>
+
+                <div style={{ position: 'relative', zIndex: 2, padding: '2.5rem 2rem 3.5rem', textAlign: 'center' }}>
+                    <p style={{ fontSize: '0.78rem', letterSpacing: '0.14em', textTransform: 'uppercase', opacity: 0.75, marginBottom: '0.6rem' }}>
+                        {urun.bolge || (lang === 'tr' ? 'Menşei Belirtilmemiş' : 'Origin Not Specified')}
+                    </p>
+                    <h1 className="font-display" style={{ fontSize: 'clamp(2.1rem, 5vw, 3rem)', fontStyle: 'italic', fontWeight: 500, margin: 0, lineHeight: 1.1 }}>
+                        {urun.urun_adi}
+                    </h1>
+                    <p style={{ marginTop: '0.6rem', opacity: 0.8, fontSize: '0.95rem' }}>{urun.urun_tipi}</p>
+                </div>
             </div>
 
-            <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2rem' }}>
+            <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 1.25rem' }}>
 
-                <div style={{ background: '#EAF3DE', border: '1px solid #c0dd97', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ fontSize: '2.5rem' }}>🔗</div>
-                    <div style={{ flex: 1 }}>
-                        <div style={{ fontWeight: 'bold', color: '#2D5A27', marginBottom: '4px' }}>
+                {/* YOLCULUK ZAMAN ÇİZELGESİ */}
+                <div style={{
+                    background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px',
+                    padding: '1.5rem 1.75rem', marginTop: '-1.75rem', marginBottom: '1.25rem',
+                    boxShadow: '0 12px 32px -16px rgba(33,31,26,0.18)', position: 'relative', zIndex: 3,
+                }}>
+                    <DogrulamaYolculugu adimlar={yolculukAdimlari} accentColor={tema.accent} />
+                </div>
+
+                {/* BLOCKCHAIN KAYDI */}
+                <div style={{
+                    background: tema.tint, border: `1px solid ${tema.accent}33`, borderRadius: '16px',
+                    padding: '1.25rem 1.5rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem',
+                }}>
+                    <div style={{ fontSize: '1.6rem', color: tema.accent }}>⬡</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontWeight: 600, color: 'var(--ink)', marginBottom: '2px', fontSize: '0.92rem' }}>
                             {lang === 'tr' ? "Blockchain'de Kayıtlı" : 'Recorded on Blockchain'}
                         </div>
-                        <div style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: '#3B6D11', wordBreak: 'break-all' }}>{hash}</div>
+                        <div style={{ fontFamily: 'ui-monospace, monospace', fontSize: '0.72rem', color: '#8a7a55', wordBreak: 'break-all' }}>{hash}</div>
                         {urun.polygon_tx_hash && (
                             <a
                                 href={`https://amoy.polygonscan.com/tx/${urun.polygon_tx_hash}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                style={{ display: 'inline-block', marginTop: '8px', fontSize: '0.8rem', color: '#fff', background: '#7B3FE4', padding: '4px 10px', borderRadius: '6px', textDecoration: 'none', fontWeight: 'bold' }}
+                                style={{ display: 'inline-block', marginTop: '10px', fontSize: '0.78rem', color: '#fff', background: '#5b3aa8', padding: '5px 12px', borderRadius: '6px', textDecoration: 'none', fontWeight: 600 }}
                             >
                                 ⬡ {lang === 'tr' ? "Polygon'da Görüntüle" : 'View on Polygon'}
                             </a>
@@ -200,13 +256,21 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                     </div>
                 </div>
 
-                {/* QR KOD */}
-                <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '1rem', borderBottom: '1px solid #eee', paddingBottom: '0.75rem', textAlign: 'left' }}>
-                        QR {lang === 'tr' ? 'Kod' : 'Code'}
+                {/* QR PASAPORT KARTI */}
+                <div style={{
+                    background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px',
+                    padding: '1.75rem', marginBottom: '1.25rem', textAlign: 'center',
+                }}>
+                    <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '1.1rem' }}>
+                        {lang === 'tr' ? 'Ürün Pasaportu' : 'Product Passport'}
                     </h2>
-                    <canvas ref={qrRef} style={{ borderRadius: '8px' }} />
-                    <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.75rem' }}>
+                    <div style={{
+                        display: 'inline-block', padding: '14px', border: `1px dashed ${tema.accent}88`,
+                        borderRadius: '12px', background: '#fdfcf8',
+                    }}>
+                        <canvas ref={qrRef} style={{ borderRadius: '6px', display: 'block' }} />
+                    </div>
+                    <p style={{ fontSize: '0.8rem', color: '#8a8377', marginTop: '0.9rem' }}>
                         {lang === 'tr' ? 'Bu QR kodu taratarak ürünü doğrulayın' : 'Scan this QR code to verify the product'}
                     </p>
                     <button
@@ -218,15 +282,18 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                             link.href = canvas.toDataURL('image/png');
                             link.click();
                         }}
-                        style={{ marginTop: '0.75rem', padding: '0.5rem 1.5rem', background: '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem' }}
+                        style={{
+                            marginTop: '1rem', padding: '0.6rem 1.6rem', background: 'var(--ink)', color: '#fff',
+                            border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.88rem', fontWeight: 600,
+                        }}
                     >
                         {lang === 'tr' ? 'QR İndir' : 'Download QR'}
                     </button>
                 </div>
 
                 {/* TEMEL BİLGİLER */}
-                <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem' }}>
-                    <h2 style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '1.25rem', borderBottom: '1px solid #eee', paddingBottom: '0.75rem' }}>
+                <div style={{ background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px', padding: '1.75rem', marginBottom: '1.25rem' }}>
+                    <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '1.25rem' }}>
                         {lang === 'tr' ? 'Ürün Bilgileri' : 'Product Information'}
                     </h2>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
@@ -239,43 +306,43 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                             { etiket: lang === 'tr' ? 'Kayıt Tarihi' : 'Record Date', deger: new Date(urun.olusturma_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB') },
                         ].map((b, i) => (
                             <div key={i}>
-                                <div style={{ fontSize: '0.8rem', color: '#888', marginBottom: '2px' }}>{b.etiket}</div>
-                                <div style={{ fontWeight: 'bold', color: '#1a1a1a' }}>{b.deger || '-'}</div>
+                                <div style={{ fontSize: '0.76rem', color: '#a49c8c', marginBottom: '2px' }}>{b.etiket}</div>
+                                <div style={{ fontWeight: 600, color: 'var(--ink)' }}>{b.deger || '-'}</div>
                             </div>
                         ))}
                     </div>
                     {urun.aciklama && (
-                        <div style={{ marginTop: '1rem', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
-                            <div style={{ fontSize: '0.8rem', color: '#888', marginBottom: '4px' }}>
+                        <div style={{ marginTop: '1.1rem', borderTop: '1px solid #f0ebdd', paddingTop: '1.1rem' }}>
+                            <div style={{ fontSize: '0.76rem', color: '#a49c8c', marginBottom: '4px' }}>
                                 {lang === 'tr' ? 'Açıklama' : 'Description'}
                             </div>
-                            <div style={{ color: '#333' }}>{urun.aciklama}</div>
+                            <div style={{ color: '#3a362c' }}>{urun.aciklama}</div>
                         </div>
                     )}
                 </div>
 
                 {/* ZEYTİNYAĞI DETAYLARI */}
                 {urun.urun_tipi === 'Zeytinyagi' && Object.keys(d).length > 0 && (
-                    <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '1.25rem', borderBottom: '1px solid #eee', paddingBottom: '0.75rem' }}>
+                    <div style={{ background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px', padding: '1.75rem', marginBottom: '1.25rem' }}>
+                        <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '1.25rem' }}>
                             {lang === 'tr' ? 'Üretici & Ürün Detayları' : 'Producer & Product Details'}
                         </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            {d.ureticiAd && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Üretici' : 'Producer'}</div><div style={{ fontWeight: 'bold' }}>{d.ureticiAd}</div></div>}
-                            {d.telefon && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Telefon' : 'Phone'}</div><div style={{ fontWeight: 'bold' }}>{d.telefon}</div></div>}
-                            {d.koy && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Köy / Mahalle' : 'Village / District'}</div><div style={{ fontWeight: 'bold' }}>{d.koy}</div></div>}
-                            {d.adaNo && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Ada / Parsel' : 'Block / Parcel'}</div><div style={{ fontWeight: 'bold' }}>{d.adaNo} / {d.parselNo}</div></div>}
-                            {d.cekimTipi && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Çekim Tipi' : 'Extraction Type'}</div><div style={{ fontWeight: 'bold' }}>{d.cekimTipi}</div></div>}
-                            {d.randiman && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Randıman' : 'Yield'}</div><div style={{ fontWeight: 'bold' }}>%{d.randiman}</div></div>}
+                            {d.ureticiAd && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Üretici' : 'Producer'}</div><div style={{ fontWeight: 600 }}>{d.ureticiAd}</div></div>}
+                            {d.telefon && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Telefon' : 'Phone'}</div><div style={{ fontWeight: 600 }}>{d.telefon}</div></div>}
+                            {d.koy && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Köy / Mahalle' : 'Village / District'}</div><div style={{ fontWeight: 600 }}>{d.koy}</div></div>}
+                            {d.adaNo && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Ada / Parsel' : 'Block / Parcel'}</div><div style={{ fontWeight: 600 }}>{d.adaNo} / {d.parselNo}</div></div>}
+                            {d.cekimTipi && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Çekim Tipi' : 'Extraction Type'}</div><div style={{ fontWeight: 600 }}>{d.cekimTipi}</div></div>}
+                            {d.randiman && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Randıman' : 'Yield'}</div><div style={{ fontWeight: 600 }}>%{d.randiman}</div></div>}
                         </div>
                         {d.zeytinCinsi && d.zeytinCinsi.length > 0 && (
-                            <div style={{ marginTop: '1rem' }}>
-                                <div style={{ fontSize: '0.8rem', color: '#888', marginBottom: '6px' }}>
+                            <div style={{ marginTop: '1.1rem' }}>
+                                <div style={{ fontSize: '0.76rem', color: '#a49c8c', marginBottom: '6px' }}>
                                     {lang === 'tr' ? 'Zeytin Cinsi' : 'Olive Variety'}
                                 </div>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                                     {d.zeytinCinsi.map((c: string, i: number) => (
-                                        <span key={i} style={{ padding: '4px 12px', background: '#EAF3DE', color: '#2D5A27', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold' }}>{c}</span>
+                                        <span key={i} style={{ padding: '4px 12px', background: tema.tint, color: tema.deep, borderRadius: '20px', fontSize: '0.82rem', fontWeight: 600 }}>{c}</span>
                                     ))}
                                 </div>
                             </div>
@@ -285,29 +352,29 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
 
                 {/* BAL DETAYLARI */}
                 {urun.urun_tipi === 'Bal' && Object.keys(d).length > 0 && (
-                    <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '1.25rem', borderBottom: '1px solid #eee', paddingBottom: '0.75rem' }}>
+                    <div style={{ background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px', padding: '1.75rem', marginBottom: '1.25rem' }}>
+                        <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '1.25rem' }}>
                             {lang === 'tr' ? 'Bal Detayları' : 'Honey Details'}
                         </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            {d.ureticiAd && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Üretici' : 'Producer'}</div><div style={{ fontWeight: 'bold' }}>{d.ureticiAd}</div></div>}
-                            {d.telefon && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Telefon' : 'Phone'}</div><div style={{ fontWeight: 'bold' }}>{d.telefon}</div></div>}
-                            {d.balTuru && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Bal Türü' : 'Honey Type'}</div><div style={{ fontWeight: 'bold' }}>{d.balTuru}</div></div>}
-                            {d.arlikBolgesi && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Arılık Bölgesi' : 'Apiary Region'}</div><div style={{ fontWeight: 'bold' }}>{d.arlikBolgesi}</div></div>}
+                            {d.ureticiAd && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Üretici' : 'Producer'}</div><div style={{ fontWeight: 600 }}>{d.ureticiAd}</div></div>}
+                            {d.telefon && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Telefon' : 'Phone'}</div><div style={{ fontWeight: 600 }}>{d.telefon}</div></div>}
+                            {d.balTuru && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Bal Türü' : 'Honey Type'}</div><div style={{ fontWeight: 600 }}>{d.balTuru}</div></div>}
+                            {d.arlikBolgesi && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Arılık Bölgesi' : 'Apiary Region'}</div><div style={{ fontWeight: 600 }}>{d.arlikBolgesi}</div></div>}
                         </div>
                     </div>
                 )}
 
                 {/* PEYNİR DETAYLARI */}
                 {urun.urun_tipi === 'Peynir' && Object.keys(d).length > 0 && (
-                    <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.1rem', color: '#1a1a1a', marginBottom: '1.25rem', borderBottom: '1px solid #eee', paddingBottom: '0.75rem' }}>
+                    <div style={{ background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px', padding: '1.75rem', marginBottom: '1.25rem' }}>
+                        <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '1.25rem' }}>
                             {lang === 'tr' ? 'Peynir Detayları' : 'Cheese Details'}
                         </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                            {d.ureticiAd && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Üretici' : 'Producer'}</div><div style={{ fontWeight: 'bold' }}>{d.ureticiAd}</div></div>}
-                            {d.sutTuru && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Süt Türü' : 'Milk Type'}</div><div style={{ fontWeight: 'bold' }}>{d.sutTuru}</div></div>}
-                            {d.olgunlasma && <div><div style={{ fontSize: '0.8rem', color: '#888' }}>{lang === 'tr' ? 'Olgunlaşma' : 'Aging Period'}</div><div style={{ fontWeight: 'bold' }}>{d.olgunlasma}</div></div>}
+                            {d.ureticiAd && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Üretici' : 'Producer'}</div><div style={{ fontWeight: 600 }}>{d.ureticiAd}</div></div>}
+                            {d.sutTuru && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Süt Türü' : 'Milk Type'}</div><div style={{ fontWeight: 600 }}>{d.sutTuru}</div></div>}
+                            {d.olgunlasma && <div><div style={{ fontSize: '0.76rem', color: '#a49c8c' }}>{lang === 'tr' ? 'Olgunlaşma' : 'Aging Period'}</div><div style={{ fontWeight: 600 }}>{d.olgunlasma}</div></div>}
                         </div>
                     </div>
                 )}
@@ -317,12 +384,12 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                     <MedyaGalerisi urls={urun.medya_urls} lang={lang} />
                 )}
 
-                <div style={{ textAlign: 'center', padding: '1rem' }}>
-                    <img src="/origin.png" alt="OriginTag" style={{ height: '35px', marginBottom: '0.5rem' }} />
-                    <p style={{ fontSize: '0.8rem', color: '#aaa' }}>
+                <div style={{ textAlign: 'center', padding: '1.5rem 1rem 3rem' }}>
+                    <img src="/origin.png" alt="OriginTag" style={{ height: '28px', marginBottom: '0.6rem', opacity: 0.5 }} />
+                    <p style={{ fontSize: '0.8rem', color: '#a49c8c' }}>
                         {lang === 'tr' ? 'Bu ürün OriginTag blockchain sistemi ile doğrulandı.' : 'This product has been verified by the OriginTag blockchain system.'}
                     </p>
-                    <p style={{ fontSize: '0.75rem', color: '#bbb' }}>origintag.com.tr</p>
+                    <p style={{ fontSize: '0.72rem', color: '#c2bbab' }}>origintag.com.tr</p>
                 </div>
 
             </div>

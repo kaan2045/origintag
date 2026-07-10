@@ -1,6 +1,29 @@
 @import "tailwindcss";
 
 :root {
+  /* Temel */
+  --ink: #211f1a;
+  --parchment: #faf6ee;
+
+  /* Kurumsal (blockchain / güven rengi) */
+  --brand: #2d5a27;
+  --brand-dark: #1a3d18;
+
+  /* Bal teması */
+  --bal-accent: #c98a12;
+  --bal-deep: #6b4210;
+  --bal-tint: #fff4d6;
+
+  /* Zeytinyağı teması */
+  --zeytin-accent: #5c6b2e;
+  --zeytin-deep: #33260f;
+  --zeytin-tint: #eee9d8;
+
+  /* Genel/diğer tema (tahıl, peynir vb. varsayılan) */
+  --genel-accent: #9c7a3c;
+  --genel-deep: #4a3820;
+  --genel-tint: #f1e7ce;
+
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -8,24 +31,24 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: bold;
+  font-family: var(--font-body), "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-* {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+h1, h2, h3, .font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

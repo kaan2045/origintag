@@ -46,11 +46,18 @@ export default function Dashboard() {
         window.location.href = '/login';
     };
 
+    const supheliTaramalar = taramalar.filter(t => t.supheli);
+
     const kartlar = [
         { label: lang === 'tr' ? 'Toplam Ürün' : 'Total Products', value: urunler.length.toString(), icon: '📦' },
         { label: lang === 'tr' ? 'Blockchain Kaydı' : 'Blockchain Records', value: urunler.length.toString(), icon: '🔗' },
         { label: lang === 'tr' ? 'QR Tarama' : 'QR Scans', value: taramalar.length.toString(), icon: '📱' },
-        { label: lang === 'tr' ? 'Abonelik' : 'Subscription', value: lang === 'tr' ? 'Başlangıç' : 'Starter', icon: '⭐' },
+        {
+            label: lang === 'tr' ? 'Şüpheli Aktivite' : 'Suspicious Activity',
+            value: supheliTaramalar.length.toString(),
+            icon: '⚠️',
+            uyari: supheliTaramalar.length > 0,
+        },
     ];
 
     const filtrelenmisTaramalar = secilenUrun
@@ -58,14 +65,14 @@ export default function Dashboard() {
         : taramalar;
 
     return (
-        <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4' }}>
+        <main style={{ minHeight: '100vh', background: 'var(--parchment)' }}>
 
-            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#2D5A27', borderBottom: '1px solid #1a3d18' }}>
-                <img src="/origin.png" alt="OriginTag" style={{ height: '50px' }} />
+            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.1rem 2rem', background: 'var(--ink)', borderBottom: '1px solid #33301f' }}>
+                <img src="/origin.png" alt="OriginTag" style={{ height: '34px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <span style={{ fontSize: '0.9rem', color: '#fff' }}>{kullaniciAd}</span>
+                    <span style={{ fontSize: '0.88rem', color: '#eee9d8' }}>{kullaniciAd}</span>
                     <LanguageSwitcher />
-                    <button onClick={cikisYap} style={{ padding: '0.4rem 1rem', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', color: '#fff', background: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>
+                    <button onClick={cikisYap} style={{ padding: '0.4rem 1rem', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '6px', color: '#eee9d8', background: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>
                         {t('nav.logout')}
                     </button>
                 </div>
@@ -75,17 +82,23 @@ export default function Dashboard() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
                     {kartlar.map((k, i) => (
-                        <div key={i} style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '1.5rem', textAlign: 'center' }}>
+                        <div key={i} style={{
+                            background: '#fff',
+                            border: k.uyari ? '1px solid #e8a33d' : '1px solid #eee',
+                            borderRadius: '16px',
+                            padding: '1.5rem',
+                            textAlign: 'center',
+                        }}>
                             <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{k.icon}</div>
-                            <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#2D5A27' }}>{k.value}</div>
+                            <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: k.uyari ? '#c2790f' : '#2D5A27' }}>{k.value}</div>
                             <div style={{ fontSize: '0.85rem', color: '#888' }}>{k.label}</div>
                         </div>
                     ))}
                 </div>
 
-                <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '2rem', marginBottom: '2rem' }}>
+                <div style={{ background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px', padding: '2rem', marginBottom: '2rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <h2 style={{ fontSize: '1.3rem', color: '#1a1a1a', margin: 0 }}>{t('dashboard.title')}</h2>
+                        <h2 className="font-display" style={{ fontSize: '1.3rem', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>{t('dashboard.title')}</h2>
                         <button onClick={() => window.location.href = '/urun-ekle'}
                             style={{ padding: '0.6rem 1.2rem', background: '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '0.9rem' }}>
                             + {t('dashboard.addNew')}
@@ -107,7 +120,7 @@ export default function Dashboard() {
                         </div>
                     ) : (
                         <div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '0.75rem 1rem', background: '#f9f7f4', borderRadius: '8px', marginBottom: '0.5rem', fontSize: '0.8rem', color: '#888' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '0.75rem 1rem', background: 'var(--parchment)', borderRadius: '8px', marginBottom: '0.5rem', fontSize: '0.8rem', color: '#888' }}>
                                 <span>{lang === 'tr' ? 'ÜRÜN ADI' : 'PRODUCT NAME'}</span>
                                 <span>{lang === 'tr' ? 'TİP' : 'TYPE'}</span>
                                 <span>{lang === 'tr' ? 'BÖLGE' : 'REGION'}</span>
@@ -133,8 +146,8 @@ export default function Dashboard() {
                     )}
                 </div>
 
-                <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '2rem' }}>
-                    <h2 style={{ fontSize: '1.3rem', color: '#1a1a1a', marginBottom: '1.5rem' }}>
+                <div style={{ background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px', padding: '2rem' }}>
+                    <h2 className="font-display" style={{ fontSize: '1.3rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '1.5rem' }}>
                         {lang === 'tr' ? 'Son İşlemler' : 'Recent Transactions'}
                     </h2>
                     {urunler.length === 0 ? (
@@ -163,9 +176,55 @@ export default function Dashboard() {
                     )}
                 </div>
 
-                <div style={{ background: '#fff', border: '1px solid #eee', borderRadius: '12px', padding: '2rem', marginBottom: '2rem' }}>
+                {supheliTaramalar.length > 0 && (
+                    <div style={{ background: '#FDF3E3', border: '1px solid #e8a33d', borderRadius: '16px', padding: '2rem', marginBottom: '2rem' }}>
+                        <h2 className="font-display" style={{ fontSize: '1.3rem', fontWeight: 600, color: '#a86a0a', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            ⚠️ {lang === 'tr' ? 'Şüpheli Tarama Aktivitesi' : 'Suspicious Scan Activity'}
+                        </h2>
+                        <p style={{ fontSize: '0.85rem', color: '#9c6a17', marginBottom: '1.5rem' }}>
+                            {lang === 'tr'
+                                ? 'Bu taramalar, normal kullanım örüntüsünden saptığı için otomatik olarak işaretlendi. Konum tespiti VPN/proxy kullanımında hatalı sonuç verebilir, bu nedenle her işaret kesin bir sahtecilik kanıtı değil, incelenmesi gereken bir sinyaldir.'
+                                : 'These scans were automatically flagged for deviating from normal usage patterns. Location detection can be inaccurate with VPN/proxy use, so each flag is a signal to investigate, not definitive proof of counterfeiting.'}
+                        </p>
+                        <div>
+                            {supheliTaramalar.slice(0, 20).map((tarama, i) => (
+                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 0', borderBottom: i < supheliTaramalar.length - 1 ? '1px solid #f3e0bb' : 'none', gap: '1rem' }}>
+                                    <div>
+                                        <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#1a1a1a' }}>
+                                            {tarama.urun_adi}
+                                            <span style={{
+                                                marginLeft: '0.6rem',
+                                                fontSize: '0.7rem',
+                                                fontWeight: 'normal',
+                                                color: '#a86a0a',
+                                                background: '#fff',
+                                                border: '1px solid #e8a33d',
+                                                borderRadius: '999px',
+                                                padding: '0.1rem 0.6rem',
+                                            }}>
+                                                {tarama.supheli_tip === 'imkansiz_hiz'
+                                                    ? (lang === 'tr' ? 'İmkansız Hız' : 'Impossible Speed')
+                                                    : (lang === 'tr' ? 'Yüksek Frekans' : 'High Frequency')}
+                                            </span>
+                                        </div>
+                                        <div style={{ fontSize: '0.8rem', color: '#9c6a17', marginTop: '0.2rem' }}>
+                                            {tarama.supheli_detay}
+                                        </div>
+                                    </div>
+                                    <div style={{ fontSize: '0.8rem', color: '#a86a0a', whiteSpace: 'nowrap' }}>
+                                        {new Date(tarama.tarama_tarihi).toLocaleString(lang === 'tr' ? 'tr-TR' : 'en-GB', {
+                                            day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+                                        })}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <div style={{ background: '#fff', border: '1px solid #ece6d8', borderRadius: '16px', padding: '2rem', marginBottom: '2rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-                        <h2 style={{ fontSize: '1.3rem', color: '#1a1a1a', margin: 0 }}>
+                        <h2 className="font-display" style={{ fontSize: '1.3rem', fontWeight: 600, color: 'var(--ink)', margin: 0 }}>
                             {lang === 'tr' ? 'Son Taramalar' : 'Recent Scans'}
                         </h2>
                         {urunler.length > 0 && (
@@ -186,15 +245,29 @@ export default function Dashboard() {
                         </div>
                     ) : (
                         <div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr', gap: '1rem', padding: '0.75rem 1rem', background: '#f9f7f4', borderRadius: '8px', marginBottom: '0.5rem', fontSize: '0.8rem', color: '#888' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr', gap: '1rem', padding: '0.75rem 1rem', background: 'var(--parchment)', borderRadius: '8px', marginBottom: '0.5rem', fontSize: '0.8rem', color: '#888' }}>
                                 <span>{lang === 'tr' ? 'ÜRÜN' : 'PRODUCT'}</span>
                                 <span>{lang === 'tr' ? 'KONUM' : 'LOCATION'}</span>
                                 <span>{lang === 'tr' ? 'CİHAZ' : 'DEVICE'}</span>
                                 <span>{lang === 'tr' ? 'TARİH & SAAT' : 'DATE & TIME'}</span>
                             </div>
                             {filtrelenmisTaramalar.slice(0, 50).map((tarama, i) => (
-                                <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr', gap: '1rem', padding: '0.75rem 1rem', borderBottom: '1px solid #f0f0f0', alignItems: 'center' }}>
-                                    <div style={{ fontWeight: 'bold', color: '#1a1a1a', fontSize: '0.9rem' }}>{tarama.urun_adi}</div>
+                                <div key={i} style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '2fr 1.5fr 1fr 1fr',
+                                    gap: '1rem',
+                                    padding: '0.75rem 1rem',
+                                    borderBottom: '1px solid #f0f0f0',
+                                    alignItems: 'center',
+                                    background: tarama.supheli ? '#FDF3E3' : 'transparent',
+                                    borderLeft: tarama.supheli ? '3px solid #e8a33d' : '3px solid transparent',
+                                }}
+                                    title={tarama.supheli ? tarama.supheli_detay : undefined}
+                                >
+                                    <div style={{ fontWeight: 'bold', color: '#1a1a1a', fontSize: '0.9rem' }}>
+                                        {tarama.supheli && <span style={{ marginRight: '0.4rem' }}>⚠️</span>}
+                                        {tarama.urun_adi}
+                                    </div>
                                     <div style={{ fontSize: '0.85rem', color: '#555' }}>
                                         {tarama.ilce || tarama.sehir
                                             ? `📍 ${[tarama.ilce, tarama.sehir].filter(Boolean).join(', ')}`

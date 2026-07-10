@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
         const { searchParams } = new URL(req.url);
         const kullaniciId = searchParams.get('kullanici_id');
         const urunHash = searchParams.get('urun_hash');
+        const sadeceSupheli = searchParams.get('supheli') === '1';
 
         if (urunHash) {
             // Belirli bir ürünün taramaları
@@ -31,11 +32,11 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ basari: false, hata: 'Kullanici ID gerekli' }, { status: 400 });
         }
 
-        // Kullanıcının tüm ürünlerinin taramaları
+        // Kullanıcının tüm ürünlerinin taramaları (opsiyonel: sadece şüpheli olanlar)
         const result = await pool.query(
             `SELECT t.*, u.urun_adi FROM taramalar t
        JOIN urunler u ON t.urun_id = u.id
-       WHERE u.kullanici_id = $1
+       WHERE u.kullanici_id = $1 ${sadeceSupheli ? 'AND t.supheli = TRUE' : ''}
        ORDER BY t.tarama_tarihi DESC
        LIMIT 200`,
             [kullaniciId]
