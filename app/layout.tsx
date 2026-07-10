@@ -8,7 +8,6 @@ const fraunces = Fraunces({
   subsets: ["latin"],
   style: ["normal", "italic"],
   weight: ["400", "500", "600", "700"],
-  axes: ["opsz", "SOFT", "WONK"],
 });
 
 const inter = Inter({
