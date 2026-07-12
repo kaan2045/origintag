@@ -81,14 +81,14 @@ export default function Register() {
 
     if (adim === 'otp') {
         return (
-            <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4' }}>
-                <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#2D5A27', borderBottom: '1px solid #1a3d18' }}>
-                    <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '50px' }} /></a>
+            <main style={{ minHeight: '100vh', background: 'var(--parchment)' }}>
+                <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2.5rem', borderBottom: '1px solid #ece6d8' }}>
+                    <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '32px' }} /></a>
                     <LanguageSwitcher />
                 </nav>
 
-                <div style={{ maxWidth: '420px', margin: '5rem auto', background: '#fff', borderRadius: '16px', border: '1px solid #eee', padding: '2.5rem' }}>
-                    <h1 style={{ fontSize: '1.8rem', color: '#1a1a1a', marginBottom: '0.5rem' }}>
+                <div style={{ maxWidth: '420px', margin: '5rem auto', background: '#fff', border: '1px solid #ece6d8', padding: '2.5rem' }}>
+                    <h1 className="font-display" style={{ fontSize: '2rem', fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--ink)', marginBottom: '0.5rem' }}>
                         {lang === 'tr' ? 'Email Doğrulama' : 'Email Verification'}
                     </h1>
                     <p style={{ color: '#888', marginBottom: '2rem', fontSize: '0.95rem' }}>
@@ -103,11 +103,11 @@ export default function Register() {
                             </label>
                             <input type="text" required placeholder="000000" maxLength={6}
                                 value={otp} onChange={e => setOtp(e.target.value)}
-                                style={{ width: '100%', padding: '0.8rem', border: '2px solid #2D5A27', borderRadius: '8px', fontSize: '1.5rem', textAlign: 'center', letterSpacing: '0.5rem', boxSizing: 'border-box' }}
+                                style={{ width: '100%', padding: '0.8rem', border: '2px solid var(--ink)', borderRadius: '2px', fontSize: '1.5rem', textAlign: 'center', letterSpacing: '0.5rem', boxSizing: 'border-box' }}
                             />
                         </div>
                         <button type="submit" disabled={yukleniyor}
-                            style={{ width: '100%', padding: '0.85rem', background: '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}
+                            style={{ width: '100%', padding: '0.85rem', background: 'var(--ink)', color: '#fff', border: 'none', borderRadius: '2px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}
                         >
                             {yukleniyor
                                 ? (lang === 'tr' ? 'Doğrulanıyor...' : 'Verifying...')
@@ -125,11 +125,11 @@ export default function Register() {
     }
 
     return (
-        <main style={{ fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif", fontWeight: 'bold', minHeight: '100vh', background: '#f9f7f4' }}>
-            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 2rem', background: '#2D5A27', borderBottom: '1px solid #1a3d18' }}>
-                <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '50px' }} /></a>
+        <main style={{ minHeight: '100vh', background: 'var(--parchment)' }}>
+            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2.5rem', borderBottom: '1px solid #ece6d8' }}>
+                <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '32px' }} /></a>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <a href="/login" style={{ color: '#fff', textDecoration: 'none', fontSize: '0.95rem' }}>
+                    <a href="/login" style={{ color: '#6b6558', textDecoration: 'none', fontSize: '0.9rem' }}>
                         {lang === 'tr' ? 'Zaten hesabın var mı?' : 'Already have an account?'}{' '}
                         <strong>{lang === 'tr' ? 'Giriş Yap' : 'Sign In'}</strong>
                     </a>
@@ -137,8 +137,8 @@ export default function Register() {
                 </div>
             </nav>
 
-            <div style={{ maxWidth: '500px', margin: '3rem auto', background: '#fff', borderRadius: '16px', border: '1px solid #eee', padding: '2.5rem' }}>
-                <h1 style={{ fontSize: '1.8rem', color: '#1a1a1a', marginBottom: '0.5rem' }}>
+            <div style={{ maxWidth: '500px', margin: '3rem auto', background: '#fff', border: '1px solid #ece6d8', padding: '2.5rem' }}>
+                <h1 className="font-display" style={{ fontSize: '2rem', fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--ink)', marginBottom: '0.5rem' }}>
                     {lang === 'tr' ? 'Hesap Oluştur' : 'Create Account'}
                 </h1>
                 <p style={{ color: '#888', marginBottom: '2rem', fontSize: '0.95rem' }}>
@@ -153,7 +153,7 @@ export default function Register() {
                             </label>
                             <input type="text" required placeholder={lang === 'tr' ? 'Ahmet' : 'John'}
                                 value={form.ad} onChange={e => setForm({ ...form, ad: e.target.value })}
-                                style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
+                                style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #d8cfb8', borderRadius: '2px', fontSize: '0.95rem', boxSizing: 'border-box' }}
                             />
                         </div>
                         <div>
@@ -162,7 +162,7 @@ export default function Register() {
                             </label>
                             <input type="text" required placeholder={lang === 'tr' ? 'Yılmaz' : 'Smith'}
                                 value={form.soyad} onChange={e => setForm({ ...form, soyad: e.target.value })}
-                                style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
+                                style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #d8cfb8', borderRadius: '2px', fontSize: '0.95rem', boxSizing: 'border-box' }}
                             />
                         </div>
                     </div>
@@ -173,7 +173,7 @@ export default function Register() {
                         </label>
                         <input type="email" required placeholder="ahmet@firma.com"
                             value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                            style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
+                            style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #d8cfb8', borderRadius: '2px', fontSize: '0.95rem', boxSizing: 'border-box' }}
                         />
                     </div>
 
@@ -183,7 +183,7 @@ export default function Register() {
                         </label>
                         <input type="text" placeholder={lang === 'tr' ? 'Yılmaz Çiftliği' : 'Smith Farm'}
                             value={form.firma} onChange={e => setForm({ ...form, firma: e.target.value })}
-                            style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
+                            style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #d8cfb8', borderRadius: '2px', fontSize: '0.95rem', boxSizing: 'border-box' }}
                         />
                     </div>
 
@@ -193,7 +193,7 @@ export default function Register() {
                         </label>
                         <input type="password" required placeholder={lang === 'tr' ? 'En az 8 karakter' : 'At least 8 characters'}
                             value={form.sifre} onChange={e => setForm({ ...form, sifre: e.target.value })}
-                            style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
+                            style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #d8cfb8', borderRadius: '2px', fontSize: '0.95rem', boxSizing: 'border-box' }}
                         />
                     </div>
 
@@ -203,12 +203,12 @@ export default function Register() {
                         </label>
                         <input type="password" required placeholder={lang === 'tr' ? 'Şifrenizi tekrar girin' : 'Repeat your password'}
                             value={form.sifreTekrar} onChange={e => setForm({ ...form, sifreTekrar: e.target.value })}
-                            style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #ddd', borderRadius: '8px', fontSize: '0.95rem', boxSizing: 'border-box' }}
+                            style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid #d8cfb8', borderRadius: '2px', fontSize: '0.95rem', boxSizing: 'border-box' }}
                         />
                     </div>
 
                     <button type="submit" disabled={yukleniyor}
-                        style={{ width: '100%', padding: '0.85rem', background: '#2D5A27', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}
+                        style={{ width: '100%', padding: '0.85rem', background: 'var(--ink)', color: '#fff', border: 'none', borderRadius: '2px', fontSize: '1rem', cursor: 'pointer', fontWeight: 'bold' }}
                     >
                         {yukleniyor
                             ? (lang === 'tr' ? 'Gönderiliyor...' : 'Sending...')

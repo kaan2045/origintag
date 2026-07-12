@@ -1,9 +1,25 @@
 'use client';
+import { useEffect, useRef } from 'react';
+import QRCode from 'qrcode';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { useLanguage } from './context/LanguageContext';
+import { useVideoRotasyonu } from './lib/useVideoRotasyonu';
+
+const HERO_VIDEOLARI = ['/videos/landing-hero.mp4', '/videos/zeytinyagi-hero.mp4', '/videos/bal-hero.mp4'];
 
 export default function Home() {
   const { lang } = useLanguage();
+  const qrRef = useRef<HTMLCanvasElement>(null);
+  const { src, sonuyor } = useVideoRotasyonu(HERO_VIDEOLARI, 8000);
+
+  useEffect(() => {
+    if (qrRef.current) {
+      QRCode.toCanvas(qrRef.current, 'https://origintag.com.tr/demo', {
+        width: 132, margin: 1,
+        color: { dark: '#23261e', light: '#ffffff' },
+      });
+    }
+  }, []);
 
   const urunler = lang === 'tr'
     ? ['Zeytinyağı', 'Süt & Süt Ürünleri', 'Peynir', 'Bal', 'Sebze & Meyve', 'Tahıl', 'Şarap', 'Turşu & Reçel']
@@ -28,52 +44,73 @@ export default function Home() {
   return (
     <main style={{ margin: 0, padding: 0, background: 'var(--parchment)' }}>
 
-      {/* NAVBAR */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2.5rem', background: 'var(--parchment)', borderBottom: '1px solid #ece6d8' }}>
-        <img src="/origin.png" alt="OriginTag" style={{ height: '34px' }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem' }}>
-          <a href="/login" style={{ padding: '0.6rem 1.2rem', border: '1px solid #d8cfb8', borderRadius: '2px', color: 'var(--ink)', textDecoration: 'none', fontSize: '0.92rem', fontWeight: 500 }}>
-            {lang === 'tr' ? 'Giriş Yap' : 'Sign In'}
-          </a>
-          <a href="/register" style={{ padding: '0.6rem 1.2rem', background: 'var(--ink)', borderRadius: '2px', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '0.92rem' }}>
-            {lang === 'tr' ? 'Ücretsiz Başla' : 'Get Started Free'}
-          </a>
-          <LanguageSwitcher />
-        </div>
-      </nav>
-
-      {/* HERO — video arka plan */}
-      <section style={{ position: 'relative', overflow: 'hidden', color: '#f0eadd', minHeight: '640px', display: 'flex', flexDirection: 'column' }}>
+      {/* HERO — video rotasyonu + böl-görünüm (metin | QR), nav hero icinde */}
+      <section style={{ position: 'relative', overflow: 'hidden', color: '#f0eadd', minHeight: '100vh' }}>
         <video
+          key={src}
           autoPlay muted loop playsInline preload="auto"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          style={{
+            position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+            opacity: sonuyor ? 0 : 1, transition: 'opacity 0.6s ease',
+          }}
         >
-          <source src="/videos/landing-hero.mp4" type="video/mp4" />
+          <source src={src} type="video/mp4" />
         </video>
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(180deg, rgba(20,22,15,0.55) 0%, rgba(20,22,15,0.72) 55%, #23261e 100%)',
+          background: 'linear-gradient(180deg, rgba(20,22,15,0.45) 0%, rgba(20,22,15,0.55) 50%, rgba(20,22,15,0.85) 100%)',
         }} />
         <div style={{ position: 'absolute', inset: '20px', border: '1px solid rgba(240,234,221,0.14)', borderRadius: '2px', pointerEvents: 'none' }} />
 
-        <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center', padding: '7rem 2rem 6rem', maxWidth: '840px', margin: '0 auto' }}>
-          <p className="mono-label" style={{ opacity: 0.75, marginBottom: '1.5rem' }}>
-            {lang === 'tr' ? 'Coğrafi İşaretli Ürünler İçin' : 'For Geographically Indicated Products'}
-          </p>
-          <h1 className="font-display" style={{ fontSize: 'clamp(2.8rem, 7vw, 5rem)', fontWeight: 600, letterSpacing: '-0.02em', lineHeight: 1.0, margin: '0 0 1.5rem' }}>
-            {lang === 'tr'
-              ? <>Ürününüzün hikayesini<br /><span style={{ color: '#c9a15a' }}>tarladan sofraya</span> belgeleyin</>
-              : <>Document your product&apos;s story<br /><span style={{ color: '#c9a15a' }}>from farm to table</span></>}
-          </h1>
-          <p style={{ fontSize: '1.1rem', opacity: 0.85, maxWidth: '540px', margin: '0 auto 2.5rem', lineHeight: 1.6 }}>
-            {lang === 'tr'
-              ? 'Zeytinyağından bala, peynirden şaraba — her adım blockchain\'e yazılır, değiştirilemez ve tek bir QR kod ile doğrulanır.'
-              : 'From olive oil to honey, cheese to wine — every step is written to the blockchain, immutable, and verifiable with a single QR code.'}
-          </p>
-          <div>
-            <a href="/register" style={{ display: 'inline-block', padding: '1rem 2.4rem', background: '#f0eadd', color: '#23261e', borderRadius: '2px', textDecoration: 'none', fontSize: '1rem', fontWeight: 600 }}>
-              {lang === 'tr' ? 'Hemen Başla — Ücretsiz' : 'Get Started — Free'}
-            </a>
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+
+          {/* NAV — hero icine gomulu */}
+          <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '2rem 2.75rem' }}>
+            <img src="/origin.png" alt="OriginTag" style={{ height: '32px', filter: 'brightness(0) invert(1)', opacity: 0.95 }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem' }}>
+              <a href="/login" style={{ padding: '0.55rem 1.15rem', border: '1px solid rgba(240,234,221,0.35)', borderRadius: '2px', color: '#f0eadd', textDecoration: 'none', fontSize: '0.88rem', fontWeight: 500 }}>
+                {lang === 'tr' ? 'Giriş Yap' : 'Sign In'}
+              </a>
+              <a href="/register" style={{ padding: '0.55rem 1.15rem', background: '#f0eadd', borderRadius: '2px', color: '#23261e', textDecoration: 'none', fontWeight: 600, fontSize: '0.88rem' }}>
+                {lang === 'tr' ? 'Ücretsiz Başla' : 'Get Started Free'}
+              </a>
+              <LanguageSwitcher />
+            </div>
+          </nav>
+
+          {/* ICERIK — sol metin, sag QR */}
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', padding: '2rem 2.75rem 4rem', flexWrap: 'wrap', gap: '3rem' }}>
+            <div style={{ flex: '1 1 480px', minWidth: '320px' }}>
+              <p className="mono-label" style={{ opacity: 0.75, marginBottom: '1.5rem' }}>
+                {lang === 'tr' ? 'Coğrafi İşaretli Ürünler İçin' : 'For Geographically Indicated Products'}
+              </p>
+              <h1 className="font-display" style={{ fontSize: 'clamp(2.6rem, 5.5vw, 4.4rem)', fontWeight: 600, letterSpacing: '-0.02em', lineHeight: 1.02, margin: '0 0 1.5rem' }}>
+                {lang === 'tr'
+                  ? <>Ürününüzün<br />hikayesini <span style={{ color: '#c9a15a' }}>tarladan<br />sofraya</span> belgeleyin</>
+                  : <>Document your<br />product&apos;s <span style={{ color: '#c9a15a' }}>story from<br />farm to table</span></>}
+              </h1>
+              <p style={{ fontSize: '1.08rem', opacity: 0.85, maxWidth: '480px', margin: '0 0 2.25rem', lineHeight: 1.6 }}>
+                {lang === 'tr'
+                  ? 'Zeytinyağından bala, peynirden şaraba — her adım blockchain\'e yazılır, değiştirilemez ve tek bir QR kod ile doğrulanır.'
+                  : 'From olive oil to honey, cheese to wine — every step is written to the blockchain, immutable, and verifiable with a single QR code.'}
+              </p>
+              <a href="/register" style={{ display: 'inline-block', padding: '1rem 2.4rem', background: '#f0eadd', color: '#23261e', borderRadius: '2px', textDecoration: 'none', fontSize: '1rem', fontWeight: 600 }}>
+                {lang === 'tr' ? 'Hemen Başla — Ücretsiz' : 'Get Started — Free'}
+              </a>
+            </div>
+
+            <div style={{
+              flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem',
+              padding: '1.75rem', border: '1px solid rgba(240,234,221,0.18)', borderRadius: '4px', background: 'rgba(0,0,0,0.14)',
+            }}>
+              <div style={{ background: '#fff', padding: '10px', borderRadius: '2px', lineHeight: 0 }}>
+                <canvas ref={qrRef} style={{ display: 'block' }} />
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '0.92rem', marginBottom: '3px' }}>{lang === 'tr' ? "QR'ı tarat" : 'Scan the QR'}</div>
+                <div className="mono-label" style={{ fontSize: '0.68rem', color: '#c9a15a', letterSpacing: '0.14em' }}>origintag.com.tr/demo</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
