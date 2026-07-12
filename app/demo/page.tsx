@@ -4,9 +4,8 @@ import { useLanguage } from '../context/LanguageContext';
 import VideoKatmanlari from '../components/VideoKatmanlari';
 
 const VITRIN = [
-    { video: '/videos/zeytinyagi-hero.mp4', ad: { tr: 'Zeytinyağı', en: 'Olive Oil' } },
-    { video: '/videos/bal-hero.mp4', ad: { tr: 'Bal', en: 'Honey' } },
     { video: '/videos/landing-hero.mp4', ad: { tr: 'Zeytin Bahçesi', en: 'Olive Grove' } },
+    { video: '/videos/bal-hero.mp4', ad: { tr: 'Bal', en: 'Honey' } },
 ];
 
 export default function DemoPage() {

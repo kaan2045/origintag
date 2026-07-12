@@ -46,6 +46,10 @@ h1, h2, h3, .font-display {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .mono-label {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.76rem;
