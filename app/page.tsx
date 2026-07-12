@@ -1,15 +1,33 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import VideoKatmanlari from './components/VideoKatmanlari';
 import { useLanguage } from './context/LanguageContext';
 
-const VITRIN_VIDEOLARI = ['/videos/landing-hero.mp4', '/videos/bal-hero.mp4'];
+const VITRIN_ICERIK = [
+  {
+    video: '/videos/landing-hero.mp4',
+    baslik: { tr: 'Zeytin Bahçesi', en: 'Olive Grove' },
+    aciklama: { tr: 'Toroslar eteklerinde, ilaçlamasız zeytin ağaçları.', en: 'Pesticide-free olive trees at the foot of the Taurus mountains.' },
+  },
+  {
+    video: '/videos/bal-hero.mp4',
+    baslik: { tr: 'Bal Üretimi', en: 'Honey Production' },
+    aciklama: { tr: 'Kovanlardan doğal, katkısız bal — el emeği, göz nuru.', en: 'Natural, unadulterated honey straight from the hive.' },
+  },
+];
 
 export default function Home() {
   const { lang } = useLanguage();
   const qrRef = useRef<HTMLCanvasElement>(null);
+  const vitrinRef = useRef<HTMLDivElement>(null);
+  const [vitrinAcik, setVitrinAcik] = useState(() => {
+    // QR telefonla taranıp doğrudan #vitrin'e gelindiyse, vitrini baştan açık göster
+    if (typeof window !== 'undefined') return window.location.hash === '#vitrin';
+    return false;
+  });
+  const [aktifIndex, setAktifIndex] = useState(0);
 
   useEffect(() => {
     if (qrRef.current) {
@@ -19,6 +37,14 @@ export default function Home() {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (vitrinAcik) {
+      vitrinRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [vitrinAcik]);
+
+  const aktif = VITRIN_ICERIK[aktifIndex];
 
   const urunler = lang === 'tr'
     ? ['Zeytinyağı', 'Süt & Süt Ürünleri', 'Peynir', 'Bal', 'Sebze & Meyve', 'Tahıl', 'Şarap', 'Turşu & Reçel']
@@ -92,10 +118,10 @@ export default function Home() {
               </a>
             </div>
 
-            <a href="#vitrin" style={{
+            <a href="#vitrin" onClick={(e) => { e.preventDefault(); setVitrinAcik(true); }} style={{
               flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.9rem',
               padding: '1.5rem', border: '1px solid rgba(240,234,221,0.18)', borderRadius: '4px', background: 'rgba(0,0,0,0.14)',
-              textDecoration: 'none', color: '#f0eadd',
+              textDecoration: 'none', color: '#f0eadd', cursor: 'pointer',
             }}>
               <div style={{ background: '#fff', padding: '10px', borderRadius: '2px', lineHeight: 0 }}>
                 <canvas ref={qrRef} style={{ display: 'block' }} />
@@ -106,18 +132,45 @@ export default function Home() {
         </div>
       </section>
 
-      {/* VİTRİN — asagi kaydirilinca (veya QR'a tiklaninca) gorunur, 2 video crossfade */}
-      <section id="vitrin" style={{ position: 'relative', overflow: 'hidden', color: '#f0eadd', minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', scrollMarginTop: '0' }}>
-        <VideoKatmanlari videos={VITRIN_VIDEOLARI} intervalMs={7000} />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(20,22,15,0.5)' }} />
-        <div style={{ position: 'absolute', inset: '20px', border: '1px solid rgba(240,234,221,0.14)', borderRadius: '2px', pointerEvents: 'none' }} />
+      {/* VİTRİN — sadece QR'a tiklaninca acilir, hero'dan ayri, reels tarzi kart */}
+      <div ref={vitrinRef} style={{ scrollMarginTop: '2rem' }}>
+        {vitrinAcik && (
+          <section id="vitrin" style={{ padding: '4rem 2rem', background: 'var(--parchment)' }}>
+            <p className="mono-label" style={{ textAlign: 'center', color: '#9a8f78', marginBottom: '2.5rem' }}>
+              {lang === 'tr' ? 'Blockchain İzlenebilirlik Vitrini' : 'Blockchain Traceability Showcase'}
+            </p>
+            <div style={{
+              display: 'flex', gap: '2.5rem', maxWidth: '820px', margin: '0 auto',
+              alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center',
+            }}>
+              <div style={{
+                width: '260px', height: '460px', borderRadius: '20px', overflow: 'hidden', position: 'relative',
+                boxShadow: '0 24px 60px -12px rgba(35,38,30,0.35)', flexShrink: 0, background: '#23261e',
+              }}>
+                <VideoKatmanlari videos={VITRIN_ICERIK.map(v => v.video)} intervalMs={7000} onIndexChange={setAktifIndex} />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 60%, rgba(20,22,15,0.6) 100%)' }} />
+              </div>
 
-        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '3rem 2rem' }}>
-          <p className="mono-label" style={{ opacity: 0.75 }}>
-            {lang === 'tr' ? 'Blockchain İzlenebilirlik Vitrini' : 'Blockchain Traceability Showcase'}
-          </p>
-        </div>
-      </section>
+              <div style={{ flex: '1 1 260px', minWidth: '220px' }}>
+                <h3 key={aktifIndex} className="font-display" style={{ fontSize: '1.6rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.6rem' }}>
+                  {lang === 'tr' ? aktif.baslik.tr : aktif.baslik.en}
+                </h3>
+                <p style={{ color: '#6b6558', lineHeight: 1.6, fontSize: '0.95rem', marginBottom: '1.5rem' }}>
+                  {lang === 'tr' ? aktif.aciklama.tr : aktif.aciklama.en}
+                </p>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {VITRIN_ICERIK.map((_, i) => (
+                    <div key={i} style={{
+                      width: i === aktifIndex ? '24px' : '8px', height: '4px', borderRadius: '2px',
+                      background: i === aktifIndex ? '#5c6b2e' : '#d8cfb8', transition: 'all 0.4s ease',
+                    }} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
 
       {/* ÜRÜNLER */}
       <section style={{ padding: '3rem 2rem', borderBottom: '1px solid #ece6d8' }}>
