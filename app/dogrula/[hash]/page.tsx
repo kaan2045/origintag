@@ -2,7 +2,7 @@
 import { useState, useEffect, use, useRef } from 'react';
 import QRCode from 'qrcode';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
-import UrunIllustrasyonu from '../../components/UrunIllustrasyonu';
+import HeroSahne from '../../components/HeroSahne';
 import DogrulamaYolculugu from '../../components/DogrulamaYolculugu';
 import { useLanguage } from '../../context/LanguageContext';
 import { urunTemasiniAl } from '../../lib/urunTema';
@@ -189,37 +189,42 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
     return (
         <main style={{ minHeight: '100vh', background: 'var(--parchment)' }}>
 
-            {/* HERO — ürün temasına göre renklenen sahne */}
-            <div style={{ position: 'relative', background: tema.gradient, color: tema.tint, overflow: 'hidden' }}>
-                <nav style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2rem' }}>
-                    <img src="/origin.png" alt="OriginTag" style={{ height: '32px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} />
+            {/* HERO — ürün temasına göre renklenen sahne (video varsa video, yoksa illüstrasyon) */}
+            <div style={{ position: 'relative', background: tema.gradient, color: tema.tint, overflow: 'hidden', minHeight: '480px', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ position: 'absolute', inset: '20px', border: '1px solid rgba(255,255,255,0.14)', borderRadius: '2px', pointerEvents: 'none', zIndex: 3 }} />
+
+                <div style={{ position: 'absolute', inset: 0, opacity: tema.video ? 0.55 : 0.9, pointerEvents: 'none' }}>
+                    <HeroSahne tema={tema} />
+                </div>
+                <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, rgba(0,0,0,0.32) 0%, transparent 35%, transparent 55%, ${tema.deep} 100%)`, opacity: tema.video ? 0.85 : 0.5, pointerEvents: 'none' }} />
+
+                <nav style={{ position: 'relative', zIndex: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.75rem 2.5rem' }}>
+                    <img src="/origin.png" alt="OriginTag" style={{ height: '30px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <div style={{
-                            background: 'rgba(255,255,255,0.14)', backdropFilter: 'blur(6px)',
-                            padding: '0.4rem 0.9rem', borderRadius: '20px', fontSize: '0.78rem', fontWeight: 500,
-                            border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', gap: '0.4rem',
+                        <div className="mono-label" style={{
+                            background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(6px)',
+                            padding: '0.45rem 0.9rem', borderRadius: '2px', fontSize: '0.7rem',
+                            border: '1px solid rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', gap: '0.5rem',
+                            letterSpacing: '0.16em',
                         }}>
-                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#8fd67a', display: 'inline-block' }} />
+                            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#8fd67a', display: 'inline-block' }} />
                             {lang === 'tr' ? 'Blockchain Doğrulandı' : 'Blockchain Verified'}
                         </div>
                         <LanguageSwitcher />
                     </div>
                 </nav>
 
-                <div style={{ position: 'absolute', inset: 0, opacity: 0.9, pointerEvents: 'none' }}>
-                    <UrunIllustrasyonu tema={tema.anahtar} />
-                </div>
-
-                <div style={{ position: 'relative', zIndex: 2, padding: '2.5rem 2rem 3.5rem', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.78rem', letterSpacing: '0.14em', textTransform: 'uppercase', opacity: 0.75, marginBottom: '0.6rem' }}>
+                <div style={{ position: 'relative', zIndex: 4, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '2rem 2.5rem 3.5rem', textAlign: 'center' }}>
+                    <p className="mono-label" style={{ opacity: 0.78, marginBottom: '1rem' }}>
                         {urun.bolge || (lang === 'tr' ? 'Menşei Belirtilmemiş' : 'Origin Not Specified')}
                     </p>
-                    <h1 className="font-display" style={{ fontSize: 'clamp(2.1rem, 5vw, 3rem)', fontStyle: 'italic', fontWeight: 500, margin: 0, lineHeight: 1.1 }}>
+                    <h1 className="font-display" style={{ fontSize: 'clamp(2.6rem, 6vw, 4.2rem)', fontWeight: 600, letterSpacing: '-0.02em', margin: 0, lineHeight: 1.02 }}>
                         {urun.urun_adi}
                     </h1>
-                    <p style={{ marginTop: '0.6rem', opacity: 0.8, fontSize: '0.95rem' }}>{urun.urun_tipi}</p>
+                    <p className="mono-label" style={{ marginTop: '1rem', opacity: 0.72, fontSize: '0.72rem' }}>{urun.urun_tipi}</p>
                 </div>
             </div>
+
 
             <div style={{ maxWidth: '680px', margin: '0 auto', padding: '0 1.25rem' }}>
 

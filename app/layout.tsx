@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Familjen_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "./context/LanguageContext";
 
-const fraunces = Fraunces({
+const familjenGrotesk = Familjen_Grotesk({
   variable: "--font-display",
   subsets: ["latin"],
-  style: ["normal", "italic"],
   weight: ["400", "500", "600", "700"],
 });
 
-const inter = Inter({
-  variable: "--font-body",
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className={`${fraunces.variable} ${inter.variable} h-full antialiased`}>
+    <html lang="tr" className={`${familjenGrotesk.variable} ${ibmPlexMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <LanguageProvider>
           {children}
