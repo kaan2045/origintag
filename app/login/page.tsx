@@ -33,13 +33,13 @@ export default function Login() {
     };
 
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--parchment)' }}>
-            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem 2.5rem', borderBottom: '1px solid #ece6d8' }}>
-                <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '32px' }} /></a>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <span style={{ fontSize: '0.9rem', color: '#6b6558' }}>
+        <main style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--cream)' }}>
+            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.75rem 2.5rem', borderBottom: '1px solid var(--line)' }}>
+                <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '28px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+                    <span style={{ fontSize: '0.88rem', color: 'var(--cream-dim)' }}>
                         {lang === 'tr' ? 'Hesabın yok mu?' : "Don't have an account?"}{' '}
-                        <a href="/register" style={{ color: 'var(--ink)', fontWeight: 600, textDecoration: 'none' }}>
+                        <a href="/register" className="ot-link-gold" style={{ fontWeight: 600 }}>
                             {lang === 'tr' ? 'Ücretsiz Başla' : 'Get Started'}
                         </a>
                     </span>
@@ -47,49 +47,47 @@ export default function Login() {
                 </div>
             </nav>
 
-            <div style={{ maxWidth: '420px', margin: '6rem auto', background: '#fff', border: '1px solid #ece6d8', padding: '3rem' }}>
-                <p className="mono-label" style={{ color: '#9a8f78', marginBottom: '0.75rem' }}>
+            <div style={{ maxWidth: '440px', margin: '7rem auto', padding: '0 1.5rem' }}>
+                <p className="mono-label" style={{ color: 'var(--gold)', marginBottom: '1rem' }}>
                     {lang === 'tr' ? 'Hoş geldiniz' : 'Welcome back'}
                 </p>
-                <h1 className="font-display" style={{ fontSize: '2rem', fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--ink)', marginBottom: '0.5rem' }}>
+                <h1 className="font-display" style={{ fontSize: '2.5rem', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--cream)', marginBottom: '0.6rem' }}>
                     {lang === 'tr' ? 'Giriş Yap' : 'Sign In'}
                 </h1>
-                <p style={{ color: '#8a8377', marginBottom: '2.25rem', fontSize: '0.95rem' }}>
+                <p style={{ color: 'var(--cream-dim)', marginBottom: '3rem', fontSize: '0.98rem', fontWeight: 300 }}>
                     {lang === 'tr' ? 'Hesabına giriş yap ve devam et.' : 'Sign in to your account and continue.'}
                 </p>
 
                 <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: '1.1rem' }}>
-                        <label className="mono-label" style={{ color: '#6b6558', display: 'block', marginBottom: '6px', fontSize: '0.68rem' }}>
+                    <div style={{ marginBottom: '1.75rem' }}>
+                        <label className="mono-label" style={{ color: 'var(--cream-faint)', display: 'block', marginBottom: '10px', fontSize: '0.66rem' }}>
                             {lang === 'tr' ? 'E-posta' : 'Email'}
                         </label>
                         <input type="email" required placeholder="ahmet@firma.com"
                             value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                            style={{ width: '100%', padding: '0.75rem 0.9rem', border: '1px solid #d8cfb8', borderRadius: '2px', fontSize: '0.95rem', boxSizing: 'border-box' }}
+                            className="ot-field"
                         />
                     </div>
 
-                    <div style={{ marginBottom: '1.75rem' }}>
-                        <label className="mono-label" style={{ color: '#6b6558', display: 'block', marginBottom: '6px', fontSize: '0.68rem' }}>
+                    <div style={{ marginBottom: '2.75rem' }}>
+                        <label className="mono-label" style={{ color: 'var(--cream-faint)', display: 'block', marginBottom: '10px', fontSize: '0.66rem' }}>
                             {lang === 'tr' ? 'Şifre' : 'Password'}
                         </label>
                         <input type="password" required placeholder={lang === 'tr' ? 'Şifrenizi girin' : 'Enter your password'}
                             value={form.sifre} onChange={e => setForm({ ...form, sifre: e.target.value })}
-                            style={{ width: '100%', padding: '0.75rem 0.9rem', border: '1px solid #d8cfb8', borderRadius: '2px', fontSize: '0.95rem', boxSizing: 'border-box' }}
+                            className="ot-field"
                         />
                     </div>
 
-                    <button type="submit" disabled={yukleniyor}
-                        style={{ width: '100%', padding: '0.9rem', background: 'var(--ink)', color: '#fff', border: 'none', borderRadius: '2px', fontSize: '0.98rem', cursor: 'pointer', fontWeight: 600 }}
-                    >
+                    <button type="submit" disabled={yukleniyor} className="ot-btn-solid" style={{ width: '100%' }}>
                         {yukleniyor
                             ? (lang === 'tr' ? 'Giriş Yapılıyor...' : 'Signing in...')
                             : (lang === 'tr' ? 'Giriş Yap' : 'Sign In')}
                     </button>
 
-                    <p style={{ textAlign: 'center', fontSize: '0.88rem', color: '#a49c8c', marginTop: '1.75rem' }}>
+                    <p style={{ textAlign: 'center', fontSize: '0.88rem', color: 'var(--cream-faint)', marginTop: '2.25rem' }}>
                         {lang === 'tr' ? 'Hesabın yok mu?' : "Don't have an account?"}{' '}
-                        <a href="/register" style={{ color: 'var(--ink)', textDecoration: 'none', fontWeight: 600 }}>
+                        <a href="/register" className="ot-link-gold" style={{ fontWeight: 600 }}>
                             {lang === 'tr' ? 'Ücretsiz Başla' : 'Get Started Free'}
                         </a>
                     </p>

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 
 const TRFlag = () => (
-    <svg viewBox="0 0 30 20" width="24" height="16" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 30 20" width="20" height="14" xmlns="http://www.w3.org/2000/svg">
         <rect width="30" height="20" fill="#E30A17" />
         <circle cx="11.5" cy="10" r="4.5" fill="white" />
         <circle cx="13" cy="10" r="3.6" fill="#E30A17" />
@@ -13,7 +13,7 @@ const TRFlag = () => (
 );
 
 const UKFlag = () => (
-    <svg viewBox="0 0 60 30" width="24" height="16" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 60 30" width="20" height="14" xmlns="http://www.w3.org/2000/svg">
         <rect width="60" height="30" fill="#012169" />
         <line x1="0" y1="0" x2="60" y2="30" stroke="white" strokeWidth="6" />
         <line x1="60" y1="0" x2="0" y2="30" stroke="white" strokeWidth="6" />
@@ -45,58 +45,57 @@ export default function LanguageSwitcher() {
         <div ref={ref} style={{ position: 'relative', display: 'inline-block' }}>
             <button
                 onClick={() => setOpen(v => !v)}
+                className="mono-label"
                 style={{
-                    display: 'flex', alignItems: 'center', gap: '6px',
+                    display: 'flex', alignItems: 'center', gap: '7px',
                     background: 'transparent',
-                    border: '1px solid rgba(255,255,255,0.4)',
-                    borderRadius: '6px', padding: '5px 10px',
-                    cursor: 'pointer', color: 'white',
-                    fontSize: '13px', fontWeight: 500,
+                    border: '1px solid var(--line-strong)',
+                    borderRadius: '2px', padding: '0.42rem 0.7rem',
+                    cursor: 'pointer', color: 'var(--cream)',
+                    fontSize: '0.68rem', letterSpacing: '0.14em',
                 }}
             >
                 {lang === 'tr' ? <TRFlag /> : <UKFlag />}
                 <span>{lang === 'tr' ? 'TR' : 'EN'}</span>
-                <span style={{ fontSize: '10px', opacity: 0.8 }}>{open ? '▲' : '▼'}</span>
+                <span style={{ fontSize: '8px', color: 'var(--gold)' }}>{open ? '▲' : '▼'}</span>
             </button>
 
             {open && (
                 <div style={{
-                    position: 'absolute', top: 'calc(100% + 6px)', right: 0,
-                    background: 'white', border: '1px solid #e5e7eb',
-                    borderRadius: '8px', boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-                    overflow: 'hidden', zIndex: 1000, minWidth: '130px',
+                    position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                    background: 'var(--bg-elevated)', border: '1px solid var(--line-strong)',
+                    borderRadius: '2px', boxShadow: '0 16px 40px -12px rgba(0,0,0,0.55)',
+                    overflow: 'hidden', zIndex: 1000, minWidth: '150px',
                 }}>
-                    {/* Türkçe seçeneği */}
                     <button
                         onClick={() => { setLang('tr'); setOpen(false); }}
                         style={{
-                            display: 'flex', alignItems: 'center', gap: '8px',
-                            width: '100%', padding: '10px 14px',
-                            background: lang === 'tr' ? '#f0faf0' : 'transparent',
+                            display: 'flex', alignItems: 'center', gap: '10px',
+                            width: '100%', padding: '0.7rem 0.9rem',
+                            background: lang === 'tr' ? 'var(--gold-soft)' : 'transparent',
                             border: 'none', cursor: 'pointer',
-                            fontSize: '14px', color: '#111827', textAlign: 'left',
-                            borderBottom: '1px solid #f3f4f6',
+                            fontSize: '0.88rem', color: 'var(--cream)', textAlign: 'left',
+                            borderBottom: '1px solid var(--line)',
                         }}
                     >
                         <TRFlag />
                         <span>Türkçe</span>
-                        {lang === 'tr' && <span style={{ marginLeft: 'auto', color: '#2D5A27' }}>✓</span>}
+                        {lang === 'tr' && <span style={{ marginLeft: 'auto', color: 'var(--gold)' }}>✓</span>}
                     </button>
 
-                    {/* English seçeneği */}
                     <button
                         onClick={() => { setLang('en'); setOpen(false); }}
                         style={{
-                            display: 'flex', alignItems: 'center', gap: '8px',
-                            width: '100%', padding: '10px 14px',
-                            background: lang === 'en' ? '#f0faf0' : 'transparent',
+                            display: 'flex', alignItems: 'center', gap: '10px',
+                            width: '100%', padding: '0.7rem 0.9rem',
+                            background: lang === 'en' ? 'var(--gold-soft)' : 'transparent',
                             border: 'none', cursor: 'pointer',
-                            fontSize: '14px', color: '#111827', textAlign: 'left',
+                            fontSize: '0.88rem', color: 'var(--cream)', textAlign: 'left',
                         }}
                     >
                         <UKFlag />
                         <span>English</span>
-                        {lang === 'en' && <span style={{ marginLeft: 'auto', color: '#2D5A27' }}>✓</span>}
+                        {lang === 'en' && <span style={{ marginLeft: 'auto', color: 'var(--gold)' }}>✓</span>}
                     </button>
                 </div>
             )}

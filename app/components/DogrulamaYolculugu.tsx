@@ -12,7 +12,7 @@ export default function DogrulamaYolculugu({ adimlar, accentColor }: { adimlar: 
             <div style={{
                 position: 'absolute', top: '7px', left: '5%', right: '5%', height: '1px',
                 background: `repeating-linear-gradient(to right, ${accentColor} 0 6px, transparent 6px 12px)`,
-                opacity: 0.55,
+                opacity: 0.5,
             }} />
             {adimlar.map((adim, i) => (
                 <div key={i} style={{ flex: 1, textAlign: i === 0 ? 'left' : i === adimlar.length - 1 ? 'right' : 'center', position: 'relative', zIndex: 1 }}>
@@ -22,14 +22,14 @@ export default function DogrulamaYolculugu({ adimlar, accentColor }: { adimlar: 
                     }}>
                         <div style={{
                             width: '15px', height: '15px', borderRadius: '50%',
-                            background: adim.aktif ? accentColor : 'var(--parchment)',
+                            background: adim.aktif ? accentColor : 'var(--bg-elevated)',
                             border: `2px solid ${accentColor}`,
                         }} />
                     </div>
-                    <div style={{ marginTop: '0.6rem', fontSize: '0.72rem', letterSpacing: '0.04em', textTransform: 'uppercase', color: '#8a8377' }}>
+                    <div className="mono-label" style={{ marginTop: '0.65rem', fontSize: '0.66rem', letterSpacing: '0.1em', color: 'var(--cream-faint)' }}>
                         {adim.etiket}
                     </div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--ink)', marginTop: '2px' }}>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--cream)', marginTop: '3px' }}>
                         {adim.tarih}
                     </div>
                 </div>
