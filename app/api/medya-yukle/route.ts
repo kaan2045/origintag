@@ -1,34 +1,33 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { put } from '@vercel/blob';
+import { NextResponse } from 'next/server';
+import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export async function POST(req: NextRequest) {
+export async function POST(request: Request): Promise<NextResponse> {
+    const body = (await request.json()) as HandleUploadBody;
+
     try {
-        const formData = await req.formData();
-        const dosyalar = formData.getAll('dosyalar') as File[];
-
-        if (!dosyalar || dosyalar.length === 0) {
-            return NextResponse.json({ basari: false, hata: 'Dosya bulunamadi' }, { status: 400 });
-        }
-
-        const yuklenenUrller: string[] = [];
-
-        for (const dosya of dosyalar) {
-            const dosyaAdi = `urunler/${Date.now()}-${Math.random().toString(36).slice(2)}-${dosya.name}`;
-
-            const blob = await put(dosyaAdi, dosya, {
-                access: 'public',
+        const jsonResponse = await handleUpload({
+            body,
+            request,
+            onBeforeGenerateToken: async () => ({
+                allowedContentTypes: [
+                    'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+                    'video/mp4', 'video/quicktime',
+                ],
                 addRandomSuffix: false,
-            });
+                maximumSizeInBytes: 50 * 1024 * 1024,
+            }),
+            onUploadCompleted: async () => {
+                // Localhost'ta tetiklenmez (public URL gerektirir); prod'da dosya Blob'a
+                // yazildiktan sonra cagrilir. Su an ek bir islem gerekmiyor.
+            },
+        });
 
-            yuklenenUrller.push(blob.url);
-        }
-
-        return NextResponse.json({ basari: true, urls: yuklenenUrller });
+        return NextResponse.json(jsonResponse);
     } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        return NextResponse.json({ basari: false, hata: message }, { status: 500 });
+        return NextResponse.json({ error: message }, { status: 400 });
     }
 }

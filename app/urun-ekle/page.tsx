@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import jsPDF from 'jspdf';
+import { upload } from '@vercel/blob/client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -52,22 +53,30 @@ export default function UrunEkle() {
         try {
             const kullaniciId = localStorage.getItem('kullanici_id');
 
-            // Önce medya dosyalarını yükle
+            // Önce medya dosyalarını tarayıcıdan doğrudan Vercel Blob'a yükle
+            // (sunucu sadece /api/medya-yukle üzerinden token üretir, dosya baytları sunucuya uğramaz)
             let medyaUrls: string[] = [];
             if (medyaDosyalar.length > 0) {
                 setMedyaYukleniyor(true);
-                const formData = new FormData();
-                medyaDosyalar.forEach(f => formData.append('dosyalar', f));
-                const medyaRes = await fetch('/api/medya-yukle', { method: 'POST', body: formData });
-                const medyaData = await medyaRes.json();
-                setMedyaYukleniyor(false);
-                if (medyaData.basari) {
-                    medyaUrls = medyaData.urls;
-                } else {
-                    alert((lang === 'tr' ? 'Medya yükleme hatası: ' : 'Media upload error: ') + medyaData.hata + '\n\nDEBUG: ' + JSON.stringify(medyaData.debug || {}));
+                try {
+                    medyaUrls = await Promise.all(
+                        medyaDosyalar.map(async (dosya) => {
+                            const dosyaAdi = `urunler/${Date.now()}-${Math.random().toString(36).slice(2)}-${dosya.name}`;
+                            const blob = await upload(dosyaAdi, dosya, {
+                                access: 'public',
+                                handleUploadUrl: '/api/medya-yukle',
+                            });
+                            return blob.url;
+                        })
+                    );
+                } catch (err) {
+                    const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
+                    alert((lang === 'tr' ? 'Medya yükleme hatası: ' : 'Media upload error: ') + message);
+                    setMedyaYukleniyor(false);
                     setYukleniyor(false);
                     return;
                 }
+                setMedyaYukleniyor(false);
             }
 
             const res = await fetch('/api/urun-ekle', {
