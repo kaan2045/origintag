@@ -345,28 +345,16 @@ export default function UrunEkle() {
                                         })}
                                     </div>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
-                                    <div>
-                                        <label style={fieldLabelStyle}>
-                                            {lang === 'tr' ? 'Çekim Tipi' : 'Extraction Type'}
-                                        </label>
-                                        <select value={detaylar.cekimTipi || ''} onChange={e => setDetaylar({ ...detaylar, cekimTipi: e.target.value })}
-                                            className="od-field">
-                                            <option value="">{lang === 'tr' ? 'Seçiniz' : 'Select'}</option>
-                                            <option value="soguk">{lang === 'tr' ? 'Soğuk Sıkım' : 'Cold Press'}</option>
-                                            <option value="ikinci">{lang === 'tr' ? 'İkinci Sıkım' : 'Second Press'}</option>
-                                            <option value="rafine">{lang === 'tr' ? 'Rafine' : 'Refined'}</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label style={fieldLabelStyle}>
-                                            {lang === 'tr' ? 'Randıman (%)' : 'Yield (%)'}
-                                        </label>
-                                        <input type="number" placeholder="18"
-                                            value={detaylar.randiman || ''} onChange={e => setDetaylar({ ...detaylar, randiman: e.target.value })}
-                                            className="od-field"
-                                        />
-                                    </div>
+                                <div>
+                                    <label style={fieldLabelStyle}>
+                                        {lang === 'tr' ? 'Çekim Tipi' : 'Extraction Type'}
+                                    </label>
+                                    <select value={detaylar.cekimTipi || ''} onChange={e => setDetaylar({ ...detaylar, cekimTipi: e.target.value })}
+                                        className="od-field">
+                                        <option value="">{lang === 'tr' ? 'Seçiniz' : 'Select'}</option>
+                                        <option value={lang === 'tr' ? 'Normal Sıkım' : 'Normal Press'}>{lang === 'tr' ? 'Normal Sıkım' : 'Normal Press'}</option>
+                                        <option value={lang === 'tr' ? 'Soğuk Sıkım' : 'Cold Press'}>{lang === 'tr' ? 'Soğuk Sıkım' : 'Cold Press'}</option>
+                                    </select>
                                 </div>
                             </div>
                         )}
@@ -505,6 +493,18 @@ export default function UrunEkle() {
                                 </div>
                             </div>
                         </div>
+
+                        {form.urunTipi === 'Zeytinyagi' && (
+                            <div style={{ marginBottom: '1.25rem' }}>
+                                <label className="mono-label" style={fieldLabelStyle}>
+                                    {lang === 'tr' ? 'Çıkan Yağ Miktarı (lt)' : 'Extracted Oil Amount (lt)'}
+                                </label>
+                                <input type="number" placeholder="90"
+                                    value={detaylar.cikanYagMiktari || ''} onChange={e => setDetaylar({ ...detaylar, cikanYagMiktari: e.target.value })}
+                                    className="od-field"
+                                />
+                            </div>
+                        )}
 
                         <div style={{ marginBottom: '1.75rem' }}>
                             <label className="mono-label" style={fieldLabelStyle}>
