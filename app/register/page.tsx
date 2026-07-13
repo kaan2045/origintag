@@ -81,144 +81,151 @@ export default function Register() {
 
     if (adim === 'otp') {
         return (
-            <main style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--cream)' }}>
-                <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.75rem 2.5rem', borderBottom: '1px solid var(--line)' }}>
-                    <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '28px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
-                    <LanguageSwitcher />
-                </nav>
+            <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+                <div style={{ position: 'sticky', top: '1.25rem', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
+                    <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
+                        <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
+                        <LanguageSwitcher />
+                    </nav>
+                </div>
 
-                <div style={{ maxWidth: '440px', margin: '6rem auto', padding: '0 1.5rem' }}>
-                    <p className="mono-label" style={{ color: 'var(--gold)', marginBottom: '1rem' }}>
-                        {lang === 'tr' ? 'Son adım' : 'Final step'}
-                    </p>
-                    <h1 className="font-display" style={{ fontSize: '2.3rem', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--cream)', marginBottom: '0.6rem' }}>
-                        {lang === 'tr' ? 'Email Doğrulama' : 'Email Verification'}
-                    </h1>
-                    <p style={{ color: 'var(--cream-dim)', marginBottom: '2.75rem', fontSize: '0.95rem', fontWeight: 300, lineHeight: 1.7 }}>
-                        <strong style={{ color: 'var(--cream)', fontWeight: 600 }}>{form.email}</strong>{' '}
-                        {lang === 'tr' ? 'adresine 6 haneli kod gönderildi.' : 'A 6-digit code has been sent to this address.'}
-                    </p>
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '5rem 1.5rem' }}>
+                    <div className="od-glass" style={{ width: '100%', maxWidth: '460px', padding: '2.75rem' }}>
+                        <span className="od-chip" style={{ marginBottom: '1.25rem' }}>
+                            {lang === 'tr' ? 'Son adım' : 'Final step'}
+                        </span>
+                        <h1 className="font-display" style={{ fontSize: '2.1rem', fontWeight: 700, letterSpacing: '-0.01em', color: 'var(--on-surface)', margin: '1.1rem 0 0.6rem' }}>
+                            {lang === 'tr' ? 'Email Doğrulama' : 'Email Verification'}
+                        </h1>
+                        <p style={{ color: 'var(--on-surface-variant)', marginBottom: '2.25rem', fontSize: '0.95rem', lineHeight: 1.7 }}>
+                            <strong style={{ color: 'var(--on-surface)', fontWeight: 700 }}>{form.email}</strong>{' '}
+                            {lang === 'tr' ? 'adresine 6 haneli kod gönderildi.' : 'A 6-digit code has been sent to this address.'}
+                        </p>
 
-                    <form onSubmit={otpDogrula}>
-                        <div style={{ marginBottom: '2rem' }}>
-                            <label className="mono-label" style={{ color: 'var(--cream-faint)', display: 'block', marginBottom: '10px', fontSize: '0.66rem' }}>
-                                {lang === 'tr' ? 'Doğrulama Kodu' : 'Verification Code'}
-                            </label>
-                            <input type="text" required placeholder="000000" maxLength={6}
-                                value={otp} onChange={e => setOtp(e.target.value)}
-                                className="ot-field"
-                                style={{ fontSize: '1.6rem', textAlign: 'center', letterSpacing: '0.6rem', fontFamily: 'var(--font-mono), ui-monospace, monospace', padding: '0.9rem 0.1rem' }}
-                            />
-                        </div>
-                        <button type="submit" disabled={yukleniyor} className="ot-btn-solid" style={{ width: '100%' }}>
-                            {yukleniyor
-                                ? (lang === 'tr' ? 'Doğrulanıyor...' : 'Verifying...')
-                                : (lang === 'tr' ? 'Doğrula & Kayıt Ol' : 'Verify & Register')}
-                        </button>
-                        <button type="button" onClick={() => setAdim('form')}
-                            className="mono-label"
-                            style={{ width: '100%', padding: '0.85rem', background: 'transparent', color: 'var(--cream-faint)', border: 'none', fontSize: '0.7rem', cursor: 'pointer', marginTop: '0.75rem', letterSpacing: '0.12em' }}
-                        >
-                            {lang === 'tr' ? 'Geri Dön' : 'Go Back'}
-                        </button>
-                    </form>
+                        <form onSubmit={otpDogrula}>
+                            <div style={{ marginBottom: '1.75rem' }}>
+                                <label className="mono-label" style={{ color: 'var(--on-surface-variant)', display: 'block', marginBottom: '8px', fontSize: '0.68rem' }}>
+                                    {lang === 'tr' ? 'Doğrulama Kodu' : 'Verification Code'}
+                                </label>
+                                <input type="text" required placeholder="000000" maxLength={6}
+                                    value={otp} onChange={e => setOtp(e.target.value)}
+                                    className="od-field"
+                                    style={{ fontSize: '1.6rem', textAlign: 'center', letterSpacing: '0.6rem', padding: '0.9rem 0.1rem' }}
+                                />
+                            </div>
+                            <button type="submit" disabled={yukleniyor} className="od-btn-primary" style={{ width: '100%' }}>
+                                {yukleniyor
+                                    ? (lang === 'tr' ? 'Doğrulanıyor...' : 'Verifying...')
+                                    : (lang === 'tr' ? 'Doğrula & Kayıt Ol' : 'Verify & Register')}
+                            </button>
+                            <button type="button" onClick={() => setAdim('form')} className="od-btn-ghost"
+                                style={{ width: '100%', marginTop: '0.75rem' }}
+                            >
+                                {lang === 'tr' ? 'Geri Dön' : 'Go Back'}
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </main>
         );
     }
 
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--bg)', color: 'var(--cream)' }}>
-            <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.75rem 2.5rem', borderBottom: '1px solid var(--line)' }}>
-                <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '28px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-                    <a href="/login" style={{ color: 'var(--cream-dim)', textDecoration: 'none', fontSize: '0.9rem' }}>
-                        {lang === 'tr' ? 'Zaten hesabın var mı?' : 'Already have an account?'}{' '}
-                        <span className="ot-link-gold" style={{ fontWeight: 600 }}>{lang === 'tr' ? 'Giriş Yap' : 'Sign In'}</span>
-                    </a>
-                    <LanguageSwitcher />
+        <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+            <div style={{ position: 'sticky', top: '1.25rem', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
+                <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
+                    <a href="/"><img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <a href="/login" style={{ color: 'var(--on-surface-variant)', textDecoration: 'none', fontSize: '0.9rem' }}>
+                            {lang === 'tr' ? 'Zaten hesabın var mı?' : 'Already have an account?'}{' '}
+                            <span className="od-link" style={{ fontWeight: 700 }}>{lang === 'tr' ? 'Giriş Yap' : 'Sign In'}</span>
+                        </a>
+                        <LanguageSwitcher />
+                    </div>
+                </nav>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '3.5rem 1.5rem' }}>
+                <div className="od-glass" style={{ width: '100%', maxWidth: '560px', padding: '3rem' }}>
+                    <span className="od-chip" style={{ marginBottom: '1.25rem' }}>
+                        {lang === 'tr' ? 'Ücretsiz kayıt' : 'Free registration'}
+                    </span>
+                    <h1 className="font-display" style={{ fontSize: '2.25rem', fontWeight: 700, letterSpacing: '-0.01em', color: 'var(--on-surface)', margin: '1.1rem 0 0.6rem' }}>
+                        {lang === 'tr' ? 'Hesap Oluştur' : 'Create Account'}
+                    </h1>
+                    <p style={{ color: 'var(--on-surface-variant)', marginBottom: '2.5rem', fontSize: '0.98rem' }}>
+                        {lang === 'tr' ? 'Ücretsiz başla, istediğin zaman yükselt.' : 'Start for free, upgrade anytime.'}
+                    </p>
+
+                    <form onSubmit={handleSubmit}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
+                            <div>
+                                <label className="mono-label" style={{ color: 'var(--on-surface-variant)', display: 'block', marginBottom: '8px', fontSize: '0.68rem' }}>
+                                    {lang === 'tr' ? 'Ad' : 'First Name'}
+                                </label>
+                                <input type="text" required placeholder={lang === 'tr' ? 'Ahmet' : 'John'}
+                                    value={form.ad} onChange={e => setForm({ ...form, ad: e.target.value })}
+                                    className="od-field"
+                                />
+                            </div>
+                            <div>
+                                <label className="mono-label" style={{ color: 'var(--on-surface-variant)', display: 'block', marginBottom: '8px', fontSize: '0.68rem' }}>
+                                    {lang === 'tr' ? 'Soyad' : 'Last Name'}
+                                </label>
+                                <input type="text" required placeholder={lang === 'tr' ? 'Yılmaz' : 'Smith'}
+                                    value={form.soyad} onChange={e => setForm({ ...form, soyad: e.target.value })}
+                                    className="od-field"
+                                />
+                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '1.25rem' }}>
+                            <label className="mono-label" style={{ color: 'var(--on-surface-variant)', display: 'block', marginBottom: '8px', fontSize: '0.68rem' }}>
+                                {lang === 'tr' ? 'E-posta' : 'Email'}
+                            </label>
+                            <input type="email" required placeholder="ahmet@firma.com"
+                                value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
+                                className="od-field"
+                            />
+                        </div>
+
+                        <div style={{ marginBottom: '1.25rem' }}>
+                            <label className="mono-label" style={{ color: 'var(--on-surface-variant)', display: 'block', marginBottom: '8px', fontSize: '0.68rem' }}>
+                                {lang === 'tr' ? 'Firma / Çiftlik Adı' : 'Company / Farm Name'}
+                            </label>
+                            <input type="text" placeholder={lang === 'tr' ? 'Yılmaz Çiftliği' : 'Smith Farm'}
+                                value={form.firma} onChange={e => setForm({ ...form, firma: e.target.value })}
+                                className="od-field"
+                            />
+                        </div>
+
+                        <div style={{ marginBottom: '1.25rem' }}>
+                            <label className="mono-label" style={{ color: 'var(--on-surface-variant)', display: 'block', marginBottom: '8px', fontSize: '0.68rem' }}>
+                                {lang === 'tr' ? 'Şifre' : 'Password'}
+                            </label>
+                            <input type="password" required placeholder={lang === 'tr' ? 'En az 8 karakter' : 'At least 8 characters'}
+                                value={form.sifre} onChange={e => setForm({ ...form, sifre: e.target.value })}
+                                className="od-field"
+                            />
+                        </div>
+
+                        <div style={{ marginBottom: '2rem' }}>
+                            <label className="mono-label" style={{ color: 'var(--on-surface-variant)', display: 'block', marginBottom: '8px', fontSize: '0.68rem' }}>
+                                {lang === 'tr' ? 'Şifre Tekrar' : 'Confirm Password'}
+                            </label>
+                            <input type="password" required placeholder={lang === 'tr' ? 'Şifrenizi tekrar girin' : 'Repeat your password'}
+                                value={form.sifreTekrar} onChange={e => setForm({ ...form, sifreTekrar: e.target.value })}
+                                className="od-field"
+                            />
+                        </div>
+
+                        <button type="submit" disabled={yukleniyor} className="od-btn-primary" style={{ width: '100%' }}>
+                            {yukleniyor
+                                ? (lang === 'tr' ? 'Gönderiliyor...' : 'Sending...')
+                                : (lang === 'tr' ? 'Devam Et' : 'Continue')}
+                        </button>
+                    </form>
                 </div>
-            </nav>
-
-            <div style={{ maxWidth: '540px', margin: '4rem auto', padding: '0 1.5rem 3rem' }}>
-                <p className="mono-label" style={{ color: 'var(--gold)', marginBottom: '1rem' }}>
-                    {lang === 'tr' ? 'Ücretsiz kayıt' : 'Free registration'}
-                </p>
-                <h1 className="font-display" style={{ fontSize: '2.5rem', fontWeight: 500, letterSpacing: '-0.02em', color: 'var(--cream)', marginBottom: '0.6rem' }}>
-                    {lang === 'tr' ? 'Hesap Oluştur' : 'Create Account'}
-                </h1>
-                <p style={{ color: 'var(--cream-dim)', marginBottom: '2.75rem', fontSize: '0.98rem', fontWeight: 300 }}>
-                    {lang === 'tr' ? 'Ücretsiz başla, istediğin zaman yükselt.' : 'Start for free, upgrade anytime.'}
-                </p>
-
-                <form onSubmit={handleSubmit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.75rem' }}>
-                        <div>
-                            <label className="mono-label" style={{ color: 'var(--cream-faint)', display: 'block', marginBottom: '10px', fontSize: '0.66rem' }}>
-                                {lang === 'tr' ? 'Ad' : 'First Name'}
-                            </label>
-                            <input type="text" required placeholder={lang === 'tr' ? 'Ahmet' : 'John'}
-                                value={form.ad} onChange={e => setForm({ ...form, ad: e.target.value })}
-                                className="ot-field"
-                            />
-                        </div>
-                        <div>
-                            <label className="mono-label" style={{ color: 'var(--cream-faint)', display: 'block', marginBottom: '10px', fontSize: '0.66rem' }}>
-                                {lang === 'tr' ? 'Soyad' : 'Last Name'}
-                            </label>
-                            <input type="text" required placeholder={lang === 'tr' ? 'Yılmaz' : 'Smith'}
-                                value={form.soyad} onChange={e => setForm({ ...form, soyad: e.target.value })}
-                                className="ot-field"
-                            />
-                        </div>
-                    </div>
-
-                    <div style={{ marginBottom: '1.75rem' }}>
-                        <label className="mono-label" style={{ color: 'var(--cream-faint)', display: 'block', marginBottom: '10px', fontSize: '0.66rem' }}>
-                            {lang === 'tr' ? 'E-posta' : 'Email'}
-                        </label>
-                        <input type="email" required placeholder="ahmet@firma.com"
-                            value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                            className="ot-field"
-                        />
-                    </div>
-
-                    <div style={{ marginBottom: '1.75rem' }}>
-                        <label className="mono-label" style={{ color: 'var(--cream-faint)', display: 'block', marginBottom: '10px', fontSize: '0.66rem' }}>
-                            {lang === 'tr' ? 'Firma / Çiftlik Adı' : 'Company / Farm Name'}
-                        </label>
-                        <input type="text" placeholder={lang === 'tr' ? 'Yılmaz Çiftliği' : 'Smith Farm'}
-                            value={form.firma} onChange={e => setForm({ ...form, firma: e.target.value })}
-                            className="ot-field"
-                        />
-                    </div>
-
-                    <div style={{ marginBottom: '1.75rem' }}>
-                        <label className="mono-label" style={{ color: 'var(--cream-faint)', display: 'block', marginBottom: '10px', fontSize: '0.66rem' }}>
-                            {lang === 'tr' ? 'Şifre' : 'Password'}
-                        </label>
-                        <input type="password" required placeholder={lang === 'tr' ? 'En az 8 karakter' : 'At least 8 characters'}
-                            value={form.sifre} onChange={e => setForm({ ...form, sifre: e.target.value })}
-                            className="ot-field"
-                        />
-                    </div>
-
-                    <div style={{ marginBottom: '2.75rem' }}>
-                        <label className="mono-label" style={{ color: 'var(--cream-faint)', display: 'block', marginBottom: '10px', fontSize: '0.66rem' }}>
-                            {lang === 'tr' ? 'Şifre Tekrar' : 'Confirm Password'}
-                        </label>
-                        <input type="password" required placeholder={lang === 'tr' ? 'Şifrenizi tekrar girin' : 'Repeat your password'}
-                            value={form.sifreTekrar} onChange={e => setForm({ ...form, sifreTekrar: e.target.value })}
-                            className="ot-field"
-                        />
-                    </div>
-
-                    <button type="submit" disabled={yukleniyor} className="ot-btn-solid" style={{ width: '100%' }}>
-                        {yukleniyor
-                            ? (lang === 'tr' ? 'Gönderiliyor...' : 'Sending...')
-                            : (lang === 'tr' ? 'Devam Et' : 'Continue')}
-                    </button>
-                </form>
             </div>
         </main>
     );

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* Temel */
+  /* Temel (legacy — demo / urun-ekle sayfaları için korunuyor) */
   --ink: #23261e;
   --parchment: #faf6ee;
 
@@ -27,32 +27,67 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Premium koyu tema (clodialiveoil referansı) */
-  --bg: #1a1a0f;
-  --bg-elevated: #201f13;
-  --bg-elevated-2: #262517;
-  --line: rgba(240, 234, 221, 0.13);
-  --line-strong: rgba(240, 234, 221, 0.26);
-  --cream: #f2ede0;
-  --cream-dim: rgba(242, 237, 224, 0.62);
-  --cream-faint: rgba(242, 237, 224, 0.36);
-  --gold: #c9a15a;
-  --gold-bright: #ddc084;
-  --gold-soft: rgba(201, 161, 90, 0.14);
+  /* ---- Origintag Design System (DESIGN.md) ---- */
+  --surface: #101415;
+  --surface-dim: #101415;
+  --surface-bright: #363a3b;
+  --surface-container-lowest: #0b0f10;
+  --surface-container-low: #191c1e;
+  --surface-container: #1d2022;
+  --surface-container-high: #272a2c;
+  --surface-container-highest: #323537;
+  --on-surface: #e0e3e5;
+  --on-surface-variant: #c1c8c4;
+  --inverse-surface: #e0e3e5;
+  --inverse-on-surface: #2d3133;
+  --outline: #8b928e;
+  --outline-variant: #414845;
+  --surface-tint: #a9cfc0;
+  --primary: #a9cfc0;
+  --on-primary: #13362c;
+  --primary-container: #062c22;
+  --on-primary-container: #719587;
+  --inverse-primary: #426559;
+  --secondary: #b2e630;
+  --on-secondary: #263500;
+  --secondary-container: #97c901;
+  --on-secondary-container: #3a5000;
+  --tertiary: #9ed1bd;
+  --on-tertiary: #00382a;
+  --tertiary-container: #002d22;
+  --on-tertiary-container: #669886;
+  --error: #ffb4ab;
+  --on-error: #690005;
+  --error-container: #93000a;
+  --on-error-container: #ffdad6;
+  --secondary-fixed: #bff43f;
+  --secondary-fixed-dim: #a4d71e;
+  --on-secondary-fixed: #151f00;
+  --on-secondary-fixed-variant: #384e00;
+  --surface-variant: #323537;
+
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  --container-max: 1280px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-display);
+  --font-sans: var(--font-body);
   --font-display: var(--font-display);
-  --font-mono: var(--font-mono);
+  --font-body: var(--font-body);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
 
 h1, h2, h3, .font-display {
@@ -64,11 +99,11 @@ html {
 }
 
 .mono-label {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.76rem;
-  letter-spacing: 0.22em;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -79,88 +114,162 @@ html {
   }
 }
 
-/* ---- Premium koyu tema — paylaşılan etkileşim sınıfları ---- */
+/* ---- Origintag Design System — paylaşılan bileşen sınıfları ---- */
 
-.ot-field {
-  width: 100%;
-  padding: 0.85rem 0.1rem;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--line-strong);
-  border-radius: 0;
-  color: var(--cream);
-  font-size: 0.98rem;
-  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  box-sizing: border-box;
-  outline: none;
-  transition: border-color 0.25s ease;
-}
-.ot-field::placeholder {
-  color: var(--cream-faint);
-}
-.ot-field:focus {
-  border-bottom-color: var(--gold);
+/* Glassmorphism kartlar: "frosted forest" efekti — koyu orman yeşili
+   gradyanı + 20px blur + %10 opak beyaz kenarlık. */
+.od-glass {
+  background: linear-gradient(135deg, rgba(6, 44, 34, 0.55) 0%, rgba(16, 20, 21, 0.3) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px -28px rgba(6, 44, 34, 0.55);
 }
 
-.ot-btn-solid {
+.od-glass-interactive {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.od-glass-interactive:hover {
+  transform: translateY(-2px);
+  border-color: rgba(178, 230, 48, 0.4);
+  box-shadow: 0 24px 60px -24px rgba(6, 44, 34, 0.6), 0 0 0 1px rgba(178, 230, 48, 0.14);
+}
+
+/* Yüzen hap navbar */
+.od-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.6rem 0.6rem 1.5rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(29, 32, 34, 0.78) 0%, rgba(16, 20, 21, 0.58) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px -22px rgba(0, 0, 0, 0.6);
+}
+
+/* Butonlar */
+.od-btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.95rem 2.1rem;
-  background: var(--gold);
-  color: #1a1a0f;
-  border: 1px solid var(--gold);
-  border-radius: 2px;
-  font-weight: 600;
+  padding: 0.85rem 1.75rem;
+  background: var(--secondary);
+  color: var(--on-secondary);
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.ot-btn-solid:hover {
-  background: var(--gold-bright);
-  border-color: var(--gold-bright);
+.od-btn-primary:hover {
+  background: var(--secondary-fixed-dim);
+  box-shadow: 0 0 0 4px rgba(178, 230, 48, 0.18);
+  transform: translateY(-1px);
 }
-.ot-btn-solid:disabled {
-  opacity: 0.55;
+.od-btn-primary:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.ot-btn-outline {
+.od-btn-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.85rem 1.9rem;
-  background: transparent;
-  color: var(--cream);
-  border: 1px solid var(--line-strong);
-  border-radius: 2px;
-  font-weight: 500;
+  padding: 0.8rem 1.6rem;
+  background: rgba(6, 44, 34, 0.4);
+  color: var(--on-surface);
+  border: 1px solid var(--secondary);
+  border-radius: var(--radius);
+  font-weight: 600;
   font-size: 0.92rem;
   cursor: pointer;
   text-decoration: none;
-  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
-.ot-btn-outline:hover {
-  border-color: var(--gold);
-  color: var(--gold-bright);
-  background: var(--gold-soft);
+.od-btn-secondary:hover {
+  background: rgba(178, 230, 48, 0.1);
+  box-shadow: 0 0 0 3px rgba(178, 230, 48, 0.12);
 }
 
-.ot-link-gold {
-  color: var(--gold);
+.od-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.3rem;
+  background: transparent;
+  color: var(--on-surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.od-btn-ghost:hover {
+  background: rgba(178, 230, 48, 0.08);
+  color: var(--secondary);
+}
+
+/* Form alanları */
+.od-field {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: rgba(11, 15, 16, 0.55);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius);
+  color: var(--on-surface);
+  font-size: 0.95rem;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.od-field::placeholder {
+  color: var(--outline);
+}
+.od-field:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(178, 230, 48, 0.16);
+}
+
+/* Pill etiketler */
+.od-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.9rem;
+  background: var(--tertiary-container);
+  color: var(--on-surface);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.od-row-hover {
+  transition: background 0.2s ease;
+  border-radius: var(--radius);
+}
+.od-row-hover:hover {
+  background: rgba(178, 230, 48, 0.05);
+}
+
+.od-link {
+  color: var(--secondary);
   text-decoration: none;
   transition: color 0.2s ease;
 }
-.ot-link-gold:hover {
-  color: var(--gold-bright);
-}
-
-.ot-row-hover {
-  transition: background 0.2s ease;
-}
-.ot-row-hover:hover {
-  background: rgba(240, 234, 221, 0.035);
+.od-link:hover {
+  color: var(--secondary-fixed);
 }

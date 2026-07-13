@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Familjen_Grotesk, IBM_Plex_Mono } from "next/font/google";
+import { Manrope, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "./context/LanguageContext";
 
-const familjenGrotesk = Familjen_Grotesk({
+const manrope = Manrope({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["500", "600", "700", "800"],
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-mono",
+const hankenGrotesk = Hanken_Grotesk({
+  variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className={`${familjenGrotesk.variable} ${ibmPlexMono.variable} h-full antialiased`}>
+    <html lang="tr" className={`${manrope.variable} ${hankenGrotesk.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <LanguageProvider>
           {children}

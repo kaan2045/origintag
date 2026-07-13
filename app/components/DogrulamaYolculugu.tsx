@@ -22,14 +22,15 @@ export default function DogrulamaYolculugu({ adimlar, accentColor }: { adimlar: 
                     }}>
                         <div style={{
                             width: '15px', height: '15px', borderRadius: '50%',
-                            background: adim.aktif ? accentColor : 'var(--bg-elevated)',
+                            background: adim.aktif ? accentColor : 'var(--surface-container-high)',
                             border: `2px solid ${accentColor}`,
+                            boxShadow: adim.aktif ? `0 0 0 4px ${accentColor}26` : 'none',
                         }} />
                     </div>
-                    <div className="mono-label" style={{ marginTop: '0.65rem', fontSize: '0.66rem', letterSpacing: '0.1em', color: 'var(--cream-faint)' }}>
+                    <div className="mono-label" style={{ marginTop: '0.65rem', fontSize: '0.62rem', letterSpacing: '0.06em', color: 'var(--on-surface-variant)' }}>
                         {adim.etiket}
                     </div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--cream)', marginTop: '3px' }}>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--on-surface)', marginTop: '3px' }}>
                         {adim.tarih}
                     </div>
                 </div>

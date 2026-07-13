@@ -33,7 +33,7 @@ export default function Home() {
     if (qrRef.current) {
       QRCode.toCanvas(qrRef.current, 'https://origintag.com.tr/#vitrin', {
         width: 128, margin: 1,
-        color: { dark: '#1a1a0f', light: '#f2ede0' },
+        color: { dark: '#101415', light: '#e0e3e5' },
       });
     }
   }, []);
@@ -67,10 +67,10 @@ export default function Home() {
   ];
 
   return (
-    <main style={{ margin: 0, padding: 0, background: 'var(--bg)' }}>
+    <main style={{ margin: 0, padding: 0, background: 'var(--surface)' }}>
 
-      {/* HERO — tek video (zeytin dali), metin sol / QR sag */}
-      <section style={{ position: 'relative', overflow: 'hidden', color: 'var(--cream)', minHeight: '100vh' }}>
+      {/* HERO — tek video (zeytin dali), yüzen hap navbar üstte */}
+      <section style={{ position: 'relative', overflow: 'hidden', color: 'var(--on-surface)', minHeight: '100vh' }}>
         <video
           autoPlay muted loop playsInline preload="auto"
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
@@ -79,90 +79,93 @@ export default function Home() {
         </video>
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(180deg, rgba(26,26,15,0.55) 0%, rgba(26,26,15,0.62) 45%, rgba(26,26,15,0.94) 100%)',
+          background: 'linear-gradient(180deg, rgba(10,15,16,0.6) 0%, rgba(6,10,10,0.55) 45%, rgba(6,10,10,0.92) 100%)',
         }} />
-        <div style={{ position: 'absolute', inset: '20px', border: '1px solid rgba(242,237,224,0.14)', pointerEvents: 'none' }} />
 
         <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
 
-          <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '2rem 2.75rem' }}>
-            <img src="/origin.png" alt="OriginTag" style={{ height: '30px', filter: 'brightness(0) invert(1)', opacity: 0.94 }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem' }}>
-              <a href="/login" className="ot-btn-outline" style={{ padding: '0.55rem 1.2rem', fontSize: '0.85rem' }}>
-                {lang === 'tr' ? 'Giriş Yap' : 'Sign In'}
-              </a>
-              <a href="/register" className="ot-btn-solid" style={{ padding: '0.55rem 1.2rem', fontSize: '0.85rem' }}>
-                {lang === 'tr' ? 'Ücretsiz Başla' : 'Get Started Free'}
-              </a>
-              <LanguageSwitcher />
-            </div>
-          </nav>
+          {/* YÜZEN HAP NAVBAR */}
+          <div style={{ position: 'sticky', top: '1.25rem', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
+            <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
+              <img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.94 }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <a href="/login" className="od-btn-ghost">
+                  {lang === 'tr' ? 'Giriş Yap' : 'Sign In'}
+                </a>
+                <a href="/register" className="od-btn-primary">
+                  {lang === 'tr' ? 'Ücretsiz Başla' : 'Get Started Free'}
+                </a>
+                <LanguageSwitcher />
+              </div>
+            </nav>
+          </div>
 
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', padding: '2rem 2.75rem 4rem', flexWrap: 'wrap', gap: '3rem' }}>
             <div style={{ flex: '1 1 480px', minWidth: '320px' }}>
-              <p className="mono-label" style={{ color: 'var(--gold)', marginBottom: '1.5rem' }}>
+              <span className="od-chip" style={{ marginBottom: '1.5rem' }}>
                 {lang === 'tr' ? 'Coğrafi İşaretli Ürünler İçin' : 'For Geographically Indicated Products'}
-              </p>
-              <h1 className="font-display" style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)', fontWeight: 500, letterSpacing: '-0.02em', lineHeight: 1.05, margin: '0 0 1.5rem' }}>
+              </span>
+              <h1 className="font-display" style={{ fontSize: 'clamp(2.4rem, 5vw, 3.75rem)', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.08, margin: '1.25rem 0 1.5rem' }}>
                 {lang === 'tr'
-                  ? <>Ürününüzün hikayesini <span style={{ color: 'var(--gold)' }}>tarladan sofraya</span> belgeleyin</>
-                  : <>Document your product&apos;s <span style={{ color: 'var(--gold)' }}>story from farm to table</span></>}
+                  ? <>Ürününüzün hikayesini <span style={{ color: 'var(--secondary)' }}>tarladan sofraya</span> belgeleyin</>
+                  : <>Document your product&apos;s <span style={{ color: 'var(--secondary)' }}>story from farm to table</span></>}
               </h1>
-              <p style={{ fontSize: '1.05rem', color: 'var(--cream-dim)', maxWidth: '480px', margin: '0 0 2.5rem', lineHeight: 1.7, fontWeight: 300 }}>
+              <p style={{ fontSize: '1.125rem', color: 'var(--on-surface-variant)', maxWidth: '480px', margin: '0 0 2.5rem', lineHeight: 1.7, fontWeight: 400 }}>
                 {lang === 'tr'
                   ? 'Zeytinyağından bala, peynirden şaraba — her adım blockchain\'e yazılır, değiştirilemez ve tek bir QR kod ile doğrulanır.'
                   : 'From olive oil to honey, cheese to wine — every step is written to the blockchain, immutable, and verifiable with a single QR code.'}
               </p>
-              <a href="/register" className="ot-btn-solid" style={{ fontSize: '0.95rem' }}>
+              <a href="/register" className="od-btn-primary" style={{ fontSize: '1rem', padding: '1rem 2.2rem' }}>
                 {lang === 'tr' ? 'Hemen Başla — Ücretsiz' : 'Get Started — Free'}
               </a>
             </div>
 
-            <a href="#vitrin" onClick={(e) => { e.preventDefault(); setVitrinAcik(true); }} style={{
-              flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem',
-              padding: '1.75rem', border: '1px solid var(--line-strong)', background: 'rgba(0,0,0,0.18)',
-              textDecoration: 'none', color: 'var(--cream)', cursor: 'pointer',
-            }}>
-              <div style={{ background: 'var(--cream)', padding: '10px', lineHeight: 0 }}>
+            <a href="#vitrin" onClick={(e) => { e.preventDefault(); setVitrinAcik(true); }}
+              className="od-glass od-glass-interactive"
+              style={{
+                flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem',
+                padding: '1.75rem', textDecoration: 'none', color: 'var(--on-surface)',
+              }}>
+              <div style={{ background: 'var(--on-surface)', padding: '10px', borderRadius: 'var(--radius)', lineHeight: 0 }}>
                 <canvas ref={qrRef} style={{ display: 'block' }} />
               </div>
-              <div className="mono-label" style={{ fontSize: '0.7rem', color: 'var(--cream-dim)' }}>{lang === 'tr' ? "QR'ı tarat" : 'Scan the QR'}</div>
+              <div className="mono-label" style={{ fontSize: '0.7rem', color: 'var(--on-surface-variant)' }}>{lang === 'tr' ? "QR'ı tarat" : 'Scan the QR'}</div>
             </a>
           </div>
         </div>
       </section>
 
-      {/* VİTRİN — sadece QR'a tiklaninca acilir, hero'dan ayri, reels tarzi kart */}
+      {/* VİTRİN — sadece QR'a tiklaninca acilir, reels tarzi glass kart */}
       <div ref={vitrinRef} style={{ scrollMarginTop: '2rem' }}>
         {vitrinAcik && (
-          <section id="vitrin" style={{ padding: '5rem 2rem', background: 'var(--bg)', borderTop: '1px solid var(--line)' }}>
-            <p className="mono-label" style={{ textAlign: 'center', color: 'var(--gold)', marginBottom: '3rem' }}>
+          <section id="vitrin" style={{ padding: '5rem 1.5rem' }}>
+            <p className="mono-label" style={{ textAlign: 'center', color: 'var(--secondary)', marginBottom: '3rem' }}>
               {lang === 'tr' ? 'Blockchain İzlenebilirlik Vitrini' : 'Blockchain Traceability Showcase'}
             </p>
-            <div style={{
-              display: 'flex', gap: '2.5rem', maxWidth: '820px', margin: '0 auto',
-              alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center',
+            <div className="od-glass" style={{
+              display: 'flex', gap: '2.5rem', maxWidth: '860px', margin: '0 auto',
+              alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', padding: '2.5rem',
             }}>
               <div style={{
-                width: '260px', height: '460px', overflow: 'hidden', position: 'relative',
-                border: '1px solid var(--line-strong)', flexShrink: 0, background: 'var(--bg-elevated)',
+                width: '250px', height: '440px', overflow: 'hidden', position: 'relative',
+                borderRadius: 'var(--radius-md)', flexShrink: 0, background: 'var(--surface-container-low)',
               }}>
                 <VideoKatmanlari videos={VITRIN_ICERIK.map(v => v.video)} intervalMs={7000} onIndexChange={setAktifIndex} />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 55%, rgba(20,20,12,0.75) 100%)' }} />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 55%, rgba(6,10,10,0.8) 100%)' }} />
               </div>
 
               <div style={{ flex: '1 1 260px', minWidth: '220px' }}>
-                <h3 key={aktifIndex} className="font-display" style={{ fontSize: '1.7rem', fontWeight: 500, color: 'var(--cream)', marginBottom: '0.75rem' }}>
+                <h3 key={aktifIndex} className="font-display" style={{ fontSize: '1.7rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '0.75rem' }}>
                   {lang === 'tr' ? aktif.baslik.tr : aktif.baslik.en}
                 </h3>
-                <p style={{ color: 'var(--cream-dim)', lineHeight: 1.7, fontSize: '0.95rem', marginBottom: '1.75rem', fontWeight: 300 }}>
+                <p style={{ color: 'var(--on-surface-variant)', lineHeight: 1.7, fontSize: '0.98rem', marginBottom: '1.75rem' }}>
                   {lang === 'tr' ? aktif.aciklama.tr : aktif.aciklama.en}
                 </p>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   {VITRIN_ICERIK.map((_, i) => (
                     <div key={i} style={{
-                      width: i === aktifIndex ? '26px' : '8px', height: '2px',
-                      background: i === aktifIndex ? 'var(--gold)' : 'var(--line-strong)', transition: 'all 0.4s ease',
+                      width: i === aktifIndex ? '26px' : '8px', height: '4px', borderRadius: 'var(--radius-full)',
+                      background: i === aktifIndex ? 'var(--secondary)' : 'var(--outline-variant)', transition: 'all 0.4s ease',
                     }} />
                   ))}
                 </div>
@@ -173,40 +176,40 @@ export default function Home() {
       </div>
 
       {/* ÜRÜNLER */}
-      <section style={{ padding: '3.5rem 2rem', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}>
-        <p className="mono-label" style={{ textAlign: 'center', color: 'var(--cream-faint)', marginBottom: '1.75rem' }}>
+      <section style={{ padding: '3.5rem 1.5rem' }}>
+        <p className="mono-label" style={{ textAlign: 'center', color: 'var(--on-surface-variant)', marginBottom: '1.75rem' }}>
           {lang === 'tr' ? 'Her Tür Tarım Ürünü İçin' : 'For All Agricultural Products'}
         </p>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.6rem', flexWrap: 'wrap', maxWidth: '820px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '0.6rem', flexWrap: 'wrap', maxWidth: '860px', margin: '0 auto' }}>
           {urunler.map((u, i) => (
-            <span key={i} className="mono-label" style={{ padding: '0.55rem 1.15rem', border: '1px solid var(--line-strong)', fontSize: '0.72rem', letterSpacing: '0.1em', color: 'var(--cream-dim)', textTransform: 'none' }}>{u}</span>
+            <span key={i} className="od-chip" style={{ background: 'var(--surface-container)', textTransform: 'none', fontWeight: 500 }}>{u}</span>
           ))}
         </div>
       </section>
 
       {/* ÖZELLİKLER */}
-      <section style={{ padding: '7rem 2rem', maxWidth: '1080px', margin: '0 auto' }}>
-        <p className="mono-label" style={{ textAlign: 'center', color: 'var(--gold)', marginBottom: '1.25rem' }}>
+      <section style={{ padding: '6rem 1.5rem', maxWidth: 'var(--container-max)', margin: '0 auto' }}>
+        <p className="mono-label" style={{ textAlign: 'center', color: 'var(--secondary)', marginBottom: '1.25rem' }}>
           {lang === 'tr' ? 'Neden OriginTag' : 'Why OriginTag'}
         </p>
-        <h2 className="font-display" style={{ textAlign: 'center', fontSize: 'clamp(2.1rem, 4.4vw, 3.1rem)', fontWeight: 500, letterSpacing: '-0.02em', marginBottom: '4rem', color: 'var(--cream)' }}>
+        <h2 className="font-display" style={{ textAlign: 'center', fontSize: 'clamp(2rem, 4.4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '3.5rem', color: 'var(--on-surface)' }}>
           {lang === 'tr' ? 'Şeffaflık, kanıtla birlikte gelir' : 'Transparency, backed by proof'}
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'var(--line)', border: '1px solid var(--line)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
           {ozellikler.map((f, i) => (
-            <div key={i} style={{ padding: '2.75rem 2.25rem', background: 'var(--bg)' }}>
-              <div style={{ width: '28px', height: '1px', background: 'var(--gold)', marginBottom: '1.5rem' }} />
-              <h3 className="font-display" style={{ color: 'var(--cream)', fontWeight: 500, fontSize: '1.25rem', marginBottom: '0.85rem' }}>{f.title}</h3>
-              <p style={{ color: 'var(--cream-dim)', lineHeight: 1.7, fontSize: '0.95rem', margin: 0, fontWeight: 300 }}>{f.desc}</p>
+            <div key={i} className="od-glass od-glass-interactive" style={{ padding: '2.25rem' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: 'var(--radius)', background: 'rgba(178,230,48,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--secondary)', fontSize: '1rem', marginBottom: '1.5rem' }}>⬡</div>
+              <h3 className="font-display" style={{ color: 'var(--on-surface)', fontWeight: 700, fontSize: '1.2rem', marginBottom: '0.75rem' }}>{f.title}</h3>
+              <p style={{ color: 'var(--on-surface-variant)', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer style={{ textAlign: 'center', padding: '3.5rem 2rem', color: 'var(--cream-faint)', borderTop: '1px solid var(--line)' }}>
+      <footer style={{ textAlign: 'center', padding: '3.5rem 1.5rem', borderTop: '1px solid var(--outline-variant)' }}>
         <img src="/origin.png" alt="OriginTag" style={{ height: '24px', marginBottom: '0.9rem', filter: 'brightness(0) invert(1)', opacity: 0.45 }} />
-        <p className="mono-label" style={{ color: 'var(--cream-faint)', fontSize: '0.66rem' }}>© 2026 OriginTag — Geographical Indicator & Traceability</p>
+        <p className="mono-label" style={{ color: 'var(--on-surface-variant)', fontSize: '0.7rem' }}>© 2026 OriginTag — Geographical Indicator & Traceability</p>
       </footer>
 
     </main>
