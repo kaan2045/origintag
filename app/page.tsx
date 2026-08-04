@@ -47,8 +47,8 @@ export default function Home() {
   const aktif = VITRIN_ICERIK[aktifIndex];
 
   const urunler = lang === 'tr'
-    ? ['Zeytinyağı', 'Süt & Süt Ürünleri', 'Peynir', 'Bal', 'Sebze & Meyve', 'Tahıl', 'Şarap', 'Turşu & Reçel']
-    : ['Olive Oil', 'Dairy Products', 'Cheese', 'Honey', 'Vegetables & Fruits', 'Grain', 'Wine', 'Pickles & Jam'];
+    ? ['Zeytinyağı', 'Süt & Süt Ürünleri', 'Peynir', 'Bal', 'Kahve', 'Sebze & Meyve', 'Tahıl', 'Şarap', 'Turşu & Reçel']
+    : ['Olive Oil', 'Dairy Products', 'Cheese', 'Honey', 'Coffee', 'Vegetables & Fruits', 'Grain', 'Wine', 'Pickles & Jam'];
 
   const ozellikler = lang === 'tr' ? [
     { title: 'Blockchain Güvencesi', desc: 'Verileriniz SHA-256 ile şifrelenir ve Polygon ağına yazılır — kimse geriye dönüp değiştiremez.' },

@@ -249,6 +249,7 @@ export default function UrunEkle() {
                                 <option value="Zeytinyagi">{lang === 'tr' ? 'Zeytinyağı' : 'Olive Oil'}</option>
                                 <option value="Bal">{lang === 'tr' ? 'Bal' : 'Honey'}</option>
                                 <option value="Peynir">{lang === 'tr' ? 'Peynir' : 'Cheese'}</option>
+                                <option value="Kahve">{lang === 'tr' ? 'Kahve' : 'Coffee'}</option>
                                 <option value="Sut Urunleri">{lang === 'tr' ? 'Süt Ürünleri' : 'Dairy Products'}</option>
                                 <option value="Sebze & Meyve">{lang === 'tr' ? 'Sebze & Meyve' : 'Vegetables & Fruits'}</option>
                                 <option value="Tahil">{lang === 'tr' ? 'Tahıl' : 'Grain'}</option>
