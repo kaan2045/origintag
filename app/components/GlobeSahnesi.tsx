@@ -111,7 +111,7 @@ interface KureProps {
     azaltilmisHareket: boolean;
 }
 
-const OTO_DONUS_HIZI = 0.045; // radyan/saniye — yavaş, kendiliğinden dönüş
+const OTO_DONUS_HIZI = 0.13; // radyan/saniye — yavaş ama fark edilir kendiliğinden dönüş
 
 function Kure({ dragRef, scrollRef, otoRef, suruklerkenRef, azaltilmisHareket }: KureProps) {
     const grup = useRef<THREE.Group>(null);
