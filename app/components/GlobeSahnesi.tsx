@@ -103,7 +103,17 @@ function KitaNoktalari() {
     );
 }
 
-function Kure({ dragRef, scrollRef }: { dragRef: React.MutableRefObject<number>; scrollRef: React.MutableRefObject<number> }) {
+interface KureProps {
+    dragRef: React.MutableRefObject<number>;
+    scrollRef: React.MutableRefObject<number>;
+    otoRef: React.MutableRefObject<number>;
+    suruklerkenRef: React.MutableRefObject<boolean>;
+    azaltilmisHareket: boolean;
+}
+
+const OTO_DONUS_HIZI = 0.045; // radyan/saniye — yavaş, kendiliğinden dönüş
+
+function Kure({ dragRef, scrollRef, otoRef, suruklerkenRef, azaltilmisHareket }: KureProps) {
     const grup = useRef<THREE.Group>(null);
     const merkezVekVektor = useMemo(() => {
         const kayit: Record<string, THREE.Vector3> = {};
@@ -114,9 +124,13 @@ function Kure({ dragRef, scrollRef }: { dragRef: React.MutableRefObject<number>;
         return kayit;
     }, []);
 
-    useFrame(() => {
+    useFrame((_state, delta) => {
+        // Sürüklenmiyorken (ve azaltılmış hareket tercih edilmemişse) küre kendiliğinden yavaşça dönmeye devam eder
+        if (!suruklerkenRef.current && !azaltilmisHareket) {
+            otoRef.current += delta * OTO_DONUS_HIZI;
+        }
         if (grup.current) {
-            grup.current.rotation.y = scrollRef.current + dragRef.current;
+            grup.current.rotation.y = otoRef.current + scrollRef.current + dragRef.current;
         }
     });
 
@@ -147,12 +161,15 @@ function Kure({ dragRef, scrollRef }: { dragRef: React.MutableRefObject<number>;
 export default function GlobeSahnesi() {
     const dragRef = useRef(0);
     const scrollRef = useRef(0);
+    const otoRef = useRef(0);
+    const suruklerkenRef = useRef(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const azaltilmisHareket = useMemo(
+        () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        []
+    );
 
     useEffect(() => {
-        const azaltilmisHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        let suruklerken = false;
         let sonX = 0;
         let dragBaslangic = 0;
 
@@ -162,16 +179,16 @@ export default function GlobeSahnesi() {
         };
 
         const onPointerDown = (e: PointerEvent) => {
-            suruklerken = true;
+            suruklerkenRef.current = true;
             sonX = e.clientX;
             dragBaslangic = dragRef.current;
         };
         const onPointerMove = (e: PointerEvent) => {
-            if (!suruklerken) return;
+            if (!suruklerkenRef.current) return;
             const delta = e.clientX - sonX;
             dragRef.current = dragBaslangic + delta * 0.01;
         };
-        const onPointerUp = () => { suruklerken = false; };
+        const onPointerUp = () => { suruklerkenRef.current = false; };
 
         window.addEventListener('scroll', onScroll, { passive: true });
         const el = containerRef.current;
@@ -185,12 +202,12 @@ export default function GlobeSahnesi() {
             window.removeEventListener('pointermove', onPointerMove);
             window.removeEventListener('pointerup', onPointerUp);
         };
-    }, []);
+    }, [azaltilmisHareket]);
 
     return (
         <div ref={containerRef} style={{ width: '100%', height: '420px', cursor: 'grab', touchAction: 'none' }}>
             <Canvas camera={{ position: [0, 0, 5.5], fov: 45 }} dpr={[1, 2]}>
-                <Kure dragRef={dragRef} scrollRef={scrollRef} />
+                <Kure dragRef={dragRef} scrollRef={scrollRef} otoRef={otoRef} suruklerkenRef={suruklerkenRef} azaltilmisHareket={azaltilmisHareket} />
             </Canvas>
         </div>
     );
