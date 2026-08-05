@@ -1,9 +1,12 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import QRCode from 'qrcode';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import VideoKatmanlari from './components/VideoKatmanlari';
 import { useLanguage } from './context/LanguageContext';
+
+const GlobeSahnesi = dynamic(() => import('./components/GlobeSahnesi'), { ssr: false });
 
 const VITRIN_ICERIK = [
   {
@@ -204,6 +207,22 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* KÜRESEL ERİŞİM */}
+      <section style={{ padding: '5rem 1.5rem 2rem', maxWidth: 'var(--container-max)', margin: '0 auto' }}>
+        <p className="mono-label" style={{ textAlign: 'center', color: 'var(--secondary)', marginBottom: '1.25rem' }}>
+          {lang === 'tr' ? 'Dünyaya Açılın' : 'Reach the World'}
+        </p>
+        <h2 className="font-display" style={{ textAlign: 'center', fontSize: 'clamp(2rem, 4.4vw, 3rem)', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '1rem', color: 'var(--on-surface)' }}>
+          {lang === 'tr' ? 'Türkiye\'den dünya pazarlarına' : 'From Turkey to global markets'}
+        </h2>
+        <p style={{ textAlign: 'center', color: 'var(--on-surface-variant)', maxWidth: '560px', margin: '0 auto 1.5rem', lineHeight: 1.7 }}>
+          {lang === 'tr'
+            ? 'Coğrafi işaret belgeli ürünleriniz, blockchain kaydıyla birlikte uluslararası pazarlarda güvenilirlik kazanır.'
+            : 'Your geographically indicated products gain international trust, backed by a blockchain record.'}
+        </p>
+        <GlobeSahnesi />
       </section>
 
       {/* FOOTER */}
