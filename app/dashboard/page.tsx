@@ -11,6 +11,8 @@ export default function Dashboard() {
     const [kullaniciAd, setKullaniciAd] = useState('');
     const [kullaniciId, setKullaniciId] = useState('');
     const [secilenUrun, setSecilenUrun] = useState<string>('');
+    const [yaziliyorHash, setYaziliyorHash] = useState<string | null>(null);
+    const [yazimSonucu, setYazimSonucu] = useState<Record<string, string>>({});
 
     useEffect(() => {
         const ad = localStorage.getItem('kullanici_ad') || '';
@@ -38,6 +40,30 @@ export default function Dashboard() {
             })
             .catch(() => { });
     }, []);
+
+    const blockchaineYaz = async (hash: string) => {
+        setYaziliyorHash(hash);
+        setYazimSonucu(prev => ({ ...prev, [hash]: '' }));
+        try {
+            const res = await fetch('/api/blockchain-tamamla', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ hash }),
+            });
+            const data = await res.json();
+            if (data.basari) {
+                setUrunler(prev => prev.map(u => u.hash === hash
+                    ? { ...u, polygon_tx_hash: data.txHash || u.polygon_tx_hash || 'zincirde-kayitli-tx-bilinmiyor' }
+                    : u));
+                setYazimSonucu(prev => ({ ...prev, [hash]: 'basarili' }));
+            } else {
+                setYazimSonucu(prev => ({ ...prev, [hash]: data.hata || (lang === 'tr' ? 'Bilinmeyen hata' : 'Unknown error') }));
+            }
+        } catch {
+            setYazimSonucu(prev => ({ ...prev, [hash]: lang === 'tr' ? 'Bağlantı hatası' : 'Connection error' }));
+        }
+        setYaziliyorHash(null);
+    };
 
     const cikisYap = () => {
         localStorage.removeItem('kullanici_email');
@@ -131,10 +157,35 @@ export default function Dashboard() {
                                     <span style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)' }}>{urun.urun_tipi}</span>
                                     <span style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)' }}>{urun.bolge}</span>
                                     <span style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)' }}>{urun.miktar} {urun.birim}</span>
-                                    <a href={'/dogrula/' + urun.hash} className="od-link mono-label"
-                                        style={{ fontSize: '0.68rem', letterSpacing: '0.06em' }}>
-                                        {lang === 'tr' ? 'Görüntüle →' : 'View →'}
-                                    </a>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.35rem' }}>
+                                        <a href={'/dogrula/' + urun.hash} className="od-link mono-label"
+                                            style={{ fontSize: '0.68rem', letterSpacing: '0.06em' }}>
+                                            {lang === 'tr' ? 'Görüntüle →' : 'View →'}
+                                        </a>
+                                        {!urun.polygon_tx_hash && (
+                                            <button
+                                                onClick={() => blockchaineYaz(urun.hash)}
+                                                disabled={yaziliyorHash === urun.hash}
+                                                className="mono-label"
+                                                style={{
+                                                    fontSize: '0.62rem', letterSpacing: '0.05em', color: 'var(--error)',
+                                                    background: 'transparent', border: '1px solid rgba(255,180,171,0.4)',
+                                                    borderRadius: 'var(--radius-full)', padding: '0.2rem 0.6rem',
+                                                    cursor: yaziliyorHash === urun.hash ? 'not-allowed' : 'pointer',
+                                                    opacity: yaziliyorHash === urun.hash ? 0.6 : 1,
+                                                }}
+                                            >
+                                                {yaziliyorHash === urun.hash
+                                                    ? (lang === 'tr' ? 'Yazılıyor...' : 'Writing...')
+                                                    : (lang === 'tr' ? '⛓ Blockchain\'e Yaz' : '⛓ Write to Blockchain')}
+                                            </button>
+                                        )}
+                                        {yazimSonucu[urun.hash] && yazimSonucu[urun.hash] !== 'basarili' && (
+                                            <span style={{ fontSize: '0.62rem', color: 'var(--error)', maxWidth: '160px' }}>
+                                                {yazimSonucu[urun.hash]}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                         </div>
