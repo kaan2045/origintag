@@ -32,13 +32,16 @@ export default function LanguageSwitcher() {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        function handleClick(e: MouseEvent) {
+        // mousedown yerine pointerdown: dokunmatik cihazlarda mouse olayları
+        // güvenilir şekilde/aynı zamanlamada tetiklenmeyebiliyor, pointerdown
+        // fare + dokunma + kalemi tek bir olayda tutarlı şekilde birleştiriyor.
+        function handlePointerDown(e: PointerEvent) {
             if (ref.current && !ref.current.contains(e.target as Node)) {
                 setOpen(false);
             }
         }
-        document.addEventListener('mousedown', handleClick);
-        return () => document.removeEventListener('mousedown', handleClick);
+        document.addEventListener('pointerdown', handlePointerDown);
+        return () => document.removeEventListener('pointerdown', handlePointerDown);
     }, []);
 
     return (
@@ -52,6 +55,7 @@ export default function LanguageSwitcher() {
                     borderRadius: 'var(--radius-full)', padding: '0.45rem 0.85rem',
                     cursor: 'pointer', color: 'var(--on-surface)',
                     fontSize: '0.8rem', fontWeight: 600,
+                    touchAction: 'manipulation',
                 }}
             >
                 {lang === 'tr' ? <TRFlag /> : <UKFlag />}
@@ -74,6 +78,7 @@ export default function LanguageSwitcher() {
                             border: 'none', cursor: 'pointer',
                             fontSize: '0.88rem', color: 'var(--on-surface)', textAlign: 'left',
                             borderBottom: '1px solid rgba(255,255,255,0.08)',
+                            touchAction: 'manipulation',
                         }}
                     >
                         <TRFlag />
@@ -89,6 +94,7 @@ export default function LanguageSwitcher() {
                             background: lang === 'en' ? 'rgba(178,230,48,0.12)' : 'transparent',
                             border: 'none', cursor: 'pointer',
                             fontSize: '0.88rem', color: 'var(--on-surface)', textAlign: 'left',
+                            touchAction: 'manipulation',
                         }}
                     >
                         <UKFlag />
