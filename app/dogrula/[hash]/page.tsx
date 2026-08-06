@@ -189,28 +189,32 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
     return (
         <main style={{ minHeight: '100vh', background: 'var(--surface)' }}>
 
+            {/* NAVBAR — hero'nun video/overlay katmanlarından tamamen bağımsız, sabit (fixed) konumda.
+                Mobilde otomatik oynayan video bazı tarayıcılarda z-index'i görmezden gelip donanımsal
+                katman olarak üstte render edilebiliyor; navbar'ı hero'nun dışına/üstüne taşımak bunu
+                tamamen ortadan kaldırır (dil değiştiricinin her zaman dokunulabilir olmasını sağlar). */}
+            <div style={{ position: 'fixed', top: '1.25rem', left: 0, width: '100%', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
+                <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
+                    <img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div className="mono-label" style={{
+                            display: 'flex', alignItems: 'center', gap: '0.5rem',
+                            fontSize: '0.62rem', color: 'var(--on-surface)',
+                        }}>
+                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--secondary)', display: 'inline-block' }} />
+                            {lang === 'tr' ? 'Blockchain Doğrulandı' : 'Blockchain Verified'}
+                        </div>
+                        <LanguageSwitcher />
+                    </div>
+                </nav>
+            </div>
+
             {/* HERO — ürün temasına göre renklenen sahne (video varsa video, yoksa illüstrasyon) */}
             <div style={{ position: 'relative', background: tema.gradient, color: tema.tint, overflow: 'hidden', minHeight: '480px', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ position: 'absolute', inset: 0, opacity: tema.video ? 0.55 : 0.9, pointerEvents: 'none' }}>
                     <HeroSahne tema={tema} />
                 </div>
                 <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 35%, transparent 55%, ${tema.deep} 100%)`, opacity: tema.video ? 0.85 : 0.5, pointerEvents: 'none' }} />
-
-                <div style={{ position: 'relative', zIndex: 4, display: 'flex', justifyContent: 'center', padding: '1.25rem 1.5rem 0' }}>
-                    <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
-                        <img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} />
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <div className="mono-label" style={{
-                                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                                fontSize: '0.62rem', color: 'var(--on-surface)',
-                            }}>
-                                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--secondary)', display: 'inline-block' }} />
-                                {lang === 'tr' ? 'Blockchain Doğrulandı' : 'Blockchain Verified'}
-                            </div>
-                            <LanguageSwitcher />
-                        </div>
-                    </nav>
-                </div>
 
                 <div style={{ position: 'relative', zIndex: 4, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '2rem 2.5rem 3.5rem', textAlign: 'center' }}>
                     <p className="mono-label" style={{ opacity: 0.82, marginBottom: '1rem' }}>
