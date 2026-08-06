@@ -19,10 +19,35 @@
   --zeytin-deep: #33260f;
   --zeytin-tint: #eee9d8;
 
-  /* Genel/diğer tema (tahıl, peynir vb. varsayılan) */
+  /* Genel/diğer tema (varsayılan) */
   --genel-accent: #9c7a3c;
   --genel-deep: #4a3820;
   --genel-tint: #f1e7ce;
+
+  /* Kahve teması */
+  --kahve-accent: #8b5a2b;
+  --kahve-deep: #2e1b0f;
+  --kahve-tint: #ecd9c4;
+
+  /* Peynir teması */
+  --peynir-accent: #c9a66b;
+  --peynir-deep: #4a3c28;
+  --peynir-tint: #f5ecd8;
+
+  /* Süt Ürünleri teması */
+  --sut-accent: #8fa39d;
+  --sut-deep: #26332f;
+  --sut-tint: #eef3f0;
+
+  /* Sebze & Meyve teması */
+  --sebze-meyve-accent: #7a9b3f;
+  --sebze-meyve-deep: #2b3a17;
+  --sebze-meyve-tint: #eaf2d9;
+
+  /* Tahıl teması */
+  --tahil-accent: #c9a227;
+  --tahil-deep: #4a3c10;
+  --tahil-tint: #f5ecc8;
 
   --background: #ffffff;
   --foreground: #171717;
