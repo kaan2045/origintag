@@ -1,10 +1,16 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
+import { sessionDogrula, COOKIE_ADI } from '../../lib/session';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request): Promise<NextResponse> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
+    const kullaniciId = sessionDogrula(request.cookies.get(COOKIE_ADI)?.value);
+    if (!kullaniciId) {
+        return NextResponse.json({ error: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });
+    }
+
     const body = (await request.json()) as HandleUploadBody;
 
     try {
@@ -27,7 +33,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
         return NextResponse.json(jsonResponse);
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        return NextResponse.json({ error: message }, { status: 400 });
+        console.error('medya-yukle hatasi:', err);
+        return NextResponse.json({ error: 'Yukleme basarisiz, lutfen tekrar deneyin' }, { status: 400 });
     }
 }

@@ -43,16 +43,16 @@ export async function POST(req: NextRequest) {
 
         try {
             if (ip && ip !== '0.0.0.0' && ip !== '127.0.0.1' && !ip.startsWith('::1')) {
-                const geoRes = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,regionName,city,lat,lon`, {
+                const geoRes = await fetch(`https://ipwho.is/${ip}`, {
                     signal: AbortSignal.timeout(3000),
                 });
                 const geoData = await geoRes.json();
-                if (geoData.status === 'success') {
-                    sehir = geoData.regionName || null;
+                if (geoData.success) {
+                    sehir = geoData.region || null;
                     ilce = geoData.city || null;
                     ulke = geoData.country || null;
-                    enlem = typeof geoData.lat === 'number' ? geoData.lat : null;
-                    boylam = typeof geoData.lon === 'number' ? geoData.lon : null;
+                    enlem = typeof geoData.latitude === 'number' ? geoData.latitude : null;
+                    boylam = typeof geoData.longitude === 'number' ? geoData.longitude : null;
                 }
             }
         } catch {
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ basari: true });
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        return NextResponse.json({ basari: false, hata: message }, { status: 500 });
+        console.error('tarama-kaydet hatasi:', err);
+        return NextResponse.json({ basari: false, hata: 'Sunucu hatasi, lutfen tekrar deneyin' }, { status: 500 });
     }
 }

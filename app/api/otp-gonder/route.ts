@@ -14,9 +14,14 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+const GONDERIM_ARALIGI_SN = 45;
+
 export async function POST(req: NextRequest) {
     try {
         const { email } = await req.json();
+        if (!email) {
+            return NextResponse.json({ basari: false, hata: 'Email gerekli' }, { status: 400 });
+        }
         const kod = Math.floor(100000 + Math.random() * 900000).toString();
         const gecerlilik = new Date(Date.now() + 10 * 60 * 1000);
 
@@ -29,6 +34,15 @@ export async function POST(req: NextRequest) {
         olusturma TIMESTAMP DEFAULT NOW()
       )
     `);
+
+        const yakinZamandaGonderildi = await pool.query(
+            `SELECT 1 FROM otp_kodlar
+             WHERE email = $1 AND olusturma > NOW() - INTERVAL '${GONDERIM_ARALIGI_SN} seconds'`,
+            [email]
+        );
+        if (yakinZamandaGonderildi.rows.length > 0) {
+            return NextResponse.json({ basari: false, hata: 'Cok sik kod istendi. Lutfen biraz bekleyin.' }, { status: 429 });
+        }
 
         await pool.query(
             `DELETE FROM otp_kodlar WHERE email = $1`,
@@ -61,7 +75,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ basari: true });
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        return NextResponse.json({ basari: false, hata: message }, { status: 500 });
+        console.error('otp-gonder hatasi:', err);
+        return NextResponse.json({ basari: false, hata: 'Sunucu hatasi, lutfen tekrar deneyin' }, { status: 500 });
     }
 }

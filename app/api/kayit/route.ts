@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
+import { sessionCookieAyarla } from '../../lib/session';
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -30,13 +31,15 @@ export async function POST(req: NextRequest) {
             [ad, soyad, email, firma, sifre_hash]
         );
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             basari: true,
             kullanici_id: result.rows[0].id,
             ad: result.rows[0].ad + ' ' + result.rows[0].soyad,
         });
+        sessionCookieAyarla(response, result.rows[0].id);
+        return response;
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        return NextResponse.json({ basari: false, hata: message }, { status: 500 });
+        console.error('kayit hatasi:', err);
+        return NextResponse.json({ basari: false, hata: 'Sunucu hatasi, lutfen tekrar deneyin' }, { status: 500 });
     }
 }

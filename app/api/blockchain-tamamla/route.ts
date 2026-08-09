@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import { NextRequest, NextResponse } from 'next/server';
 import { ethers } from 'ethers';
+import { sessionDogrula, COOKIE_ADI } from '../../lib/session';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,12 +18,17 @@ const CONTRACT_ADDRESS = "0x9Da4e7F749beAaEF618bD2C2Fe456b86e48387A3";
 
 export async function POST(req: NextRequest) {
     try {
+        const kullaniciId = sessionDogrula(req.cookies.get(COOKIE_ADI)?.value);
+        if (!kullaniciId) {
+            return NextResponse.json({ basari: false, hata: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });
+        }
+
         const { hash } = await req.json();
         if (!hash) {
             return NextResponse.json({ basari: false, hata: 'hash gerekli' }, { status: 400 });
         }
 
-        const urunSonuc = await pool.query('SELECT * FROM urunler WHERE hash = $1', [hash]);
+        const urunSonuc = await pool.query('SELECT * FROM urunler WHERE hash = $1 AND kullanici_id = $2', [hash, kullaniciId]);
         const urun = urunSonuc.rows[0];
         if (!urun) {
             return NextResponse.json({ basari: false, hata: 'Ürün bulunamadı' }, { status: 404 });
@@ -56,7 +62,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ basari: true, txHash: tx.hash });
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        return NextResponse.json({ basari: false, hata: message }, { status: 500 });
+        console.error('blockchain-tamamla hatasi:', err);
+        return NextResponse.json({ basari: false, hata: 'Sunucu hatasi, lutfen tekrar deneyin' }, { status: 500 });
     }
 }

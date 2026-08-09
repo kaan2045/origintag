@@ -2,6 +2,7 @@ import { Pool } from 'pg';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { ethers } from 'ethers';
+import { sessionDogrula, COOKIE_ADI } from '../../lib/session';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -26,16 +27,20 @@ async function polygonaYaz(hash: string, urunAdi: string, urunTipi: string) {
 
         return { basari: true, txHash: tx.hash };
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        console.error('Polygon yazma hatasi:', message);
-        return { basari: false, hata: message };
+        console.error('Polygon yazma hatasi:', err);
+        return { basari: false, hata: 'Blockchain yazimi basarisiz' };
     }
 }
 
 export async function POST(req: NextRequest) {
     try {
+        const kullaniciId = sessionDogrula(req.cookies.get(COOKIE_ADI)?.value);
+        if (!kullaniciId) {
+            return NextResponse.json({ basari: false, hata: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });
+        }
+
         const body = await req.json();
-        const { urunAdi, urunTipi, bolge, hasat, miktar, birim, aciklama, kullaniciId, detaylar, medyaUrls } = body;
+        const { urunAdi, urunTipi, bolge, hasat, miktar, birim, aciklama, detaylar, medyaUrls } = body;
 
         const veri = `${urunAdi}${urunTipi}${bolge}${hasat}${miktar}${birim}${Date.now()}`;
         const hash = crypto.createHash('sha256').update(veri).digest('hex');
@@ -45,7 +50,7 @@ export async function POST(req: NextRequest) {
             `INSERT INTO urunler (kullanici_id, urun_adi, urun_tipi, bolge, hasat_tarihi, miktar, birim, aciklama, hash, detaylar, medya_urls)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
             [
-                kullaniciId || 1, urunAdi, urunTipi, bolge, hasat,
+                kullaniciId, urunAdi, urunTipi, bolge, hasat,
                 miktar, birim, aciklama, hash,
                 JSON.stringify(detaylar || {}),
                 medyaUrls || []
@@ -70,7 +75,7 @@ export async function POST(req: NextRequest) {
             polygon: polygonSonuc
         });
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        return NextResponse.json({ basari: false, hata: message }, { status: 500 });
+        console.error('urun-ekle hatasi:', err);
+        return NextResponse.json({ basari: false, hata: 'Sunucu hatasi, lutfen tekrar deneyin' }, { status: 500 });
     }
 }

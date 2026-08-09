@@ -66,10 +66,12 @@ export default function Dashboard() {
     };
 
     const cikisYap = () => {
-        localStorage.removeItem('kullanici_email');
-        localStorage.removeItem('kullanici_id');
-        localStorage.removeItem('kullanici_ad');
-        window.location.href = '/login';
+        fetch('/api/cikis', { method: 'POST' }).finally(() => {
+            localStorage.removeItem('kullanici_email');
+            localStorage.removeItem('kullanici_id');
+            localStorage.removeItem('kullanici_ad');
+            window.location.href = '/login';
+        });
     };
 
     const supheliTaramalar = taramalar.filter(t => t.supheli);

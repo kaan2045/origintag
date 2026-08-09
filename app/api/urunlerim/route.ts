@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import { NextRequest, NextResponse } from 'next/server';
+import { sessionDogrula, COOKIE_ADI } from '../../lib/session';
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -7,11 +8,10 @@ const pool = new Pool({
 
 export async function GET(req: NextRequest) {
     try {
-        const { searchParams } = new URL(req.url);
-        const kullaniciId = searchParams.get('kullanici_id');
+        const kullaniciId = sessionDogrula(req.cookies.get(COOKIE_ADI)?.value);
 
         if (!kullaniciId) {
-            return NextResponse.json({ basari: false, hata: 'Kullanici ID gerekli' }, { status: 400 });
+            return NextResponse.json({ basari: false, hata: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });
         }
 
         const result = await pool.query(
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json({ basari: true, urunler: result.rows });
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-        return NextResponse.json({ basari: false, hata: message }, { status: 500 });
+        console.error('urunlerim hatasi:', err);
+        return NextResponse.json({ basari: false, hata: 'Sunucu hatasi, lutfen tekrar deneyin' }, { status: 500 });
     }
 }
