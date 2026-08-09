@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
-import { sessionDogrula, COOKIE_ADI } from '../../lib/session';
+import { istekOturumIdAl } from '../../lib/session';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-    const kullaniciId = sessionDogrula(request.cookies.get(COOKIE_ADI)?.value);
+    const kullaniciId = istekOturumIdAl(request);
     if (!kullaniciId) {
         return NextResponse.json({ error: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });
     }

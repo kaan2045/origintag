@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import { NextRequest, NextResponse } from 'next/server';
-import { sessionDogrula, COOKIE_ADI } from '../../lib/session';
+import { istekOturumIdAl } from '../../lib/session';
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -8,7 +8,7 @@ const pool = new Pool({
 
 export async function GET(req: NextRequest) {
     try {
-        const kullaniciId = sessionDogrula(req.cookies.get(COOKIE_ADI)?.value);
+        const kullaniciId = istekOturumIdAl(req);
 
         if (!kullaniciId) {
             return NextResponse.json({ basari: false, hata: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });

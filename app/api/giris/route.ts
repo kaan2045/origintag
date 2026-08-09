@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
-import { sessionCookieAyarla } from '../../lib/session';
+import { sessionCookieAyarla, sessionTokenOlustur } from '../../lib/session';
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
             basari: true,
             kullanici_id: kullanici.id,
             ad: kullanici.ad + ' ' + kullanici.soyad,
+            sessionToken: sessionTokenOlustur(kullanici.id),
         });
         sessionCookieAyarla(response, kullanici.id);
         return response;
