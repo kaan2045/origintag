@@ -12,6 +12,7 @@ export default function UrunEkle() {
         urunAdi: '', urunTipi: '', bolge: '', hasat: '', miktar: '', birim: 'kg', aciklama: ''
     });
     const [detaylar, setDetaylar] = useState<any>({});
+    const [surdurulebilirlik, setSurdurulebilirlik] = useState<any>({});
     const [yukleniyor, setYukleniyor] = useState(false);
     const [tamamlandi, setTamamlandi] = useState(false);
     const [hash, setHash] = useState('');
@@ -82,7 +83,7 @@ export default function UrunEkle() {
             const res = await fetch('/api/urun-ekle', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...form, kullaniciId, detaylar, medyaUrls }),
+                body: JSON.stringify({ ...form, kullaniciId, detaylar, medyaUrls, surdurulebilirlik }),
             });
             const data = await res.json();
             if (data.basari) {
@@ -197,7 +198,7 @@ export default function UrunEkle() {
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '1rem' }}>
-                            <button onClick={() => { setTamamlandi(false); setForm({ urunAdi: '', urunTipi: '', bolge: '', hasat: '', miktar: '', birim: 'kg', aciklama: '' }); setDetaylar({}); }}
+                            <button onClick={() => { setTamamlandi(false); setForm({ urunAdi: '', urunTipi: '', bolge: '', hasat: '', miktar: '', birim: 'kg', aciklama: '' }); setDetaylar({}); setSurdurulebilirlik({}); }}
                                 className="od-btn-secondary" style={{ flex: 1 }}>
                                 + {lang === 'tr' ? 'Yeni Ürün' : 'New Product'}
                             </button>
@@ -524,6 +525,92 @@ export default function UrunEkle() {
                                 value={form.aciklama} onChange={e => setForm({ ...form, aciklama: e.target.value })}
                                 rows={3} className="od-field" style={{ resize: 'none' }}
                             />
+                        </div>
+
+                        {/* SÜRDÜRÜLEBİLİRLİK BİLGİLERİ */}
+                        <div style={subPanelStyle}>
+                            <div style={subHeadingStyle}>
+                                {lang === 'tr' ? 'Sürdürülebilirlik Bilgileri (opsiyonel)' : 'Sustainability Information (optional)'}
+                            </div>
+                            <p style={{ fontSize: '0.78rem', color: 'var(--on-surface-variant)', marginBottom: '1rem', lineHeight: 1.5 }}>
+                                {lang === 'tr'
+                                    ? 'Bu alanlar üretici beyanıdır, OriginTag tarafından denetlenmez. Doğrulama sayfasında "Üretici Beyanı" olarak gösterilir.'
+                                    : 'These fields are self-declared by the producer and are not audited by OriginTag. Shown on the verification page as "Producer Declaration".'}
+                            </p>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem', marginBottom: '0.9rem' }}>
+                                <div>
+                                    <label style={fieldLabelStyle}>
+                                        {lang === 'tr' ? 'Sürdürülebilirlik Sertifikası' : 'Sustainability Certification'}
+                                    </label>
+                                    <select value={surdurulebilirlik.sertifika || 'Yok'}
+                                        onChange={e => setSurdurulebilirlik({ ...surdurulebilirlik, sertifika: e.target.value })}
+                                        className="od-field">
+                                        <option value="Yok">{lang === 'tr' ? 'Yok' : 'None'}</option>
+                                        <option value="Organik">{lang === 'tr' ? 'Organik' : 'Organic'}</option>
+                                        <option value="Fairtrade">Fairtrade</option>
+                                        <option value="Rainforest Alliance">Rainforest Alliance</option>
+                                        <option value="GlobalG.A.P.">GlobalG.A.P.</option>
+                                        <option value="Diger">{lang === 'tr' ? 'Diğer' : 'Other'}</option>
+                                    </select>
+                                </div>
+                                {surdurulebilirlik.sertifika && surdurulebilirlik.sertifika !== 'Yok' && (
+                                    <div>
+                                        <label style={fieldLabelStyle}>
+                                            {lang === 'tr' ? 'Sertifika No' : 'Certificate No'}
+                                        </label>
+                                        <input type="text" value={surdurulebilirlik.sertifikaNo || ''}
+                                            onChange={e => setSurdurulebilirlik({ ...surdurulebilirlik, sertifikaNo: e.target.value })}
+                                            className="od-field"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem', marginBottom: '0.9rem' }}>
+                                <div>
+                                    <label style={fieldLabelStyle}>
+                                        {lang === 'tr' ? 'Sulama Yöntemi' : 'Irrigation Method'}
+                                    </label>
+                                    <select value={surdurulebilirlik.sulamaYontemi || 'Belirtilmedi'}
+                                        onChange={e => setSurdurulebilirlik({ ...surdurulebilirlik, sulamaYontemi: e.target.value })}
+                                        className="od-field">
+                                        <option value="Belirtilmedi">{lang === 'tr' ? 'Belirtilmedi' : 'Not specified'}</option>
+                                        <option value="Damla Sulama">{lang === 'tr' ? 'Damla Sulama' : 'Drip Irrigation'}</option>
+                                        <option value="Yagmurlama">{lang === 'tr' ? 'Yağmurlama' : 'Sprinkler'}</option>
+                                        <option value="Salma Sulama">{lang === 'tr' ? 'Salma Sulama' : 'Flood Irrigation'}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style={fieldLabelStyle}>
+                                        {lang === 'tr' ? 'Kimyasal Girdi Kullanımı' : 'Chemical Input Use'}
+                                    </label>
+                                    <select value={surdurulebilirlik.kimyasalKullanimi || 'Belirtilmedi'}
+                                        onChange={e => setSurdurulebilirlik({ ...surdurulebilirlik, kimyasalKullanimi: e.target.value })}
+                                        className="od-field">
+                                        <option value="Belirtilmedi">{lang === 'tr' ? 'Belirtilmedi' : 'Not specified'}</option>
+                                        <option value="Kullanilmadi">{lang === 'tr' ? 'Kullanılmadı' : 'Not used'}</option>
+                                        <option value="Az/Kontrollu">{lang === 'tr' ? 'Az / Kontrollü' : 'Low / Controlled'}</option>
+                                        <option value="Standart">{lang === 'tr' ? 'Standart' : 'Standard'}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'var(--on-surface)', cursor: 'pointer' }}>
+                                    <input type="checkbox" checked={!!surdurulebilirlik.adilCalismaBeyani}
+                                        onChange={e => setSurdurulebilirlik({ ...surdurulebilirlik, adilCalismaBeyani: e.target.checked })}
+                                    />
+                                    {lang === 'tr'
+                                        ? 'Çalışanlara adil ücret ve güvenli çalışma koşulları sağlandığını beyan ediyorum'
+                                        : 'I declare fair pay and safe working conditions for workers'}
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'var(--on-surface)', cursor: 'pointer' }}>
+                                    <input type="checkbox" checked={!!surdurulebilirlik.yenilenebilirEnerji}
+                                        onChange={e => setSurdurulebilirlik({ ...surdurulebilirlik, yenilenebilirEnerji: e.target.checked })}
+                                    />
+                                    {lang === 'tr'
+                                        ? 'Üretimde yenilenebilir enerji (güneş, rüzgar vb.) kullanılıyor'
+                                        : 'Renewable energy (solar, wind, etc.) is used in production'}
+                                </label>
+                            </div>
                         </div>
 
                         {/* MEDYA YÜKLEME */}

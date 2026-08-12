@@ -40,20 +40,23 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { urunAdi, urunTipi, bolge, hasat, miktar, birim, aciklama, detaylar, medyaUrls } = body;
+        const { urunAdi, urunTipi, bolge, hasat, miktar, birim, aciklama, detaylar, medyaUrls, surdurulebilirlik } = body;
 
         const veri = `${urunAdi}${urunTipi}${bolge}${hasat}${miktar}${birim}${Date.now()}`;
         const hash = crypto.createHash('sha256').update(veri).digest('hex');
 
+        await pool.query(`ALTER TABLE urunler ADD COLUMN IF NOT EXISTS surdurulebilirlik JSONB DEFAULT '{}'::jsonb`);
+
         // Once veritabanina kaydet
         const result = await pool.query(
-            `INSERT INTO urunler (kullanici_id, urun_adi, urun_tipi, bolge, hasat_tarihi, miktar, birim, aciklama, hash, detaylar, medya_urls)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+            `INSERT INTO urunler (kullanici_id, urun_adi, urun_tipi, bolge, hasat_tarihi, miktar, birim, aciklama, hash, detaylar, medya_urls, surdurulebilirlik)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
             [
                 kullaniciId, urunAdi, urunTipi, bolge, hasat,
                 miktar, birim, aciklama, hash,
                 JSON.stringify(detaylar || {}),
-                medyaUrls || []
+                medyaUrls || [],
+                JSON.stringify(surdurulebilirlik || {})
             ]
         );
 

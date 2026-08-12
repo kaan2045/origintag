@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
+import { skorHesapla } from '../lib/surdurulebilirlik';
 
 export default function Dashboard() {
     const { t, lang } = useLanguage();
@@ -153,7 +154,19 @@ export default function Dashboard() {
                             {urunler.map((urun, i) => (
                                 <div key={i} className="od-row-hover" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1.1rem 0.75rem', borderBottom: '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
                                     <div>
-                                        <div style={{ fontWeight: 700, color: 'var(--on-surface)' }}>{urun.urun_adi}</div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <span style={{ fontWeight: 700, color: 'var(--on-surface)' }}>{urun.urun_adi}</span>
+                                            {skorHesapla(urun.surdurulebilirlik) > 0 && (
+                                                <span className="mono-label" title={lang === 'tr' ? 'Sürdürülebilirlik skoru (üretici beyanı)' : 'Sustainability score (self-declared)'}
+                                                    style={{
+                                                        fontSize: '0.6rem', fontWeight: 700, color: 'var(--secondary)',
+                                                        border: '1px solid var(--secondary)', borderRadius: 'var(--radius-full)',
+                                                        padding: '0.1rem 0.5rem',
+                                                    }}>
+                                                    🌱 {skorHesapla(urun.surdurulebilirlik)}
+                                                </span>
+                                            )}
+                                        </div>
                                         <div style={{ fontSize: '0.72rem', color: 'var(--on-surface-variant)' }}>{urun.hash.slice(0, 16)}...</div>
                                     </div>
                                     <span style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)' }}>{urun.urun_tipi}</span>

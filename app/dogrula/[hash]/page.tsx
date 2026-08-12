@@ -6,6 +6,7 @@ import HeroSahne from '../../components/HeroSahne';
 import DogrulamaYolculugu from '../../components/DogrulamaYolculugu';
 import { useLanguage } from '../../context/LanguageContext';
 import { urunTemasiniAl } from '../../lib/urunTema';
+import { skorHesapla } from '../../lib/surdurulebilirlik';
 
 function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
     const [acik, setAcik] = useState<string | null>(null);
@@ -169,6 +170,8 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
     );
 
     const d = urun.detaylar || {};
+    const s = urun.surdurulebilirlik || {};
+    const surdurulebilirlikSkoru = skorHesapla(s);
 
     const yolculukAdimlari = [
         {
@@ -324,6 +327,65 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                         </div>
                     )}
                 </div>
+
+                {/* SÜRDÜRÜLEBİLİRLİK PROFİLİ */}
+                {surdurulebilirlikSkoru > 0 && (
+                    <div className="od-glass" style={{ padding: '1.9rem', marginBottom: '1.25rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--on-surface)', margin: 0 }}>
+                                🌱 {lang === 'tr' ? 'Sürdürülebilirlik Profili' : 'Sustainability Profile'}
+                            </h2>
+                            <span className="mono-label" style={{
+                                fontSize: '0.7rem', fontWeight: 700, color: tema.accent,
+                                border: `1px solid ${tema.accent}`, borderRadius: 'var(--radius-full)', padding: '0.2rem 0.7rem',
+                            }}>
+                                {surdurulebilirlikSkoru}/100
+                            </span>
+                        </div>
+                        <p style={{ fontSize: '0.78rem', color: 'var(--on-surface-variant)', marginBottom: '1.4rem', lineHeight: 1.5 }}>
+                            {lang === 'tr'
+                                ? 'Bu bilgiler üretici beyanıdır; OriginTag tarafından bağımsız olarak denetlenmemiştir.'
+                                : 'This information is self-declared by the producer and has not been independently audited by OriginTag.'}
+                        </p>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
+                            {s.sertifika && s.sertifika !== 'Yok' && (
+                                <div>
+                                    <div className="mono-label" style={{ fontSize: '0.62rem', color: 'var(--on-surface-variant)' }}>{lang === 'tr' ? 'Sertifika' : 'Certification'}</div>
+                                    <div style={{ fontWeight: 700, color: 'var(--on-surface)', marginTop: '4px' }}>
+                                        {s.sertifika === 'Organik' && lang !== 'tr' ? 'Organic' : s.sertifika}
+                                        {s.sertifikaNo ? ` (${s.sertifikaNo})` : ''}
+                                    </div>
+                                </div>
+                            )}
+                            {s.sulamaYontemi && s.sulamaYontemi !== 'Belirtilmedi' && (
+                                <div>
+                                    <div className="mono-label" style={{ fontSize: '0.62rem', color: 'var(--on-surface-variant)' }}>{lang === 'tr' ? 'Sulama Yöntemi' : 'Irrigation Method'}</div>
+                                    <div style={{ fontWeight: 700, color: 'var(--on-surface)', marginTop: '4px' }}>{s.sulamaYontemi}</div>
+                                </div>
+                            )}
+                            {s.kimyasalKullanimi && s.kimyasalKullanimi !== 'Belirtilmedi' && (
+                                <div>
+                                    <div className="mono-label" style={{ fontSize: '0.62rem', color: 'var(--on-surface-variant)' }}>{lang === 'tr' ? 'Kimyasal Girdi Kullanımı' : 'Chemical Input Use'}</div>
+                                    <div style={{ fontWeight: 700, color: 'var(--on-surface)', marginTop: '4px' }}>{s.kimyasalKullanimi}</div>
+                                </div>
+                            )}
+                        </div>
+                        {(s.adilCalismaBeyani || s.yenilenebilirEnerji) && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1.25rem', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.1rem' }}>
+                                {s.adilCalismaBeyani && (
+                                    <div style={{ fontSize: '0.85rem', color: 'var(--on-surface)' }}>
+                                        ✓ {lang === 'tr' ? 'Adil ücret ve güvenli çalışma koşulları beyan edildi' : 'Fair pay and safe working conditions declared'}
+                                    </div>
+                                )}
+                                {s.yenilenebilirEnerji && (
+                                    <div style={{ fontSize: '0.85rem', color: 'var(--on-surface)' }}>
+                                        ✓ {lang === 'tr' ? 'Üretimde yenilenebilir enerji kullanılıyor' : 'Renewable energy used in production'}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 {/* ZEYTİNYAĞI DETAYLARI */}
                 {urun.urun_tipi === 'Zeytinyagi' && Object.keys(d).length > 0 && (
