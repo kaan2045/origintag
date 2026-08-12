@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
 import { skorHesapla } from '../lib/surdurulebilirlik';
+import { urunIcinOnerilerUret, onerileriGrupla } from '../lib/oneriler';
 
 export default function Dashboard() {
     const { t, lang } = useLanguage();
@@ -76,6 +77,13 @@ export default function Dashboard() {
     };
 
     const supheliTaramalar = taramalar.filter(t => t.supheli);
+
+    const gruplanmisOneriler = onerileriGrupla(
+        urunler.flatMap(urun => {
+            const supheliVar = taramalar.some(t => t.supheli && t.urun_hash === urun.hash);
+            return urunIcinOnerilerUret(urun, supheliVar).map(o => ({ ...o, urunHash: urun.hash }));
+        })
+    );
 
     const kartlar = [
         { label: lang === 'tr' ? 'Toplam Ürün' : 'Total Products', value: urunler.length.toString() },
@@ -236,6 +244,36 @@ export default function Dashboard() {
                         </div>
                     )}
                 </div>
+
+                {gruplanmisOneriler.length > 0 && (
+                    <div className="od-glass" style={{ padding: '2.25rem', marginBottom: '1.5rem' }}>
+                        <h2 className="font-display" style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '0.6rem' }}>
+                            🌱 {lang === 'tr' ? 'Öneriler' : 'Recommendations'}
+                        </h2>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+                            {lang === 'tr'
+                                ? 'Ürünlerinizin mevcut verilerine göre otomatik oluşturulan, kural tabanlı öneriler.'
+                                : 'Rule-based suggestions automatically generated from your products\' current data.'}
+                        </p>
+                        <div>
+                            {gruplanmisOneriler.map((oneri, i) => {
+                                const renk = oneri.onem === 'yuksek' ? 'var(--error)' : oneri.onem === 'orta' ? 'var(--secondary)' : 'var(--on-surface-variant)';
+                                return (
+                                    <a key={i} href={'/dogrula/' + oneri.ilkUrunHash}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', gap: '0.9rem',
+                                            padding: '0.85rem 0', textDecoration: 'none',
+                                            borderBottom: i < gruplanmisOneriler.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                                        }}
+                                    >
+                                        <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: renk, flexShrink: 0 }} />
+                                        <span style={{ fontSize: '0.9rem', color: 'var(--on-surface)' }}>{oneri.mesaj}</span>
+                                    </a>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
 
                 {supheliTaramalar.length > 0 && (
                     <div className="od-glass" style={{ padding: '2.25rem', marginBottom: '1.5rem', borderColor: 'rgba(255,180,171,0.3)' }}>
