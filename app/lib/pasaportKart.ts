@@ -1,5 +1,5 @@
-import QRCode from 'qrcode';
 import jsPDF from 'jspdf';
+import { logoluQrDataUrlUret } from './qrLogo';
 
 export interface PasaportKartVerisi {
     pasaportId: string;
@@ -20,10 +20,9 @@ function tarihAraligi(giris?: string | null, cikis?: string | null): string {
 
 /** Kredi karti boyutunda (ISO/IEC 7810 ID-1, 85.6x54mm) on/arka PDF hatira karti uretir. */
 export async function pasaportKartiIndir(veri: PasaportKartVerisi) {
-    const qrDataUrl = await QRCode.toDataURL(`https://origintag.com.tr/memory/${veri.pasaportId}`, {
-        width: 360,
-        margin: 2,
-        color: { dark: '#101415', light: '#ffffff' },
+    const qrDataUrl = await logoluQrDataUrlUret(`https://origintag.com.tr/memory/${veri.pasaportId}`, 360, {
+        dark: '#101415',
+        light: '#ffffff',
     });
 
     const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [85.6, 54] });

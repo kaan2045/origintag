@@ -1,10 +1,10 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { upload } from '@vercel/blob/client';
-import QRCode from 'qrcode';
 import LanguageSwitcher from '../../../components/LanguageSwitcher';
 import { useLanguage } from '../../../context/LanguageContext';
 import { pasaportKartiIndir } from '../../../lib/pasaportKart';
+import { logoluQrCiz } from '../../../lib/qrLogo';
 
 type RotaDurag = { yer: string; tarih: string };
 type Deneyim = { baslik: string; ikon: string; tarih: string; saat: string; konum: string };
@@ -43,10 +43,7 @@ export default function YeniTravelPassport() {
 
     useEffect(() => {
         if (sonucPasaport && qrRef.current) {
-            QRCode.toCanvas(qrRef.current, `https://origintag.com.tr/memory/${sonucPasaport.pasaport_id}`, {
-                width: 180, margin: 2,
-                color: { dark: '#101415', light: '#e0e3e5' },
-            });
+            logoluQrCiz(qrRef.current, `https://origintag.com.tr/memory/${sonucPasaport.pasaport_id}`, 180, { dark: '#101415', light: '#e0e3e5' });
         }
     }, [sonucPasaport]);
 

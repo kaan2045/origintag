@@ -1,12 +1,12 @@
 'use client';
 import { useState, useEffect, use, useRef } from 'react';
-import QRCode from 'qrcode';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import HeroSahne from '../../components/HeroSahne';
 import DogrulamaYolculugu from '../../components/DogrulamaYolculugu';
 import { useLanguage } from '../../context/LanguageContext';
 import { urunTemasiniAl } from '../../lib/urunTema';
 import { skorHesapla } from '../../lib/surdurulebilirlik';
+import { logoluQrCiz } from '../../lib/qrLogo';
 
 function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
     const [acik, setAcik] = useState<string | null>(null);
@@ -132,10 +132,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
 
     useEffect(() => {
         if (urun && qrRef.current) {
-            QRCode.toCanvas(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, {
-                width: 176, margin: 1,
-                color: { dark: '#101415', light: '#e0e3e5' }
-            });
+            logoluQrCiz(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, 176, { dark: '#101415', light: '#e0e3e5' });
         }
     }, [urun, hash]);
 

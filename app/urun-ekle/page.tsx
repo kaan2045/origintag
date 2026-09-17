@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import QRCode from 'qrcode';
 import jsPDF from 'jspdf';
 import { upload } from '@vercel/blob/client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
+import { logoluQrCiz } from '../lib/qrLogo';
 
 export default function UrunEkle() {
     const { lang } = useLanguage();
@@ -24,10 +24,7 @@ export default function UrunEkle() {
 
     useEffect(() => {
         if (tamamlandi && hash && qrRef.current) {
-            QRCode.toCanvas(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, {
-                width: 160, margin: 2,
-                color: { dark: '#101415', light: '#e0e3e5' }
-            });
+            logoluQrCiz(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, 160, { dark: '#101415', light: '#e0e3e5' });
         }
     }, [tamamlandi, hash]);
 
