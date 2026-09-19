@@ -18,9 +18,9 @@ interface UrunOneriGirdisi {
 /**
  * Kural tabanli, deterministik oneri motoru -- LLM kullanmiyor. Karar Destek Paneli
  * katmaninin "AI-generated recommendations" kismini karsilar, kayit tutmaz, her
- * cagrida mevcut urun/tarama verisinden hesaplanir (bkz. skorHesapla ile ayni desen).
+ * cagrida mevcut urun verisinden hesaplanir (bkz. skorHesapla ile ayni desen).
  */
-export function urunIcinOnerilerUret(urun: UrunOneriGirdisi, supheliTaramaVarMi: boolean): Oneri[] {
+export function urunIcinOnerilerUret(urun: UrunOneriGirdisi): Oneri[] {
     const oneriler: Oneri[] = [];
     const s = urun.surdurulebilirlik || {};
 
@@ -28,14 +28,6 @@ export function urunIcinOnerilerUret(urun: UrunOneriGirdisi, supheliTaramaVarMi:
         oneriler.push({
             tip: 'blockchain_yok',
             mesaj: `${urun.urun_adi}: Blockchain'e henüz yazılmadı`,
-            onem: 'yuksek',
-        });
-    }
-
-    if (supheliTaramaVarMi) {
-        oneriler.push({
-            tip: 'supheli_tarama',
-            mesaj: `${urun.urun_adi}: Şüpheli tarama aktivitesi tespit edildi, incelenmesi öneriliyor`,
             onem: 'yuksek',
         });
     }
@@ -87,7 +79,6 @@ const ONEM_SIRASI: Record<OnemSeviyesi, number> = { yuksek: 0, orta: 1, dusuk: 2
 
 const TEKIL_ETIKET: Record<string, string> = {
     blockchain_yok: "Blockchain'e yazılmamış",
-    supheli_tarama: 'Şüpheli tarama aktivitesi var',
     sertifika_yok: 'Sürdürülebilirlik sertifikası eksik',
     kimyasal_bilgisi_eksik: 'Kimyasal girdi bilgisi eksik/standart',
     sulama_verimliligi: 'Damla sulamaya geçilebilir',

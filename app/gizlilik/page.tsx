@@ -33,25 +33,12 @@ export default function GizlilikPolitikasi() {
                     <li>Şifre (geri döndürülemez şekilde şifrelenmiş olarak saklanır, düz metin olarak asla tutulmaz)</li>
                     <li>Eklediğiniz ürün bilgileri (ürün adı, tipi, bölge, hasat tarihi, miktar, açıklama, fotoğraf/video)</li>
                 </ul>
-                <p style={{ marginBottom: '0.75rem' }}><strong>Ürün QR kodunu tarayan son kullanıcılar için:</strong></p>
-                <ul style={{ marginBottom: '1.25rem', paddingLeft: '1.25rem' }}>
-                    <li>IP adresi ve bu adresten tahmini şehir/bölge/ülke konumu</li>
-                    <li>Cihaz tipi (mobil/masaüstü)</li>
-                    <li>Tarama tarihi ve saati</li>
-                </ul>
-                <p>
-                    Bu tarama verileri, sahtecilik ve kopya ürün tespiti amacıyla (ör. aynı ürünün kısa sürede
-                    birbirinden çok uzak konumlardan taranması gibi anormal örüntüleri fark etmek için) toplanır ve
-                    yalnızca o ürünü sisteme ekleyen hesap sahibiyle paylaşılır.
-                </p>
-
                 <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '2.5rem', marginBottom: '0.75rem' }}>
                     2. Verileri Nasıl Kullanıyoruz
                 </h2>
                 <ul style={{ paddingLeft: '1.25rem' }}>
                     <li>Hesabınızla giriş yapmanızı ve ürünlerinizi yönetmenizi sağlamak</li>
                     <li>Ürün doğrulama sayfalarını (QR kod okutulduğunda açılan sayfa) oluşturmak</li>
-                    <li>Sahtecilik/kopya ürün şüphesi tespiti</li>
                     <li>Ürün kayıtlarını Polygon blok zincirine (kamuya açık, değiştirilemez bir kayıt defteri) yazmak</li>
                 </ul>
 
@@ -62,7 +49,6 @@ export default function GizlilikPolitikasi() {
                 <ul style={{ paddingLeft: '1.25rem' }}>
                     <li><strong>Vercel</strong> — barındırma, dosya (fotoğraf/video) depolama</li>
                     <li><strong>Neon</strong> — veritabanı barındırma</li>
-                    <li><strong>ipwho.is</strong> — IP adresinden yaklaşık konum tespiti (yalnızca tarama kaydı sırasında)</li>
                     <li><strong>Polygon (blok zinciri ağı)</strong> — ürün hash&apos;i, ürün adı ve tipi kamuya açık ve
                         kalıcı olarak zincire yazılır; bu kayıt hiçbir zaman silinemez</li>
                 </ul>
@@ -72,9 +58,8 @@ export default function GizlilikPolitikasi() {
                     4. Veri Saklama
                 </h2>
                 <p>
-                    Hesap ve ürün verileri, hesabınız aktif olduğu sürece saklanır. Tarama kayıtları sahtecilik
-                    tespiti amacıyla saklanır. Blok zincirine yazılan veriler (hash, ürün adı, tipi, işlem zamanı)
-                    blok zincirinin doğası gereği kalıcıdır ve silinemez.
+                    Hesap ve ürün verileri, hesabınız aktif olduğu sürece saklanır. Blok zincirine yazılan veriler
+                    (hash, ürün adı, tipi, işlem zamanı) blok zincirinin doğası gereği kalıcıdır ve silinemez.
                 </p>
 
                 <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '2.5rem', marginBottom: '0.75rem' }}>
