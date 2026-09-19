@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import { upload } from '@vercel/blob/client';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
-import { logoluQrCiz } from '../lib/qrLogo';
+import { qrCiz } from '../lib/qrLogo';
 
 export default function UrunEkle() {
     const { lang } = useLanguage();
@@ -24,7 +24,7 @@ export default function UrunEkle() {
 
     useEffect(() => {
         if (tamamlandi && hash && qrRef.current) {
-            logoluQrCiz(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, 160, { dark: '#101415', light: '#e0e3e5' });
+            qrCiz(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, 160, { dark: '#101415', light: '#e0e3e5' });
         }
     }, [tamamlandi, hash]);
 
@@ -172,7 +172,8 @@ export default function UrunEkle() {
                         </div>
                         <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1rem' }}>
                             <div className="mono-label" style={{ fontSize: '0.6rem', color: 'var(--on-surface-variant)', marginBottom: '8px' }}>QR {lang === 'tr' ? 'Kod' : 'Code'}</div>
-                            <div style={{ display: 'inline-block', padding: '10px', borderRadius: 'var(--radius)', background: 'var(--on-surface)' }}>
+                            <div style={{ display: 'inline-block', padding: '10px', borderRadius: 'var(--radius)', background: 'var(--on-surface)', textAlign: 'center' }}>
+                                <img src="/origin.png" alt="OriginTag" style={{ height: '22px', marginBottom: '8px' }} />
                                 <canvas ref={qrRef} style={{ display: 'block' }} />
                             </div>
                         </div>

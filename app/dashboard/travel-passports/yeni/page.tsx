@@ -4,7 +4,8 @@ import { upload } from '@vercel/blob/client';
 import LanguageSwitcher from '../../../components/LanguageSwitcher';
 import { useLanguage } from '../../../context/LanguageContext';
 import { pasaportKartiIndir } from '../../../lib/pasaportKart';
-import { logoluQrCiz } from '../../../lib/qrLogo';
+import { qrCiz } from '../../../lib/qrLogo';
+import { resmiSikistir } from '../../../lib/resimSikistir';
 
 type RotaDurag = { yer: string; tarih: string };
 type Deneyim = { baslik: string; ikon: string; tarih: string; saat: string; konum: string };
@@ -31,8 +32,8 @@ export default function YeniTravelPassport() {
     const [kapakDosya, setKapakDosya] = useState<File | null>(null);
     const [kapakOnizleme, setKapakOnizleme] = useState<string>('');
 
-    const [otelAd, setOtelAd] = useState('');
-    const [otelKonum, setOtelKonum] = useState('');
+    const [oteller, setOteller] = useState<any[]>([]);
+    const [secilenOtelId, setSecilenOtelId] = useState('');
 
     const [rota, setRota] = useState<RotaDurag[]>([{ yer: '', tarih: '' }]);
     const [deneyimler, setDeneyimler] = useState<Deneyim[]>([]);
@@ -40,10 +41,18 @@ export default function YeniTravelPassport() {
     const [yukleniyor, setYukleniyor] = useState(false);
     const [hata, setHata] = useState<string | null>(null);
     const [sonucPasaport, setSonucPasaport] = useState<any>(null);
+    const [linkKopyalandi, setLinkKopyalandi] = useState(false);
+
+    useEffect(() => {
+        fetch('/api/otel-olustur')
+            .then(res => res.json())
+            .then(data => { if (data.basari) setOteller(data.oteller); })
+            .catch(() => { });
+    }, []);
 
     useEffect(() => {
         if (sonucPasaport && qrRef.current) {
-            logoluQrCiz(qrRef.current, `https://origintag.com.tr/memory/${sonucPasaport.pasaport_id}`, 180, { dark: '#101415', light: '#e0e3e5' });
+            qrCiz(qrRef.current, `https://origintag.com.tr/memory/${sonucPasaport.pasaport_id}`, 180, { dark: '#101415', light: '#e0e3e5' });
         }
     }, [sonucPasaport]);
 
@@ -82,12 +91,15 @@ export default function YeniTravelPassport() {
         try {
             let kapakGorselUrl = '';
             if (kapakDosya) {
-                const blob = await upload(`travel-passports/${Date.now()}-${kapakDosya.name}`, kapakDosya, {
+                const sikistirilmis = await resmiSikistir(kapakDosya);
+                const blob = await upload(`travel-passports/${Date.now()}-${sikistirilmis.name}`, sikistirilmis, {
                     access: 'public',
                     handleUploadUrl: '/api/medya-yukle',
                 });
                 kapakGorselUrl = blob.url;
             }
+
+            const secilenOtel = oteller.find(o => String(o.id) === secilenOtelId);
 
             const res = await fetch('/api/travel-passport-olustur', {
                 method: 'POST',
@@ -95,7 +107,13 @@ export default function YeniTravelPassport() {
                 body: JSON.stringify({
                     misafirAdi, destinasyon, ulke, girisTarihi, cikisTarihi, mesaj, demoMu,
                     kapakGorselUrl,
-                    otel: { ad: otelAd, konum: otelKonum, checkIn: girisTarihi, checkOut: cikisTarihi },
+                    otelId: secilenOtel?.id || null,
+                    otel: secilenOtel ? {
+                        ad: secilenOtel.ad, konum: secilenOtel.sehir, checkIn: girisTarihi, checkOut: cikisTarihi,
+                        logoUrl: secilenOtel.logo_url, gorselUrl: secilenOtel.kapak_gorsel_url,
+                        haritaUrl: secilenOtel.harita_url, telefon: secilenOtel.telefon,
+                        website: secilenOtel.website, instagram: secilenOtel.instagram,
+                    } : {},
                     rota: rota.filter(r => r.yer),
                     deneyimler,
                 }),
@@ -152,13 +170,25 @@ export default function YeniTravelPassport() {
                             {sonucPasaport.misafir_adi} — {sonucPasaport.pasaport_id}
                         </p>
                         <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1.25rem' }}>
-                            <div style={{ display: 'inline-block', padding: '10px', borderRadius: 'var(--radius)', background: 'var(--on-surface)' }}>
+                            <div style={{ display: 'inline-block', padding: '10px', borderRadius: 'var(--radius)', background: 'var(--on-surface)', textAlign: 'center' }}>
+                                <img src="/origin.png" alt="OriginTag" style={{ height: '20px', marginBottom: '8px' }} />
                                 <canvas ref={qrRef} style={{ display: 'block' }} />
                             </div>
                         </div>
                         <a href={`/memory/${sonucPasaport.pasaport_id}`} target="_blank" rel="noreferrer" className="od-btn-secondary" style={{ width: '100%', display: 'block', marginBottom: '0.75rem' }}>
-                            {lang === 'tr' ? 'Sayfayı Görüntüle' : 'View Passport Page'}
+                            🔗 {lang === 'tr' ? 'SHOW QR — Sayfayı Görüntüle' : 'SHOW QR — View Passport Page'}
                         </a>
+                        <button
+                            onClick={() => {
+                                const url = `https://origintag.com.tr/memory/${sonucPasaport.pasaport_id}`;
+                                navigator.clipboard.writeText(url);
+                                setLinkKopyalandi(true);
+                                setTimeout(() => setLinkKopyalandi(false), 2000);
+                            }}
+                            className="od-btn-secondary" style={{ width: '100%', marginBottom: '0.75rem' }}
+                        >
+                            📤 {linkKopyalandi ? (lang === 'tr' ? 'Kopyalandı!' : 'Copied!') : (lang === 'tr' ? 'SEND LINK — Linki Kopyala' : 'SEND LINK — Copy Link')}
+                        </button>
                         <button
                             onClick={() => pasaportKartiIndir({
                                 pasaportId: sonucPasaport.pasaport_id,
@@ -170,7 +200,7 @@ export default function YeniTravelPassport() {
                             })}
                             className="od-btn-primary" style={{ width: '100%', marginBottom: '0.75rem' }}
                         >
-                            ⬇ {lang === 'tr' ? 'Hatıra Kartını İndir (PDF)' : 'Download Memory Card (PDF)'}
+                            🖨 {lang === 'tr' ? 'PRINT CARD — Kartı İndir (PDF)' : 'PRINT CARD — Download PDF'}
                         </button>
                         <a href="/dashboard/travel-passports" className="od-link" style={{ display: 'block', fontSize: '0.85rem' }}>
                             {lang === 'tr' ? 'Pasaport Listesine Dön' : 'Back to Passports List'}
@@ -241,16 +271,17 @@ export default function YeniTravelPassport() {
 
                         <div style={subPanelStyle}>
                             <div style={subHeadingStyle}>My Stay</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.9rem' }}>
-                                <div>
-                                    <label style={fieldLabelStyle}>Hotel Name</label>
-                                    <input type="text" placeholder="Sierra Cave Cappadocia" value={otelAd} onChange={e => setOtelAd(e.target.value)} className="od-field" />
-                                </div>
-                                <div>
-                                    <label style={fieldLabelStyle}>Location</label>
-                                    <input type="text" placeholder="Göreme, Cappadocia" value={otelKonum} onChange={e => setOtelKonum(e.target.value)} className="od-field" />
-                                </div>
-                            </div>
+                            <label style={fieldLabelStyle}>Hotel</label>
+                            <select value={secilenOtelId} onChange={e => setSecilenOtelId(e.target.value)} className="od-field">
+                                <option value="">{lang === 'tr' ? 'Otel seçin...' : 'Select a hotel...'}</option>
+                                {oteller.map(o => <option key={o.id} value={o.id}>{o.ad}</option>)}
+                            </select>
+                            {oteller.length === 0 && (
+                                <p style={{ fontSize: '0.78rem', color: 'var(--on-surface-variant)', marginTop: '0.6rem' }}>
+                                    {lang === 'tr' ? 'Henüz otel eklenmedi.' : 'No hotels added yet.'}{' '}
+                                    <a href="/dashboard/hotels/yeni" className="od-link">{lang === 'tr' ? 'Otel ekle' : 'Add a hotel'}</a>
+                                </p>
+                            )}
                         </div>
 
                         <div style={subPanelStyle}>
@@ -304,7 +335,7 @@ export default function YeniTravelPassport() {
 
                         <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'var(--on-surface)', cursor: 'pointer', marginBottom: '1.75rem' }}>
                             <input type="checkbox" checked={demoMu} onChange={e => setDemoMu(e.target.checked)} />
-                            {lang === 'tr' ? 'Bu bir demo deneyimi (sayfada "DEMO EXPERIENCE" rozeti gösterilir)' : 'This is a demo experience (shows a "DEMO EXPERIENCE" badge on the page)'}
+                            {lang === 'tr' ? 'Bu bir demo pasaport (sayfada "DEMO PASSPORT" rozeti gösterilir)' : 'This is a demo passport (shows a "DEMO PASSPORT" badge on the page)'}
                         </label>
 
                         {hata && <p style={{ color: 'var(--error)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>{hata}</p>}

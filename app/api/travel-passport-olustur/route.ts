@@ -1,6 +1,7 @@
 import { Pool } from 'pg';
 import { NextRequest, NextResponse } from 'next/server';
 import { istekOturumIdAl } from '../../lib/session';
+import { olayKaydet } from '../olay-kaydet/route';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const {
             misafirAdi, destinasyon, ulke, girisTarihi, cikisTarihi,
-            kapakGorselUrl, otel, rota, deneyimler, mesaj, demoMu,
+            kapakGorselUrl, otel, otelId, rota, deneyimler, mesaj, demoMu,
         } = body;
 
         if (!misafirAdi || !destinasyon) {
@@ -72,6 +73,7 @@ export async function POST(req: NextRequest) {
             )
         `);
         await pool.query(`CREATE INDEX IF NOT EXISTS idx_pasaport_hatiralari_pasaport_id ON pasaport_hatiralari(pasaport_id)`);
+        await pool.query(`ALTER TABLE seyahat_pasaportlari ADD COLUMN IF NOT EXISTS otel_id INTEGER`);
 
         const kod = destinasyonKoduAl(destinasyon);
         const yil = new Date().getFullYear();
@@ -85,18 +87,21 @@ export async function POST(req: NextRequest) {
         const result = await pool.query(
             `INSERT INTO seyahat_pasaportlari
              (pasaport_id, olusturan_kullanici_id, destinasyon, ulke, misafir_adi, giris_tarihi, cikis_tarihi,
-              kapak_gorsel_url, otel, rota, deneyimler, mesaj, demo_mu)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *`,
+              kapak_gorsel_url, otel, otel_id, rota, deneyimler, mesaj, demo_mu)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`,
             [
                 pasaportId, kullaniciId, destinasyon, ulke || '', misafirAdi, girisTarihi || null, cikisTarihi || null,
                 kapakGorselUrl || null,
                 JSON.stringify(otel || {}),
+                otelId || null,
                 JSON.stringify(rota || []),
                 JSON.stringify(deneyimler || []),
                 mesaj || '',
                 !!demoMu,
             ]
         );
+
+        await olayKaydet(pasaportId, otelId || null, 'passport_created', { misafirAdi, destinasyon });
 
         return NextResponse.json({ basari: true, pasaport: result.rows[0] });
     } catch (err: unknown) {

@@ -6,7 +6,7 @@ import DogrulamaYolculugu from '../../components/DogrulamaYolculugu';
 import { useLanguage } from '../../context/LanguageContext';
 import { urunTemasiniAl } from '../../lib/urunTema';
 import { skorHesapla } from '../../lib/surdurulebilirlik';
-import { logoluQrCiz } from '../../lib/qrLogo';
+import { qrCiz } from '../../lib/qrLogo';
 
 function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
     const [acik, setAcik] = useState<string | null>(null);
@@ -132,7 +132,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
 
     useEffect(() => {
         if (urun && qrRef.current) {
-            logoluQrCiz(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, 176, { dark: '#101415', light: '#e0e3e5' });
+            qrCiz(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, 176, { dark: '#101415', light: '#e0e3e5' });
         }
     }, [urun, hash]);
 
@@ -272,8 +272,9 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                     </h2>
                     <div style={{
                         display: 'inline-block', padding: '14px', borderRadius: 'var(--radius)',
-                        background: 'var(--on-surface)',
+                        background: 'var(--on-surface)', textAlign: 'center',
                     }}>
+                        <img src="/origin.png" alt="OriginTag" style={{ height: '24px', marginBottom: '10px' }} />
                         <canvas ref={qrRef} style={{ display: 'block' }} />
                     </div>
                     <p style={{ fontSize: '0.8rem', color: 'var(--on-surface-variant)', marginTop: '1rem' }}>
