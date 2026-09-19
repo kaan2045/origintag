@@ -107,6 +107,12 @@ export default function Dashboard() {
                 <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
                     <img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <a href="/dashboard/travel-passports" className="od-btn-ghost" style={{ padding: '0.5rem 1.1rem', fontSize: '0.8rem' }}>
+                            🧳 {lang === 'tr' ? 'Seyahat Pasaportları' : 'Travel Passports'}
+                        </a>
+                        <a href="/dashboard/hotels" className="od-btn-ghost" style={{ padding: '0.5rem 1.1rem', fontSize: '0.8rem' }}>
+                            🏨 Hotels
+                        </a>
                         <span style={{ fontSize: '0.88rem', color: 'var(--on-surface-variant)' }}>{kullaniciAd}</span>
                         <LanguageSwitcher />
                         <button onClick={cikisYap} className="od-btn-secondary" style={{ padding: '0.5rem 1.1rem', fontSize: '0.8rem' }}>

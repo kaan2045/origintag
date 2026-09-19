@@ -24,6 +24,7 @@ export default function TravelPassportsListesi() {
             <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
                 <a href="/dashboard"><img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <a href="/dashboard/hotels" className="od-btn-ghost">🏨 Hotels</a>
                     <a href="/dashboard" className="od-btn-ghost">{lang === 'tr' ? "Dashboard'a Dön" : 'Back to Dashboard'}</a>
                     <LanguageSwitcher />
                 </div>
