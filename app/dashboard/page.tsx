@@ -120,8 +120,8 @@ export default function Dashboard() {
                             </button>
                         </div>
                     ) : (
-                        <div>
-                            <div className="mono-label" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '0 0.75rem 0.9rem', borderBottom: '1px solid var(--outline-variant)', marginBottom: '0.25rem', fontSize: '0.64rem', color: 'var(--on-surface-variant)' }}>
+                        <div style={{ overflowX: 'auto' }}>
+                            <div className="mono-label" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '0 0.75rem 0.9rem', borderBottom: '1px solid var(--outline-variant)', marginBottom: '0.25rem', fontSize: '0.64rem', color: 'var(--on-surface-variant)', minWidth: '640px' }}>
                                 <span>{lang === 'tr' ? 'ÜRÜN ADI' : 'PRODUCT NAME'}</span>
                                 <span>{lang === 'tr' ? 'TİP' : 'TYPE'}</span>
                                 <span>{lang === 'tr' ? 'BÖLGE' : 'REGION'}</span>
@@ -129,7 +129,7 @@ export default function Dashboard() {
                                 <span>{lang === 'tr' ? 'İŞLEM' : 'ACTION'}</span>
                             </div>
                             {urunler.map((urun, i) => (
-                                <div key={i} className="od-row-hover" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1.1rem 0.75rem', borderBottom: '1px solid rgba(16,20,21,0.07)', alignItems: 'center' }}>
+                                <div key={i} className="od-row-hover" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1.1rem 0.75rem', borderBottom: '1px solid rgba(16,20,21,0.07)', alignItems: 'center', minWidth: '640px' }}>
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                             <span style={{ fontWeight: 700, color: 'var(--on-surface)' }}>{urun.urun_adi}</span>

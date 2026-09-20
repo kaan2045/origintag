@@ -54,8 +54,8 @@ export default function TravelPassportsListesi() {
                             </a>
                         </div>
                     ) : (
-                        <div>
-                            <div className="mono-label" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '0 0.75rem 0.9rem', borderBottom: '1px solid var(--outline-variant)', marginBottom: '0.25rem', fontSize: '0.64rem', color: 'var(--on-surface-variant)' }}>
+                        <div style={{ overflowX: 'auto' }}>
+                            <div className="mono-label" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '0 0.75rem 0.9rem', borderBottom: '1px solid var(--outline-variant)', marginBottom: '0.25rem', fontSize: '0.64rem', color: 'var(--on-surface-variant)', minWidth: '640px' }}>
                                 <span>GUEST</span>
                                 <span>DESTINATION</span>
                                 <span>DATES</span>
@@ -63,7 +63,7 @@ export default function TravelPassportsListesi() {
                                 <span>ACTION</span>
                             </div>
                             {pasaportlar.map((p, i) => (
-                                <div key={i} className="od-row-hover" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1.1rem 0.75rem', borderBottom: '1px solid rgba(16,20,21,0.07)', alignItems: 'center' }}>
+                                <div key={i} className="od-row-hover" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1.1rem 0.75rem', borderBottom: '1px solid rgba(16,20,21,0.07)', alignItems: 'center', minWidth: '640px' }}>
                                     <div style={{ fontWeight: 700, color: 'var(--on-surface)' }}>
                                         {p.misafir_adi}
                                         {p.demo_mu && (

@@ -22,9 +22,9 @@ export default function SayfaNav({ baglantilar = [], geri }: { baglantilar?: Nav
 
     return (
         <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'linear-gradient(180deg, rgba(247,246,242,0.96), rgba(247,246,242,0.85))', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(16,20,21,0.06)' }}>
-            <div className="ld-wrap" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', paddingTop: '1.1rem', paddingBottom: '1.1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                    <Link href="/" aria-label="OriginTag" style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="ld-wrap pg-nav" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem 1.5rem', flexWrap: 'wrap', paddingTop: '1rem', paddingBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 0 }}>
+                    <Link href="/" aria-label="OriginTag" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                         <img src="/origin.png" alt="OriginTag" style={{ height: '24px' }} />
                     </Link>
                     {geri && (
@@ -33,7 +33,7 @@ export default function SayfaNav({ baglantilar = [], geri }: { baglantilar?: Nav
                         </a>
                     )}
                 </div>
-                <nav style={{ display: 'flex', alignItems: 'center', gap: 'clamp(0.9rem, 2vw, 1.8rem)' }}>
+                <nav style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end', gap: '0.5rem clamp(0.8rem, 2vw, 1.8rem)', marginLeft: 'auto' }}>
                     {baglantilar.map((b) => {
                         const s = { ...stil, ...(b.vurgulu ? { color: '#101415', fontWeight: 600 } : {}) };
                         return b.href

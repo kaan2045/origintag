@@ -571,3 +571,19 @@ html {
 .theme-light .ld-h2 { color: #101415; }
 .theme-light .ld-linkline { color: #101415; }
 .theme-light .ld-linkline:hover { color: #6d9a00; }
+
+/* Site içi navbar: telefonda daha sıkı */
+@media (max-width: 640px) {
+  .pg-nav a, .pg-nav button { font-size: 0.8rem !important; }
+}
+
+/* Form ızgaraları telefonda daralır: satır içi grid tanımlarını hedefler */
+@media (max-width: 640px) {
+  .theme-light [style*="grid-template-columns: 1fr 1fr 1fr"] { grid-template-columns: 1fr 1fr !important; }
+  .theme-light [style*="grid-template-columns: 1.5fr 1fr 1fr 1fr"] { grid-template-columns: 1fr 1fr !important; }
+  .theme-light [style*="grid-template-columns: 2fr 1fr auto"] { grid-template-columns: 1fr 1fr auto !important; }
+  .theme-light [style*="grid-template-columns"] > * { min-width: 0; }
+  .theme-light .od-field { min-width: 0; }
+  .theme-light .od-glass[style*="padding: 2.75rem"],
+  .theme-light .od-glass[style*="padding: 2.25rem"] { padding: 1.4rem !important; }
+}
