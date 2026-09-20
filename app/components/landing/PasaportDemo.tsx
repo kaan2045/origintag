@@ -84,7 +84,8 @@ export default function PasaportDemo({ c }: { c: LandingIcerik['pasaport'] }) {
                                 opacity: durum === 'dogrulandi' ? 0 : 1, pointerEvents: durum === 'dogrulandi' ? 'none' : 'auto',
                                 transition: 'opacity 700ms var(--ease-out-expo)',
                             }}>
-                                <div style={{ position: 'relative', background: '#ffffff', border: '1px solid rgba(16,20,21,0.1)', padding: '12px', borderRadius: 'var(--radius)', lineHeight: 0 }}>
+                                <div style={{ position: 'relative', background: '#ffffff', border: '1px solid rgba(16,20,21,0.1)', padding: '14px 14px 12px', borderRadius: 'var(--radius)', lineHeight: 0, textAlign: 'center' }}>
+                                    <img src="/origin.png" alt="OriginTag" style={{ height: '30px', display: 'block', margin: '0 auto 10px' }} />
                                     <canvas ref={qrRef} style={{ display: 'block' }} />
                                     {durum === 'taraniyor' && (
                                         <span style={{ position: 'absolute', left: 6, right: 6, height: '2px', background: 'var(--secondary)', boxShadow: '0 0 16px 3px rgba(109,154,0,0.5)', animation: 'ld-scan 1.4s ease-in-out forwards' }} />
