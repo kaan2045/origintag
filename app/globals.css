@@ -303,14 +303,14 @@ html {
 /* Büyük başlık ölçeği — Manrope Light, sıkı harf aralığı (hero ile aynı dil) */
 .ld-display {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.03em;
   line-height: 0.98;
 }
 
 .ld-h2 {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.025em;
   line-height: 1.04;
   font-size: clamp(2.1rem, 4.6vw, 3.6rem);
@@ -329,7 +329,7 @@ html {
 
 .ld-lead {
   color: var(--on-surface-variant);
-  font-size: 1.08rem;
+  font-size: 1.1rem;
   line-height: 1.7;
   max-width: 34rem;
   margin: 0;
@@ -448,10 +448,10 @@ html {
   --surface-container-high: #e3e2db;
   --surface-container-highest: #dad9d1;
   --on-surface: #101415;
-  --on-surface-variant: #5b625e;
-  --outline: #8b928e;
+  --on-surface-variant: #3d4440;
+  --outline: #7d847f;
   --outline-variant: #d9dbd5;
-  --secondary: #6d9a00;          /* lime, açık zeminde okunur ton */
+  --secondary: #5f8a00;          /* lime, açık zeminde okunur ton */
   --on-secondary: #ffffff;
   --secondary-fixed-dim: #5e8600;
   --tertiary-container: #e8f3d2;
@@ -515,7 +515,7 @@ html {
   color: #101415;
 }
 .theme-light .od-link { color: #101415; text-decoration: underline; text-underline-offset: 3px; }
-.theme-light .od-link:hover { color: #6d9a00; }
+.theme-light .od-link:hover { color: #5f8a00; }
 .theme-light .od-row-hover:hover { background: rgba(16, 20, 21, 0.04); }
 .theme-light img[src="/origin.png"]:not(.logo-acik) { filter: none !important; opacity: 1 !important; }
 
@@ -523,20 +523,20 @@ html {
 .pg-eyebrow {
   display: inline-flex; align-items: center; gap: 0.7rem;
   font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600;
-  color: #5b625e; margin: 0;
+  color: #3d4440; margin: 0;
 }
-.pg-eyebrow::before { content: ''; width: 7px; height: 7px; background: #6d9a00; }
+.pg-eyebrow::before { content: ''; width: 7px; height: 7px; background: #5f8a00; }
 .pg-h1 {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 300; letter-spacing: -0.025em; line-height: 1.04;
+  font-weight: 400; letter-spacing: -0.025em; line-height: 1.04;
   font-size: clamp(2rem, 4.2vw, 3.2rem); color: #101415; margin: 1rem 0 0;
 }
 .pg-h2 {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 400; letter-spacing: -0.02em; line-height: 1.1;
+  font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;
   font-size: 1.35rem; color: #101415; margin: 0;
 }
-.pg-lead { color: #5b625e; font-size: 1rem; line-height: 1.65; margin: 0.9rem 0 0; max-width: 34rem; }
+.pg-lead { color: #3d4440; font-size: 1.02rem; line-height: 1.65; margin: 0.9rem 0 0; max-width: 34rem; }
 .pg-arrow {
   display: inline-flex; align-items: center; gap: 0.6rem;
   padding-bottom: 0.3rem; border-bottom: 1px solid rgba(16,20,21,0.7);
@@ -545,7 +545,7 @@ html {
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 .pg-arrow::after { content: '→'; }
-.pg-arrow:hover { color: #6d9a00; border-color: #6d9a00; }
+.pg-arrow:hover { color: #5f8a00; border-color: #5f8a00; }
 
 /* Kapı motifi: içerik çerçevesi için ince, ışıklı kenar */
 .pg-portal {
@@ -567,10 +567,10 @@ html {
 .theme-light .ld-row,
 .theme-light .ld-row:last-child { border-color: rgba(16, 20, 21, 0.1); }
 .theme-light .ld-kanit > div { border-color: rgba(16, 20, 21, 0.1); }
-.theme-light .ld-lead { color: #5b625e; }
+.theme-light .ld-lead { color: #3d4440; }
 .theme-light .ld-h2 { color: #101415; }
 .theme-light .ld-linkline { color: #101415; }
-.theme-light .ld-linkline:hover { color: #6d9a00; }
+.theme-light .ld-linkline:hover { color: #5f8a00; }
 
 /* Site içi navbar: telefonda daha sıkı */
 @media (max-width: 640px) {

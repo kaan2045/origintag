@@ -17,7 +17,7 @@ export default function Tez({ c }: { c: LandingIcerik['tez'] }) {
         <section ref={ref} style={{ background: 'var(--surface)', padding: 'clamp(6rem, 12vw, 11rem) 0' }}>
             <div className="ld-wrap">
                 <p className="ld-eyebrow" style={{ color: 'var(--on-surface-variant)' }}>{c.eyebrow}</p>
-                <p className="ld-display" style={{ fontSize: 'clamp(1.7rem, 4.2vw, 3.4rem)', fontWeight: 600, lineHeight: 1.12, letterSpacing: '-0.02em', margin: '1.75rem 0 0', maxWidth: '62rem', color: 'var(--on-surface)' }}>
+                <p className="ld-display" style={{ fontSize: 'clamp(1.7rem, 4.2vw, 3.4rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.02em', margin: '1.75rem 0 0', maxWidth: '62rem', color: 'var(--on-surface)' }}>
                     {c.satirlar.map((s, si) => (
                         <span key={si} style={{ display: 'block', color: si === c.satirlar.length - 1 ? 'var(--secondary)' : undefined, marginTop: si === c.satirlar.length - 1 ? '1.2rem' : 0 }}>
                             {s.split(' ').map((k, ki) => {
@@ -26,7 +26,7 @@ export default function Tez({ c }: { c: LandingIcerik['tez'] }) {
                                 return (
                                     <span key={ki} style={{
                                         display: 'inline-block',
-                                        opacity: lit ? 1 : 0.16,
+                                        opacity: lit ? 1 : 0.22,
                                         transform: lit ? 'translateY(0)' : 'translateY(0.12em)',
                                         transition: 'opacity 450ms ease, transform 600ms var(--ease-out-expo)',
                                     }}>

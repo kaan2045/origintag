@@ -15,7 +15,7 @@ export interface NavBaglanti {
  */
 export default function SayfaNav({ baglantilar = [], geri }: { baglantilar?: NavBaglanti[]; geri?: { etiket: string; href: string } }) {
     const stil: React.CSSProperties = {
-        color: 'rgba(16,20,21,0.72)', textDecoration: 'none', fontSize: '0.86rem', fontWeight: 500,
+        color: 'rgba(16,20,21,0.88)', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 500,
         background: 'none', border: 'none', cursor: 'pointer', padding: 0, whiteSpace: 'nowrap',
         fontFamily: 'inherit', transition: 'color 0.2s ease',
     };

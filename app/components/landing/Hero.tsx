@@ -89,14 +89,14 @@ export default function Hero({ c }: { c: LandingIcerik['hero'] }) {
                     }}
                 >
                     <div style={{ maxWidth: s.mobil ? '100%' : '58%' }}>
-                        <p className="ld-fade-up" style={{ animationDelay: '120ms', display: 'flex', alignItems: 'center', gap: '0.7rem', margin: 0, fontSize: '0.7rem', letterSpacing: '0.22em', textTransform: 'uppercase', fontWeight: 500, color: 'rgba(224,227,229,0.85)' }}>
+                        <p className="ld-fade-up" style={{ animationDelay: '120ms', display: 'flex', alignItems: 'center', gap: '0.7rem', margin: 0, fontSize: '0.7rem', letterSpacing: '0.22em', textTransform: 'uppercase', fontWeight: 600, color: 'rgba(255,255,255,0.95)' }}>
                             <span aria-hidden="true" style={{ width: 7, height: 7, background: 'var(--secondary)' }} />
                             {c.eyebrow}
                         </p>
-                        <h1 className="ld-fade-up" style={{ animationDelay: '220ms', fontFamily: 'var(--font-display), ui-sans-serif, system-ui, sans-serif', fontWeight: 300, letterSpacing: '-0.025em', lineHeight: 1.02, fontSize: 'clamp(2.2rem, 4.4vw, 4.1rem)', margin: '1.4rem 0 0', color: '#ffffff' }}>
+                        <h1 className="ld-fade-up" style={{ animationDelay: '220ms', fontFamily: 'var(--font-display), ui-sans-serif, system-ui, sans-serif', fontWeight: 400, letterSpacing: '-0.025em', lineHeight: 1.04, fontSize: 'clamp(2.2rem, 4.4vw, 4.1rem)', margin: '1.4rem 0 0', color: '#ffffff' }}>
                             {c.satir1}<br />{c.satir2}<br />{c.satir3}
                         </h1>
-                        <p className="ld-fade-up" style={{ animationDelay: '340ms', margin: '1.6rem 0 0', maxWidth: '24rem', fontSize: '0.98rem', lineHeight: 1.6, color: 'rgba(224,227,229,0.82)' }}>
+                        <p className="ld-fade-up" style={{ animationDelay: '340ms', margin: '1.6rem 0 0', maxWidth: '24rem', fontSize: '1.02rem', lineHeight: 1.6, color: 'rgba(255,255,255,0.92)' }}>
                             {c.aciklama}
                         </p>
                         <a

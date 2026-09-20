@@ -18,10 +18,10 @@ export default function Navbar({ c }: { c: LandingIcerik['nav'] }) {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    const metin = koyu ? 'rgba(16,20,21,0.72)' : 'rgba(224,227,229,0.86)';
+    const metin = koyu ? 'rgba(16,20,21,0.88)' : 'rgba(255,255,255,0.92)';
     const vurgu = koyu ? '#101415' : '#ffffff';
     const baglanti: React.CSSProperties = {
-        color: metin, textDecoration: 'none', fontSize: '0.86rem', fontWeight: 500,
+        color: metin, textDecoration: 'none', fontSize: '0.9rem', fontWeight: 500,
         letterSpacing: '0.01em', transition: 'color 0.3s ease', whiteSpace: 'nowrap',
     };
     const hover = (e: React.MouseEvent<HTMLAnchorElement>, giris: boolean) => {
