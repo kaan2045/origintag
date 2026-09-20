@@ -25,7 +25,7 @@ const TEMALAR: Record<UrunTemaAnahtari, UrunTema> = {
         deep: 'var(--zeytin-deep)',
         tint: 'var(--zeytin-tint)',
         gradient: 'linear-gradient(160deg, #1f1a0d 0%, #33260f 42%, #5c6b2e 100%)',
-        video: '/videos/zeytinyagi-hero.mp4',
+        video: '/videos/zeytinlik-hero.mp4',
     },
     genel: {
         anahtar: 'genel',
