@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import jsPDF from 'jspdf';
 import { upload } from '@vercel/blob/client';
-import LanguageSwitcher from '../components/LanguageSwitcher';
+import SayfaNav from '../components/SayfaNav';
 import { useLanguage } from '../context/LanguageContext';
 import { qrCiz } from '../lib/qrLogo';
 
@@ -124,22 +124,10 @@ export default function UrunEkle() {
 
     const zeytinCinsleri = ['Memecik', 'Ayvalık', 'Gemlik', 'Uslu', 'Domat', 'Nizip Yağlık', lang === 'tr' ? 'Diğer' : 'Other'];
 
-    const navbar = (
-        <div style={{ position: 'sticky', top: '1.25rem', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
-            <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
-                <a href="/dashboard"><img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <a href="/dashboard" className="od-btn-ghost">
-                        {lang === 'tr' ? "Dashboard'a Dön" : 'Back to Dashboard'}
-                    </a>
-                    <LanguageSwitcher />
-                </div>
-            </nav>
-        </div>
-    );
+    const navbar = <SayfaNav geri={{ etiket: lang === 'tr' ? 'Panel' : 'Dashboard', href: '/dashboard' }} />;
 
     const subPanelStyle: React.CSSProperties = {
-        background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--radius-md)',
+        background: 'rgba(16,20,21,0.035)', borderRadius: 'var(--radius-md)',
         padding: '1.4rem', marginBottom: '1.25rem', border: '1px solid var(--outline-variant)',
     };
     const subHeadingStyle: React.CSSProperties = {
@@ -153,12 +141,12 @@ export default function UrunEkle() {
     // Tamamlandı ekranı
     if (tamamlandi) {
         return (
-            <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+            <main className="theme-light">
                 {navbar}
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '3.5rem 1.5rem' }}>
                     <div className="od-glass" style={{ width: '100%', maxWidth: '460px', padding: '2.75rem', textAlign: 'center' }}>
                         <div style={{ width: '52px', height: '52px', margin: '0 auto 1.25rem', borderRadius: '50%', background: 'rgba(178,230,48,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--secondary)', fontSize: '1.5rem' }}>✓</div>
-                        <h2 className="font-display" style={{ color: 'var(--on-surface)', fontSize: '1.6rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+                        <h2 className="pg-h1" style={{ fontSize: "1.9rem", marginBottom: "0.5rem" }}>
                             {lang === 'tr' ? "Blockchain'e Kaydedildi!" : 'Recorded on Blockchain!'}
                         </h2>
                         <p style={{ color: 'var(--on-surface-variant)', marginBottom: '1.75rem' }}>
@@ -166,11 +154,11 @@ export default function UrunEkle() {
                                 ? `${urunAdiSonuc} başarıyla zincire eklendi.`
                                 : `${urunAdiSonuc} has been successfully added to the chain.`}
                         </p>
-                        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1rem', textAlign: 'left' }}>
+                        <div style={{ background: 'rgba(16,20,21,0.035)', border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1rem', textAlign: 'left' }}>
                             <div className="mono-label" style={{ fontSize: '0.6rem', color: 'var(--on-surface-variant)', marginBottom: '4px' }}>SHA-256 Hash</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--secondary)', wordBreak: 'break-all' }}>{hash}</div>
                         </div>
-                        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1rem' }}>
+                        <div style={{ background: 'rgba(16,20,21,0.035)', border: '1px solid var(--outline-variant)', borderRadius: 'var(--radius)', padding: '1rem', marginBottom: '1rem' }}>
                             <div className="mono-label" style={{ fontSize: '0.6rem', color: 'var(--on-surface-variant)', marginBottom: '8px' }}>QR {lang === 'tr' ? 'Kod' : 'Code'}</div>
                             <div style={{ display: 'inline-block', padding: '10px', borderRadius: 'var(--radius)', background: 'var(--on-surface)', textAlign: 'center' }}>
                                 <img src="/origin.png" alt="OriginTag" style={{ height: '22px', marginBottom: '8px' }} />
@@ -212,12 +200,12 @@ export default function UrunEkle() {
 
     // Ana form ekranı
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+        <main className="theme-light">
             {navbar}
 
             <div style={{ display: 'flex', justifyContent: 'center', padding: '3.5rem 1.5rem' }}>
                 <div className="od-glass" style={{ width: '100%', maxWidth: '640px', padding: '2.75rem' }}>
-                    <h1 className="font-display" style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.01em', color: 'var(--on-surface)', marginBottom: '0.5rem' }}>
+                    <h1 className="pg-h1" style={{ fontSize: "2.2rem", marginBottom: "0.5rem" }}>
                         {lang === 'tr' ? 'Yeni Ürün Ekle' : 'Add New Product'}
                     </h1>
                     <p style={{ color: 'var(--on-surface-variant)', marginBottom: '2.25rem', fontSize: '0.95rem' }}>

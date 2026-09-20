@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, use } from 'react';
-import LanguageSwitcher from '../../../components/LanguageSwitcher';
+import SayfaNav from '../../../components/SayfaNav';
 import { useLanguage } from '../../../context/LanguageContext';
 
 export default function OtelDetay({ params }: { params: Promise<{ id: string }> }) {
@@ -19,21 +19,11 @@ export default function OtelDetay({ params }: { params: Promise<{ id: string }> 
             .catch(() => setYukleniyor(false));
     }, [id]);
 
-    const navbar = (
-        <div style={{ position: 'sticky', top: '1.25rem', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
-            <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
-                <a href="/dashboard/hotels"><img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <a href="/dashboard/hotels" className="od-btn-ghost">{lang === 'tr' ? '← Oteller' : '← Hotels'}</a>
-                    <LanguageSwitcher />
-                </div>
-            </nav>
-        </div>
-    );
+    const navbar = <SayfaNav geri={{ etiket: lang === 'tr' ? 'Oteller' : 'Hotels', href: '/dashboard/hotels' }} />;
 
     if (yukleniyor || !otel) {
         return (
-            <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+            <main className="theme-light">
                 {navbar}
                 <div style={{ textAlign: 'center', padding: '5rem 1.5rem', color: 'var(--on-surface-variant)' }}>
                     {yukleniyor ? (lang === 'tr' ? 'Yükleniyor...' : 'Loading...') : (lang === 'tr' ? 'Otel bulunamadı' : 'Hotel not found')}
@@ -53,13 +43,13 @@ export default function OtelDetay({ params }: { params: Promise<{ id: string }> 
     ];
 
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+        <main className="theme-light">
             {navbar}
-            <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '3rem 1.5rem' }}>
+            <div className="ld-wrap" style={{ paddingTop: '3rem', paddingBottom: '5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
                     {otel.logo_url && <img src={otel.logo_url} alt="" style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover' }} />}
                     <div>
-                        <h1 className="font-display" style={{ fontSize: '1.8rem', fontWeight: 700, margin: 0 }}>{otel.ad}</h1>
+                        <h1 className="pg-h1" style={{ fontSize: "2.2rem" }}>{otel.ad}</h1>
                         <p style={{ color: 'var(--on-surface-variant)', margin: 0 }}>{otel.sehir}</p>
                     </div>
                 </div>
@@ -67,7 +57,7 @@ export default function OtelDetay({ params }: { params: Promise<{ id: string }> 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1.1rem' }}>
                     {kartlar.map((k, i) => (
                         <div key={i} className="od-glass" style={{ padding: '1.5rem', textAlign: 'center' }}>
-                            <div className="font-display" style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--secondary)' }}>{k.deger}</div>
+                            <div className="font-display" style={{ fontSize: '2.4rem', fontWeight: 300, letterSpacing: '-0.02em', color: 'var(--on-surface)' }}>{k.deger}</div>
                             <div className="mono-label" style={{ fontSize: '0.62rem', color: 'var(--on-surface-variant)', marginTop: '0.5rem' }}>{k.etiket.toUpperCase()}</div>
                         </div>
                     ))}

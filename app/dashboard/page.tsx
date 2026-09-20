@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import LanguageSwitcher from '../components/LanguageSwitcher';
+import SayfaNav from '../components/SayfaNav';
 import { useLanguage } from '../context/LanguageContext';
 import { skorHesapla } from '../lib/surdurulebilirlik';
 import { urunIcinOnerilerUret, onerileriGrupla } from '../lib/oneriler';
@@ -77,33 +77,24 @@ export default function Dashboard() {
     ];
 
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+        <main className="theme-light">
+            <SayfaNav baglantilar={[
+                { etiket: lang === 'tr' ? 'Seyahat Pasaportları' : 'Travel Passports', href: '/dashboard/travel-passports' },
+                { etiket: 'Hotels', href: '/dashboard/hotels' },
+                { etiket: t('nav.logout'), onClick: cikisYap },
+            ]} />
 
-            <div style={{ position: 'sticky', top: '1.25rem', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
-                <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
-                    <img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} />
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <a href="/dashboard/travel-passports" className="od-btn-ghost" style={{ padding: '0.5rem 1.1rem', fontSize: '0.8rem' }}>
-                            🧳 {lang === 'tr' ? 'Seyahat Pasaportları' : 'Travel Passports'}
-                        </a>
-                        <a href="/dashboard/hotels" className="od-btn-ghost" style={{ padding: '0.5rem 1.1rem', fontSize: '0.8rem' }}>
-                            🏨 Hotels
-                        </a>
-                        <span style={{ fontSize: '0.88rem', color: 'var(--on-surface-variant)' }}>{kullaniciAd}</span>
-                        <LanguageSwitcher />
-                        <button onClick={cikisYap} className="od-btn-secondary" style={{ padding: '0.5rem 1.1rem', fontSize: '0.8rem' }}>
-                            {t('nav.logout')}
-                        </button>
-                    </div>
-                </nav>
-            </div>
+            <div className="ld-wrap" style={{ paddingTop: '3rem', paddingBottom: '5rem' }}>
+                <div style={{ marginBottom: '2.5rem' }}>
+                    <p className="pg-eyebrow">{lang === 'tr' ? 'Panel' : 'Dashboard'}</p>
+                    <h1 className="pg-h1">{kullaniciAd || (lang === 'tr' ? 'Hoş geldiniz' : 'Welcome')}</h1>
+                </div>
 
-            <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '3rem 1.5rem' }}>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.25rem', marginBottom: '2rem' }}>
                     {kartlar.map((k, i) => (
-                        <div key={i} className="od-glass" style={{ padding: '1.75rem 1.5rem', textAlign: 'center' }}>
-                            <div className="font-display" style={{ fontSize: '2.4rem', fontWeight: 800, color: 'var(--secondary)' }}>{k.value}</div>
+                        <div key={i} className="od-glass" style={{ padding: '1.75rem 1.5rem' }}>
+                            <div className="font-display" style={{ fontSize: '2.6rem', fontWeight: 300, letterSpacing: '-0.02em', color: 'var(--on-surface)' }}>{k.value}</div>
                             <div className="mono-label" style={{ fontSize: '0.66rem', color: 'var(--on-surface-variant)', marginTop: '0.5rem' }}>{k.label}</div>
                         </div>
                     ))}
@@ -111,7 +102,7 @@ export default function Dashboard() {
 
                 <div className="od-glass" style={{ padding: '2.25rem', marginBottom: '1.5rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
-                        <h2 className="font-display" style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--on-surface)', margin: 0 }}>{t('dashboard.title')}</h2>
+                        <h2 className="pg-h2">{t('dashboard.title')}</h2>
                         <button onClick={() => window.location.href = '/urun-ekle'} className="od-btn-primary" style={{ padding: '0.6rem 1.3rem', fontSize: '0.85rem' }}>
                             + {t('dashboard.addNew')}
                         </button>
@@ -138,7 +129,7 @@ export default function Dashboard() {
                                 <span>{lang === 'tr' ? 'İŞLEM' : 'ACTION'}</span>
                             </div>
                             {urunler.map((urun, i) => (
-                                <div key={i} className="od-row-hover" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1.1rem 0.75rem', borderBottom: '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
+                                <div key={i} className="od-row-hover" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1.1rem 0.75rem', borderBottom: '1px solid rgba(16,20,21,0.07)', alignItems: 'center' }}>
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                             <span style={{ fontWeight: 700, color: 'var(--on-surface)' }}>{urun.urun_adi}</span>
@@ -194,7 +185,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className="od-glass" style={{ padding: '2.25rem', marginBottom: '1.5rem' }}>
-                    <h2 className="font-display" style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '1.75rem' }}>
+                    <h2 className="pg-h2" style={{ marginBottom: '1.75rem' }}>
                         {lang === 'tr' ? 'Son İşlemler' : 'Recent Transactions'}
                     </h2>
                     {urunler.length === 0 ? (
@@ -204,7 +195,7 @@ export default function Dashboard() {
                     ) : (
                         <div>
                             {urunler.slice(0, 5).map((urun, i) => (
-                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.9rem 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.9rem 0', borderBottom: '1px solid rgba(16,20,21,0.07)' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem' }}>
                                         <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--secondary)' }}></div>
                                         <div>
@@ -225,7 +216,7 @@ export default function Dashboard() {
 
                 {gruplanmisOneriler.length > 0 && (
                     <div className="od-glass" style={{ padding: '2.25rem' }}>
-                        <h2 className="font-display" style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '0.6rem' }}>
+                        <h2 className="pg-h2" style={{ marginBottom: '0.6rem' }}>
                             🌱 {lang === 'tr' ? 'Öneriler' : 'Recommendations'}
                         </h2>
                         <p style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
@@ -241,7 +232,7 @@ export default function Dashboard() {
                                         style={{
                                             display: 'flex', alignItems: 'center', gap: '0.9rem',
                                             padding: '0.85rem 0', textDecoration: 'none',
-                                            borderBottom: i < gruplanmisOneriler.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                                            borderBottom: i < gruplanmisOneriler.length - 1 ? '1px solid rgba(16,20,21,0.07)' : 'none',
                                         }}
                                     >
                                         <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: renk, flexShrink: 0 }} />

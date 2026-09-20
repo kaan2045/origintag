@@ -6,7 +6,7 @@ import { LanguageProvider } from "./context/LanguageContext";
 const manrope = Manrope({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 const hankenGrotesk = Hanken_Grotesk({

@@ -1,9 +1,8 @@
 'use client';
-import { useRef, useMemo, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Suspense, useRef, useMemo, useEffect } from 'react';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { Line } from '@react-three/drei';
 import * as THREE from 'three';
-import { DUNYA_NOKTALARI } from './dunyaNoktalari';
 
 const YARICAP = 2;
 
@@ -73,33 +72,8 @@ function Nokta({ pos, buyuk }: { pos: THREE.Vector3; buyuk?: boolean }) {
     return (
         <mesh position={pos}>
             <sphereGeometry args={[buyuk ? 0.05 : 0.035, 12, 12]} />
-            <meshBasicMaterial color="#e0e3e5" />
+            <meshBasicMaterial color="#b2e630" />
         </mesh>
-    );
-}
-
-/** Kıtaların şeklini oluşturan beyaz/gri nokta bulutu — tek bir InstancedMesh ile performanslı çizim */
-function KitaNoktalari() {
-    const ref = useRef<THREE.InstancedMesh>(null);
-    const sayi = DUNYA_NOKTALARI.length;
-
-    useEffect(() => {
-        if (!ref.current) return;
-        const dummy = new THREE.Object3D();
-        DUNYA_NOKTALARI.forEach(([lat, lon], i) => {
-            const pos = latLonToVec3(lat, lon, YARICAP * 1.004);
-            dummy.position.copy(pos);
-            dummy.updateMatrix();
-            ref.current!.setMatrixAt(i, dummy.matrix);
-        });
-        ref.current.instanceMatrix.needsUpdate = true;
-    }, [sayi]);
-
-    return (
-        <instancedMesh ref={ref} args={[undefined, undefined, sayi]}>
-            <sphereGeometry args={[0.014, 5, 5]} />
-            <meshBasicMaterial color="#c1c8c4" transparent opacity={0.8} />
-        </instancedMesh>
     );
 }
 
@@ -115,6 +89,15 @@ const OTO_DONUS_HIZI = 0.13; // radyan/saniye — yavaş ama fark edilir kendili
 
 function Kure({ dragRef, scrollRef, otoRef, suruklerkenRef, azaltilmisHareket }: KureProps) {
     const grup = useRef<THREE.Group>(null);
+    // NASA Blue Marble (kamu malı) — gerçek dünya dokusu
+    const hamDoku = useLoader(THREE.TextureLoader, '/earth-texture.jpg');
+    const doku = useMemo(() => {
+        const t = hamDoku.clone();
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = 8;
+        t.needsUpdate = true;
+        return t;
+    }, [hamDoku]);
     const merkezVekVektor = useMemo(() => {
         const kayit: Record<string, THREE.Vector3> = {};
         for (const key in MERKEZLER) {
@@ -136,14 +119,11 @@ function Kure({ dragRef, scrollRef, otoRef, suruklerkenRef, azaltilmisHareket }:
 
     return (
         <group ref={grup}>
-            {/* Ana küre */}
+            {/* Ana küre — gerçek dünya dokusu */}
             <mesh>
-                <sphereGeometry args={[YARICAP, 48, 48]} />
-                <meshBasicMaterial color="#101415" transparent opacity={0.94} />
+                <sphereGeometry args={[YARICAP, 64, 64]} />
+                <meshStandardMaterial map={doku} roughness={0.95} metalness={0} />
             </mesh>
-
-            {/* Kıtaları oluşturan nokta bulutu */}
-            <KitaNoktalari />
 
             {/* Şehir/ülke merkezleri */}
             {Object.entries(MERKEZLER).map(([key, m]) => (
@@ -207,7 +187,12 @@ export default function GlobeSahnesi() {
     return (
         <div ref={containerRef} style={{ width: '100%', height: '420px', cursor: 'grab', touchAction: 'none' }}>
             <Canvas camera={{ position: [0, 0, 5.5], fov: 45 }} dpr={[1, 2]}>
+                <ambientLight intensity={1.4} />
+                <directionalLight position={[5, 3, 5]} intensity={2.6} />
+                <directionalLight position={[-4, -2, -3]} intensity={0.6} />
+                <Suspense fallback={null}>
                 <Kure dragRef={dragRef} scrollRef={scrollRef} otoRef={otoRef} suruklerkenRef={suruklerkenRef} azaltilmisHareket={azaltilmisHareket} />
+                </Suspense>
             </Canvas>
         </div>
     );

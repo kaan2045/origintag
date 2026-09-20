@@ -17,7 +17,7 @@ function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
     return (
         <>
             <div className="od-glass" style={{ padding: '1.75rem', marginBottom: '1.25rem' }}>
-                <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '1.1rem' }}>
+                <h2 className="pg-h2" style={{ fontSize: "1.2rem", marginBottom: '1.1rem' }}>
                     {lang === 'tr' ? 'Fotoğraf & Video' : 'Photos & Videos'}
                 </h2>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.6rem' }}>
@@ -126,12 +126,12 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
 
     useEffect(() => {
         if (urun && qrRef.current) {
-            qrCiz(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, 176, { dark: '#101415', light: '#e0e3e5' });
+            qrCiz(qrRef.current, `https://origintag.com.tr/dogrula/${hash}`, 176, { dark: '#101415', light: '#ffffff' });
         }
     }, [urun, hash]);
 
     if (yukleniyor) return (
-        <main style={{ minHeight: '100vh', background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <main className="theme-light" style={{ minHeight: '100vh', background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ textAlign: 'center' }}>
                 <div style={{
                     width: '32px', height: '32px', margin: '0 auto 1.25rem', borderRadius: '50%',
@@ -147,7 +147,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
     );
 
     if (bulunamadi) return (
-        <main style={{ minHeight: '100vh', background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+        <main className="theme-light" style={{ minHeight: '100vh', background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
             <div className="od-glass" style={{ textAlign: 'center', padding: '3.5rem 2.75rem', maxWidth: '400px', borderColor: 'rgba(255,180,171,0.3)' }}>
                 <div style={{ fontSize: '2rem', marginBottom: '1.1rem', color: 'var(--error)' }}>◐</div>
                 <h2 className="font-display" style={{ color: 'var(--error)', fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.6rem' }}>
@@ -181,13 +181,13 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
     ];
 
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--surface)' }}>
+        <main className="theme-light" style={{ minHeight: '100vh', background: 'var(--surface)' }}>
 
             {/* NAVBAR — hero'nun video/overlay katmanlarından tamamen bağımsız, sabit (fixed) konumda.
                 Mobilde otomatik oynayan video bazı tarayıcılarda z-index'i görmezden gelip donanımsal
                 katman olarak üstte render edilebiliyor; navbar'ı hero'nun dışına/üstüne taşımak bunu
                 tamamen ortadan kaldırır (dil değiştiricinin her zaman dokunulabilir olmasını sağlar). */}
-            <div style={{ position: 'fixed', top: '1.25rem', left: 0, width: '100%', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
+            <div style={{ position: 'fixed', top: '1rem', left: 0, width: '100%', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
                 <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
                     <img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} />
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -261,12 +261,12 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                 <div className="od-glass" style={{
                     padding: '1.9rem', marginBottom: '1.25rem', textAlign: 'center',
                 }}>
-                    <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '1.25rem' }}>
+                    <h2 className="pg-h2" style={{ fontSize: "1.2rem", marginBottom: '1.25rem' }}>
                         {lang === 'tr' ? 'Ürün Pasaportu' : 'Product Passport'}
                     </h2>
                     <div style={{
                         display: 'inline-block', padding: '14px', borderRadius: 'var(--radius)',
-                        background: 'var(--on-surface)', textAlign: 'center',
+                        background: '#ffffff', border: '1px solid rgba(16,20,21,0.1)', textAlign: 'center',
                     }}>
                         <img src="/origin.png" alt="OriginTag" style={{ height: '24px', marginBottom: '10px' }} />
                         <canvas ref={qrRef} style={{ display: 'block' }} />
@@ -292,7 +292,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
 
                 {/* TEMEL BİLGİLER */}
                 <div className="od-glass" style={{ padding: '1.9rem', marginBottom: '1.25rem' }}>
-                    <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '1.4rem' }}>
+                    <h2 className="pg-h2" style={{ fontSize: "1.2rem", marginBottom: '1.4rem' }}>
                         {lang === 'tr' ? 'Ürün Bilgileri' : 'Product Information'}
                     </h2>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.4rem' }}>
@@ -311,7 +311,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                         ))}
                     </div>
                     {urun.aciklama && (
-                        <div style={{ marginTop: '1.25rem', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.25rem' }}>
+                        <div style={{ marginTop: '1.25rem', borderTop: '1px solid rgba(16,20,21,0.08)', paddingTop: '1.25rem' }}>
                             <div className="mono-label" style={{ fontSize: '0.62rem', color: 'var(--on-surface-variant)', marginBottom: '6px' }}>
                                 {lang === 'tr' ? 'Açıklama' : 'Description'}
                             </div>
@@ -324,7 +324,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                 {surdurulebilirlikSkoru > 0 && (
                     <div className="od-glass" style={{ padding: '1.9rem', marginBottom: '1.25rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                            <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--on-surface)', margin: 0 }}>
+                            <h2 className="pg-h2" style={{ fontSize: "1.2rem", margin: 0 }}>
                                 🌱 {lang === 'tr' ? 'Sürdürülebilirlik Profili' : 'Sustainability Profile'}
                             </h2>
                             <span className="mono-label" style={{
@@ -363,7 +363,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                             )}
                         </div>
                         {(s.adilCalismaBeyani || s.yenilenebilirEnerji) && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1.25rem', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.1rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1.25rem', borderTop: '1px solid rgba(16,20,21,0.08)', paddingTop: '1.1rem' }}>
                                 {s.adilCalismaBeyani && (
                                     <div style={{ fontSize: '0.85rem', color: 'var(--on-surface)' }}>
                                         ✓ {lang === 'tr' ? 'Adil ücret ve güvenli çalışma koşulları beyan edildi' : 'Fair pay and safe working conditions declared'}
@@ -382,7 +382,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                 {/* ZEYTİNYAĞI DETAYLARI */}
                 {urun.urun_tipi === 'Zeytinyagi' && Object.keys(d).length > 0 && (
                     <div className="od-glass" style={{ padding: '1.9rem', marginBottom: '1.25rem' }}>
-                        <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '1.4rem' }}>
+                        <h2 className="pg-h2" style={{ fontSize: "1.2rem", marginBottom: '1.4rem' }}>
                             {lang === 'tr' ? 'Üretici & Ürün Detayları' : 'Producer & Product Details'}
                         </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
@@ -411,7 +411,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                 {/* BAL DETAYLARI */}
                 {urun.urun_tipi === 'Bal' && Object.keys(d).length > 0 && (
                     <div className="od-glass" style={{ padding: '1.9rem', marginBottom: '1.25rem' }}>
-                        <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '1.4rem' }}>
+                        <h2 className="pg-h2" style={{ fontSize: "1.2rem", marginBottom: '1.4rem' }}>
                             {lang === 'tr' ? 'Bal Detayları' : 'Honey Details'}
                         </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
@@ -426,7 +426,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                 {/* PEYNİR DETAYLARI */}
                 {urun.urun_tipi === 'Peynir' && Object.keys(d).length > 0 && (
                     <div className="od-glass" style={{ padding: '1.9rem', marginBottom: '1.25rem' }}>
-                        <h2 className="font-display" style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--on-surface)', marginBottom: '1.4rem' }}>
+                        <h2 className="pg-h2" style={{ fontSize: "1.2rem", marginBottom: '1.4rem' }}>
                             {lang === 'tr' ? 'Peynir Detayları' : 'Cheese Details'}
                         </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.1rem' }}>
@@ -442,7 +442,7 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                     <MedyaGalerisi urls={urun.medya_urls} lang={lang} />
                 )}
 
-                <div style={{ textAlign: 'center', padding: '2rem 1rem 3.5rem', borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: '1rem' }}>
+                <div style={{ textAlign: 'center', padding: '2rem 1rem 3.5rem', borderTop: '1px solid rgba(16,20,21,0.08)', marginTop: '1rem' }}>
                     <img src="/origin.png" alt="OriginTag" style={{ height: '24px', marginBottom: '0.75rem', filter: 'brightness(0) invert(1)', opacity: 0.4 }} />
                     <p style={{ fontSize: '0.8rem', color: 'var(--on-surface-variant)' }}>
                         {lang === 'tr' ? 'Bu ürün OriginTag blockchain sistemi ile doğrulandı.' : 'This product has been verified by the OriginTag blockchain system.'}

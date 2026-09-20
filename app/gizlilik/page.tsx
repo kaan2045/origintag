@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import SayfaNav from '../components/SayfaNav';
 
 export const metadata = {
     title: 'Gizlilik Politikası',
@@ -7,15 +7,12 @@ export const metadata = {
 
 export default function GizlilikPolitikasi() {
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
-            <nav style={{ padding: '1.75rem 2.5rem' }}>
-                <Link href="/">
-                    <img src="/origin.png" alt="OriginTag" style={{ height: '32px' }} />
-                </Link>
-            </nav>
+        <main className="theme-light">
+            <SayfaNav geri={{ etiket: "Ana sayfa", href: "/" }} />
 
             <div style={{ maxWidth: '760px', margin: '0 auto', padding: '2rem 1.5rem 6rem', lineHeight: 1.7, fontSize: '0.98rem' }}>
-                <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>Gizlilik Politikası</h1>
+                <p className="pg-eyebrow">Yasal</p>
+                <h1 className="pg-h1" style={{ marginBottom: '0.5rem' }}>Gizlilik Politikası</h1>
                 <p style={{ color: 'var(--on-surface-variant)', marginBottom: '2.5rem' }}>Son güncelleme: Ağustos 2026</p>
 
                 <p style={{ marginBottom: '1.5rem' }}>
@@ -24,7 +21,7 @@ export default function GizlilikPolitikasi() {
                     ve doğrulama hizmeti sunar.
                 </p>
 
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '2.5rem', marginBottom: '0.75rem' }}>
+                <h2 className="pg-h2" style={{ marginTop: "2.5rem", marginBottom: "0.75rem" }}>
                     1. Topladığımız Veriler
                 </h2>
                 <p style={{ marginBottom: '0.75rem' }}><strong>Hesap sahipleri (üretici/firma) için:</strong></p>
@@ -33,7 +30,7 @@ export default function GizlilikPolitikasi() {
                     <li>Şifre (geri döndürülemez şekilde şifrelenmiş olarak saklanır, düz metin olarak asla tutulmaz)</li>
                     <li>Eklediğiniz ürün bilgileri (ürün adı, tipi, bölge, hasat tarihi, miktar, açıklama, fotoğraf/video)</li>
                 </ul>
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '2.5rem', marginBottom: '0.75rem' }}>
+                <h2 className="pg-h2" style={{ marginTop: "2.5rem", marginBottom: "0.75rem" }}>
                     2. Verileri Nasıl Kullanıyoruz
                 </h2>
                 <ul style={{ paddingLeft: '1.25rem' }}>
@@ -42,7 +39,7 @@ export default function GizlilikPolitikasi() {
                     <li>Ürün kayıtlarını Polygon blok zincirine (kamuya açık, değiştirilemez bir kayıt defteri) yazmak</li>
                 </ul>
 
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '2.5rem', marginBottom: '0.75rem' }}>
+                <h2 className="pg-h2" style={{ marginTop: "2.5rem", marginBottom: "0.75rem" }}>
                     3. Üçüncü Taraflarla Paylaşım
                 </h2>
                 <p style={{ marginBottom: '0.75rem' }}>Verileriniz aşağıdaki hizmet sağlayıcılar aracılığıyla işlenir:</p>
@@ -54,7 +51,7 @@ export default function GizlilikPolitikasi() {
                 </ul>
                 <p style={{ marginTop: '0.75rem' }}>Verileriniz reklam amacıyla satılmaz veya kiralanmaz.</p>
 
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '2.5rem', marginBottom: '0.75rem' }}>
+                <h2 className="pg-h2" style={{ marginTop: "2.5rem", marginBottom: "0.75rem" }}>
                     4. Veri Saklama
                 </h2>
                 <p>
@@ -62,7 +59,7 @@ export default function GizlilikPolitikasi() {
                     (hash, ürün adı, tipi, işlem zamanı) blok zincirinin doğası gereği kalıcıdır ve silinemez.
                 </p>
 
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '2.5rem', marginBottom: '0.75rem' }}>
+                <h2 className="pg-h2" style={{ marginTop: "2.5rem", marginBottom: "0.75rem" }}>
                     5. Haklarınız (KVKK)
                 </h2>
                 <p style={{ marginBottom: '0.75rem' }}>
@@ -73,7 +70,7 @@ export default function GizlilikPolitikasi() {
                 </p>
                 <p>Bu haklarınızı kullanmak için aşağıdaki iletişim bilgilerinden bize ulaşabilirsiniz.</p>
 
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '2.5rem', marginBottom: '0.75rem' }}>
+                <h2 className="pg-h2" style={{ marginTop: "2.5rem", marginBottom: "0.75rem" }}>
                     6. Mobil Uygulama İzinleri
                 </h2>
                 <p>
@@ -81,7 +78,7 @@ export default function GizlilikPolitikasi() {
                     Bu izin yalnızca siz bir fotoğraf seçtiğinizde kullanılır, arka planda veri toplamaz.
                 </p>
 
-                <h2 style={{ fontSize: '1.3rem', fontWeight: 700, marginTop: '2.5rem', marginBottom: '0.75rem' }}>
+                <h2 className="pg-h2" style={{ marginTop: "2.5rem", marginBottom: "0.75rem" }}>
                     7. İletişim
                 </h2>
                 <p>

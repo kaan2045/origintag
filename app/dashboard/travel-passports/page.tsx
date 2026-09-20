@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import LanguageSwitcher from '../../components/LanguageSwitcher';
+import SayfaNav from '../../components/SayfaNav';
 import { useLanguage } from '../../context/LanguageContext';
 import { pasaportKartiIndir } from '../../lib/pasaportKart';
 
@@ -19,28 +19,17 @@ export default function TravelPassportsListesi() {
             .catch(() => setYukleniyor(false));
     }, []);
 
-    const navbar = (
-        <div style={{ position: 'sticky', top: '1.25rem', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
-            <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
-                <a href="/dashboard"><img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <a href="/dashboard/hotels" className="od-btn-ghost">🏨 Hotels</a>
-                    <a href="/dashboard" className="od-btn-ghost">{lang === 'tr' ? "Dashboard'a Dön" : 'Back to Dashboard'}</a>
-                    <LanguageSwitcher />
-                </div>
-            </nav>
-        </div>
-    );
+    const navbar = <SayfaNav geri={{ etiket: lang === 'tr' ? 'Panel' : 'Dashboard', href: '/dashboard' }} baglantilar={[{ etiket: 'Hotels', href: '/dashboard/hotels' }]} />;
 
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+        <main className="theme-light">
             {navbar}
-            <div style={{ maxWidth: 'var(--container-max)', margin: '0 auto', padding: '3rem 1.5rem' }}>
+            <div className="ld-wrap" style={{ paddingTop: '3rem', paddingBottom: '5rem' }}>
                 <div className="od-glass" style={{ padding: '2.25rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
                         <div>
-                            <h1 className="font-display" style={{ fontSize: '1.6rem', fontWeight: 700, color: 'var(--on-surface)', margin: 0 }}>
-                                🧳 Travel Passports
+                            <h1 className="pg-h1" style={{ fontSize: "2.2rem" }}>
+                                Travel Passports
                             </h1>
                             <p style={{ color: 'var(--on-surface-variant)', marginTop: '0.4rem', fontSize: '0.9rem' }}>
                                 {lang === 'tr' ? 'OriginTag Memories — Dijital Seyahat Pasaportu' : 'OriginTag Memories — Digital Travel Passport'}
@@ -74,7 +63,7 @@ export default function TravelPassportsListesi() {
                                 <span>ACTION</span>
                             </div>
                             {pasaportlar.map((p, i) => (
-                                <div key={i} className="od-row-hover" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1.1rem 0.75rem', borderBottom: '1px solid rgba(255,255,255,0.06)', alignItems: 'center' }}>
+                                <div key={i} className="od-row-hover" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr 1fr', gap: '1rem', padding: '1.1rem 0.75rem', borderBottom: '1px solid rgba(16,20,21,0.07)', alignItems: 'center' }}>
                                     <div style={{ fontWeight: 700, color: 'var(--on-surface)' }}>
                                         {p.misafir_adi}
                                         {p.demo_mu && (

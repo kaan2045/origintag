@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { upload } from '@vercel/blob/client';
-import LanguageSwitcher from '../../../components/LanguageSwitcher';
+import SayfaNav from '../../../components/SayfaNav';
 import { useLanguage } from '../../../context/LanguageContext';
 import { resmiSikistir } from '../../../lib/resimSikistir';
 
@@ -73,26 +73,16 @@ export default function YeniOtel() {
         setYukleniyor(false);
     };
 
-    const navbar = (
-        <div style={{ position: 'sticky', top: '1.25rem', zIndex: 50, display: 'flex', justifyContent: 'center', padding: '0 1.5rem' }}>
-            <nav className="od-navbar" style={{ width: '100%', maxWidth: 'var(--container-max)' }}>
-                <a href="/dashboard/hotels"><img src="/origin.png" alt="OriginTag" style={{ height: '26px', filter: 'brightness(0) invert(1)', opacity: 0.92 }} /></a>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <a href="/dashboard/hotels" className="od-btn-ghost">{lang === 'tr' ? '← Oteller' : '← Hotels'}</a>
-                    <LanguageSwitcher />
-                </div>
-            </nav>
-        </div>
-    );
+    const navbar = <SayfaNav geri={{ etiket: lang === 'tr' ? 'Oteller' : 'Hotels', href: '/dashboard/hotels' }} />;
 
     if (tamamlandi) {
         return (
-            <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+            <main className="theme-light">
                 {navbar}
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '3.5rem 1.5rem' }}>
                     <div className="od-glass" style={{ width: '100%', maxWidth: '440px', padding: '2.75rem', textAlign: 'center' }}>
                         <div style={{ width: '52px', height: '52px', margin: '0 auto 1.25rem', borderRadius: '50%', background: 'rgba(178,230,48,0.14)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--secondary)', fontSize: '1.5rem' }}>✓</div>
-                        <h2 className="font-display" style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem' }}>{ad}</h2>
+                        <h2 className="pg-h1" style={{ fontSize: "1.9rem", marginBottom: "1.5rem" }}>{ad}</h2>
                         <a href="/dashboard/hotels" className="od-btn-primary" style={{ width: '100%', display: 'block' }}>
                             {lang === 'tr' ? 'Otel Listesine Dön' : 'Back to Hotels'}
                         </a>
@@ -103,11 +93,11 @@ export default function YeniOtel() {
     }
 
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--surface)', color: 'var(--on-surface)' }}>
+        <main className="theme-light">
             {navbar}
             <div style={{ display: 'flex', justifyContent: 'center', padding: '3.5rem 1.5rem' }}>
                 <div className="od-glass" style={{ width: '100%', maxWidth: '600px', padding: '2.75rem' }}>
-                    <h1 className="font-display" style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem' }}>Add Hotel</h1>
+                    <h1 className="pg-h1" style={{ fontSize: "2.2rem", marginBottom: "0.5rem" }}>Add Hotel</h1>
 
                     <form onSubmit={handleSubmit}>
                         <div style={{ marginBottom: '1.25rem' }}>
