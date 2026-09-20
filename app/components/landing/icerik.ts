@@ -47,7 +47,7 @@ const tr = {
                     baslik: 'QR ürüne biner',
                     metin: 'Her ürün için tek, kopyalanamaz bir QR. Etikete, kutuya, tenekeye — ürün nereye giderse kayıt da oraya gider.',
                     defter: 'origintag.com.tr/dogrula/{hash}',
-                    video: '/videos/zeytinyagi-hero.mp4',
+                    video: '/videos/zeytinlik-hero.mp4',
                 },
                 {
                     anahtar: 'tarama',
@@ -180,7 +180,7 @@ const en: LandingIcerik = {
             adimlar: [
                 { anahtar: 'kayit', baslik: 'The producer records', metin: 'Product name, region, harvest date, amount, photos and video. No technical knowledge; one form, two minutes.', defter: 'product · region · harvest_date · media', video: '/videos/landing-hero.mp4' },
                 { anahtar: 'zincir', baslik: 'Written on-chain', metin: 'The record is hashed with SHA-256 and written to the Polygon network. That line can never be deleted or edited.', defter: 'hash = 0x9da4…387a  ·  tx = polygon/amoy', video: '/videos/bal-hero.mp4' },
-                { anahtar: 'qr', baslik: 'The QR rides along', metin: 'One uncopyable QR per product. On the label, the box, the tin — wherever the product goes, the record follows.', defter: 'origintag.com.tr/dogrula/{hash}', video: '/videos/zeytinyagi-hero.mp4' },
+                { anahtar: 'qr', baslik: 'The QR rides along', metin: 'One uncopyable QR per product. On the label, the box, the tin — wherever the product goes, the record follows.', defter: 'origintag.com.tr/dogrula/{hash}', video: '/videos/zeytinlik-hero.mp4' },
                 { anahtar: 'tarama', baslik: 'The customer scans', metin: 'In Berlin, Dubai, Tokyo. A phone camera is enough: the passport opens, the source village appears.', defter: 'verified = ✓  ·  record_date matched', video: '/videos/bugday-hero.mp4' },
             ],
         },
