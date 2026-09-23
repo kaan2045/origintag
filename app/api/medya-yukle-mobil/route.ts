@@ -6,6 +6,12 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const IZINLI_TIPLER = ['image/jpeg', 'image/png', 'image/webp'];
+const UZANTI_TIPLERI: Record<string, string> = {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    webp: 'image/webp',
+};
 // Vercel serverless istek govdesi ~4.5 MB ile sinirli; mobil zaten sikistirip gonderiyor.
 const MAKS_BOYUT = 4 * 1024 * 1024;
 
@@ -47,8 +53,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         dosyaAdi = request.nextUrl.searchParams.get('ad') || 'foto.jpg';
     }
 
-    // "image/jpeg; charset=..." gibi ek parametreleri ayikla.
-    const temizTip = dosyaTipi.split(';')[0].trim().toLowerCase();
+    // "image/jpeg; charset=..." gibi ek parametreleri ayikla; tur hic gelmezse
+    // (bazi istemciler multipart parcasina content-type koymuyor) uzantiya bak.
+    const temizTip = (dosyaTipi.split(';')[0].trim().toLowerCase() || UZANTI_TIPLERI[dosyaAdi.split('.').pop()?.toLowerCase() || ''] || '');
     if (!IZINLI_TIPLER.includes(temizTip)) {
         return NextResponse.json(
             { basari: false, hata: `Desteklenmeyen dosya turu${temizTip ? ` (${temizTip})` : ''}` },
