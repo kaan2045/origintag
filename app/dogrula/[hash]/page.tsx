@@ -243,6 +243,13 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                             {lang === 'tr' ? "Blockchain'de Kayıtlı" : 'Recorded on Blockchain'}
                         </div>
                         <div style={{ fontSize: '0.72rem', color: 'var(--on-surface-variant)', wordBreak: 'break-all' }}>{hash}</div>
+                        {urun.guncelleme_tarihi && (
+                            <div style={{ fontSize: '0.72rem', color: 'var(--on-surface-variant)', marginTop: '8px', lineHeight: 1.5 }}>
+                                {lang === 'tr'
+                                    ? 'Zincirdeki özet kaydın ilk halini gösterir; kayıt üretici tarafından sonradan güncellenmiştir.'
+                                    : 'The on-chain hash reflects the original record; it was later updated by the producer.'}
+                            </div>
+                        )}
                         {urun.polygon_tx_hash && (
                             <a
                                 href={`https://amoy.polygonscan.com/tx/${urun.polygon_tx_hash}`}
@@ -305,6 +312,14 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                             { etiket: lang === 'tr' ? 'Hasat Tarihi' : 'Harvest Date', deger: urun.hasat_tarihi ? new Date(urun.hasat_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB') : '-' },
                             { etiket: lang === 'tr' ? 'Miktar' : 'Amount', deger: `${urun.miktar} ${urun.birim}` },
                             { etiket: lang === 'tr' ? 'Kayıt Tarihi' : 'Record Date', deger: new Date(urun.olusturma_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB') },
+                            // Kayit sonradan duzenlendiyse bunu saklamiyoruz: zincirdeki ozet
+                            // kaydin ilk halini temsil ediyor, ziyaretci bunu bilmeli.
+                            ...(urun.guncelleme_tarihi
+                                ? [{
+                                    etiket: lang === 'tr' ? 'Son Güncelleme' : 'Last Updated',
+                                    deger: new Date(urun.guncelleme_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB'),
+                                }]
+                                : []),
                         ].map((b, i) => (
                             <div key={i}>
                                 <div className="mono-label" style={{ fontSize: '0.62rem', color: 'var(--on-surface-variant)', marginBottom: '4px' }}>{b.etiket}</div>
