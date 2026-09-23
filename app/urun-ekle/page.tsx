@@ -463,6 +463,16 @@ export default function UrunEkle() {
                             />
                         </div>
 
+                        <div style={{ marginBottom: '1.25rem' }}>
+                            <label className="mono-label" style={fieldLabelStyle}>
+                                {lang === 'tr' ? 'Şehir' : 'City'}
+                            </label>
+                            <input type="text" placeholder="Mersin"
+                                value={detaylar.sehir || ''} onChange={e => setDetaylar({ ...detaylar, sehir: e.target.value })}
+                                className="od-field"
+                            />
+                        </div>
+
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '1.25rem' }}>
                             <div>
                                 <label className="mono-label" style={fieldLabelStyle}>

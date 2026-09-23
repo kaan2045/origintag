@@ -300,6 +300,8 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                             { etiket: lang === 'tr' ? 'Ürün Adı' : 'Product Name', deger: urun.urun_adi },
                             { etiket: lang === 'tr' ? 'Ürün Tipi' : 'Product Type', deger: urun.urun_tipi },
                             { etiket: lang === 'tr' ? 'Üretim Bölgesi' : 'Production Region', deger: urun.bolge },
+                            // Sehir tum urun tipleri icin ortak; sadece girilmisse satir aciyoruz.
+                            ...(d.sehir ? [{ etiket: lang === 'tr' ? 'Şehir' : 'City', deger: d.sehir }] : []),
                             { etiket: lang === 'tr' ? 'Hasat Tarihi' : 'Harvest Date', deger: urun.hasat_tarihi ? new Date(urun.hasat_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB') : '-' },
                             { etiket: lang === 'tr' ? 'Miktar' : 'Amount', deger: `${urun.miktar} ${urun.birim}` },
                             { etiket: lang === 'tr' ? 'Kayıt Tarihi' : 'Record Date', deger: new Date(urun.olusturma_tarihi).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-GB') },
