@@ -1,5 +1,6 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { Suspense, useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import jsPDF from 'jspdf';
 import { upload } from '@vercel/blob/client';
 import SayfaNav from '../components/SayfaNav';
@@ -7,7 +8,24 @@ import { useLanguage } from '../context/LanguageContext';
 import { qrCiz } from '../lib/qrLogo';
 
 export default function UrunEkle() {
+    // useSearchParams bir Suspense siniri istiyor (Next.js statik render sirasinda);
+    // duzenleme modunu okuyan gercek form burada, disarisi sadece o siniri sagliyor.
+    return (
+        <Suspense fallback={null}>
+            <UrunEkleForm />
+        </Suspense>
+    );
+}
+
+function UrunEkleForm() {
     const { lang } = useLanguage();
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    // /urun-ekle?duzenle=<hash> ile ayni form duzenleme moduna geciyor -- alanlar
+    // iki yerde (ekleme/duzenleme) birbirinden sapmasin diye ayri bir sayfa yazmadik.
+    const duzenlenecekHash = searchParams.get('duzenle');
+    const duzenleModu = !!duzenlenecekHash;
+
     const [form, setForm] = useState({
         urunAdi: '', urunTipi: '', bolge: '', hasat: '', miktar: '', birim: 'kg', aciklama: ''
     });
@@ -21,6 +39,40 @@ export default function UrunEkle() {
     const [medyaDosyalar, setMedyaDosyalar] = useState<File[]>([]);
     const [medyaOnizleme, setMedyaOnizleme] = useState<string[]>([]);
     const [medyaYukleniyor, setMedyaYukleniyor] = useState(false);
+    // Duzenlemede zaten yuklu olan medya; kullanici tek tek kaldirabiliyor.
+    const [mevcutMedyaUrls, setMevcutMedyaUrls] = useState<string[]>([]);
+    const [urunYukleniyor, setUrunYukleniyor] = useState(duzenleModu);
+    const [yuklemeHatasi, setYuklemeHatasi] = useState<string | null>(null);
+
+    const mevcutUrunuDoldur = useCallback(async () => {
+        if (!duzenlenecekHash) return;
+        try {
+            const res = await fetch(`/api/urun-dogrula/${duzenlenecekHash}`);
+            const data = await res.json();
+            if (!data.basari) throw new Error(data.hata || 'Ürün yüklenemedi');
+            const u = data.urun;
+            setForm({
+                urunAdi: u.urun_adi || '',
+                urunTipi: u.urun_tipi || '',
+                bolge: u.bolge || '',
+                // Sunucu tarihi ISO olarak donuyor, <input type="date"> YYYY-AA-GG bekliyor.
+                hasat: u.hasat_tarihi ? String(u.hasat_tarihi).slice(0, 10) : '',
+                miktar: u.miktar != null ? String(u.miktar) : '',
+                birim: u.birim || 'kg',
+                aciklama: u.aciklama || '',
+            });
+            setDetaylar(u.detaylar || {});
+            setSurdurulebilirlik(u.surdurulebilirlik || {});
+            setMevcutMedyaUrls(u.medya_urls || []);
+        } catch (err) {
+            setYuklemeHatasi(err instanceof Error ? err.message : 'Ürün yüklenemedi');
+        }
+        setUrunYukleniyor(false);
+    }, [duzenlenecekHash]);
+
+    useEffect(() => {
+        mevcutUrunuDoldur();
+    }, [mevcutUrunuDoldur]);
 
     useEffect(() => {
         if (tamamlandi && hash && qrRef.current) {
@@ -53,11 +105,12 @@ export default function UrunEkle() {
 
             // Önce medya dosyalarını tarayıcıdan doğrudan Vercel Blob'a yükle
             // (sunucu sadece /api/medya-yukle üzerinden token üretir, dosya baytları sunucuya uğramaz)
-            let medyaUrls: string[] = [];
+            // Duzenlemede kullanicinin kaldirmadigi mevcut medya korunur, yenisi eklenir.
+            let medyaUrls: string[] = [...mevcutMedyaUrls];
             if (medyaDosyalar.length > 0) {
                 setMedyaYukleniyor(true);
                 try {
-                    medyaUrls = await Promise.all(
+                    const yeniUrller = await Promise.all(
                         medyaDosyalar.map(async (dosya) => {
                             const dosyaAdi = `urunler/${Date.now()}-${Math.random().toString(36).slice(2)}-${dosya.name}`;
                             const blob = await upload(dosyaAdi, dosya, {
@@ -67,6 +120,7 @@ export default function UrunEkle() {
                             return blob.url;
                         })
                     );
+                    medyaUrls = [...medyaUrls, ...yeniUrller];
                 } catch (err) {
                     const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
                     alert((lang === 'tr' ? 'Medya yükleme hatası: ' : 'Media upload error: ') + message);
@@ -77,13 +131,22 @@ export default function UrunEkle() {
                 setMedyaYukleniyor(false);
             }
 
-            const res = await fetch('/api/urun-ekle', {
+            const res = await fetch(duzenleModu ? '/api/urun-guncelle' : '/api/urun-ekle', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...form, kullaniciId, detaylar, medyaUrls, surdurulebilirlik }),
+                body: JSON.stringify({
+                    ...(duzenleModu ? { hash: duzenlenecekHash } : {}),
+                    ...form, kullaniciId, detaylar, medyaUrls, surdurulebilirlik,
+                }),
             });
             const data = await res.json();
             if (data.basari) {
+                if (duzenleModu) {
+                    // Hash degismedi (QR ayni), yeni bir QR/PDF ekrani gostermenin anlami yok --
+                    // duzenlemeden geldigi urunun dogrulama sayfasina donuyoruz.
+                    router.push(`/dogrula/${duzenlenecekHash}`);
+                    return;
+                }
                 setHash(data.hash);
                 setUrunAdiSonuc(form.urunAdi);
                 setYukleniyor(false);
@@ -198,6 +261,28 @@ export default function UrunEkle() {
         );
     }
 
+    if (urunYukleniyor) {
+        return (
+            <main className="theme-light">
+                {navbar}
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '6rem 1.5rem', color: 'var(--on-surface-variant)' }}>
+                    {lang === 'tr' ? 'Yükleniyor...' : 'Loading...'}
+                </div>
+            </main>
+        );
+    }
+
+    if (yuklemeHatasi) {
+        return (
+            <main className="theme-light">
+                {navbar}
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '6rem 1.5rem', color: 'var(--error)' }}>
+                    {yuklemeHatasi}
+                </div>
+            </main>
+        );
+    }
+
     // Ana form ekranı
     return (
         <main className="theme-light">
@@ -206,10 +291,14 @@ export default function UrunEkle() {
             <div style={{ display: 'flex', justifyContent: 'center', padding: '3.5rem 1.5rem' }}>
                 <div className="od-glass" style={{ width: '100%', maxWidth: '640px', padding: '2.75rem' }}>
                     <h1 className="pg-h1" style={{ fontSize: "2.2rem", marginBottom: "0.5rem" }}>
-                        {lang === 'tr' ? 'Yeni Ürün Ekle' : 'Add New Product'}
+                        {duzenleModu
+                            ? (lang === 'tr' ? 'Ürünü Düzenle' : 'Edit Product')
+                            : (lang === 'tr' ? 'Yeni Ürün Ekle' : 'Add New Product')}
                     </h1>
                     <p style={{ color: 'var(--on-surface-variant)', marginBottom: '2.25rem', fontSize: '0.95rem' }}>
-                        {lang === 'tr' ? "Ürün bilgilerini gir, blockchain'e kaydet." : 'Enter product details and record on blockchain.'}
+                        {duzenleModu
+                            ? (lang === 'tr' ? 'Ürün bilgilerini güncelle.' : 'Update the product details.')
+                            : (lang === 'tr' ? "Ürün bilgilerini gir, blockchain'e kaydet." : 'Enter product details and record on blockchain.')}
                     </p>
 
                     <form onSubmit={handleSubmit}>
@@ -615,6 +704,31 @@ export default function UrunEkle() {
                                 {lang === 'tr' ? 'Fotoğraf & Video (max 10 dosya)' : 'Photos & Videos (max 10 files)'}
                             </label>
 
+                            {/* Mevcut medya (duzenleme modu) */}
+                            {mevcutMedyaUrls.length > 0 && (
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '1rem' }}>
+                                    {mevcutMedyaUrls.map((url, i) => (
+                                        <div key={url} style={{ position: 'relative', borderRadius: 'var(--radius)', overflow: 'hidden', border: '1px solid var(--outline-variant)', aspectRatio: '1' }}>
+                                            {/\.(mp4|mov|webm)$/i.test(url) ? (
+                                                <div style={{ width: '100%', height: '100%', background: 'var(--surface-container-low)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', color: 'var(--on-surface)' }}>▶</div>
+                                            ) : (
+                                                <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={() => setMevcutMedyaUrls(prev => prev.filter((_, j) => j !== i))}
+                                                style={{
+                                                    position: 'absolute', top: '4px', right: '4px',
+                                                    background: 'rgba(0,0,0,0.6)', color: '#fff',
+                                                    border: 'none', borderRadius: '50%', width: '22px', height: '22px',
+                                                    cursor: 'pointer', fontSize: '12px', lineHeight: '22px', textAlign: 'center'
+                                                }}
+                                            >✕</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
                             {/* Yükleme alanı */}
                             <label style={{
                                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -674,8 +788,12 @@ export default function UrunEkle() {
                             {medyaYukleniyor
                                 ? (lang === 'tr' ? 'Medya Yükleniyor...' : 'Uploading Media...')
                                 : yukleniyor
-                                    ? (lang === 'tr' ? "Blockchain'e Kaydediliyor..." : 'Recording on Blockchain...')
-                                    : (lang === 'tr' ? "Blockchain'e Kaydet & QR Oluştur" : 'Save to Blockchain & Create QR')}
+                                    ? (duzenleModu
+                                        ? (lang === 'tr' ? 'Değişiklikler Kaydediliyor...' : 'Saving Changes...')
+                                        : (lang === 'tr' ? "Blockchain'e Kaydediliyor..." : 'Recording on Blockchain...'))
+                                    : duzenleModu
+                                        ? (lang === 'tr' ? 'Değişiklikleri Kaydet' : 'Save Changes')
+                                        : (lang === 'tr' ? "Blockchain'e Kaydet & QR Oluştur" : 'Save to Blockchain & Create QR')}
                         </button>
                     </form>
                 </div>

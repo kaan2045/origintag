@@ -13,6 +13,7 @@ export default function Dashboard() {
     const [kullaniciId, setKullaniciId] = useState('');
     const [yaziliyorHash, setYaziliyorHash] = useState<string | null>(null);
     const [yazimSonucu, setYazimSonucu] = useState<Record<string, string>>({});
+    const [siliniyorHash, setSiliniyorHash] = useState<string | null>(null);
 
     useEffect(() => {
         const ad = localStorage.getItem('kullanici_ad') || '';
@@ -56,6 +57,33 @@ export default function Dashboard() {
             setYazimSonucu(prev => ({ ...prev, [hash]: lang === 'tr' ? 'Bağlantı hatası' : 'Connection error' }));
         }
         setYaziliyorHash(null);
+    };
+
+    const urunSil = async (hash: string, urunAdi: string) => {
+        const onay = window.confirm(
+            lang === 'tr'
+                ? `"${urunAdi}" kalıcı olarak silinecek. Bu ürün için basılmış QR kodları artık çalışmayacak. Devam edilsin mi?`
+                : `"${urunAdi}" will be permanently deleted. Any printed QR codes for this product will stop working. Continue?`
+        );
+        if (!onay) return;
+
+        setSiliniyorHash(hash);
+        try {
+            const res = await fetch('/api/urun-sil', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ hash }),
+            });
+            const data = await res.json();
+            if (data.basari) {
+                setUrunler(prev => prev.filter(u => u.hash !== hash));
+            } else {
+                alert((lang === 'tr' ? 'Hata: ' : 'Error: ') + data.hata);
+            }
+        } catch {
+            alert(lang === 'tr' ? 'Bağlantı hatası!' : 'Connection error!');
+        }
+        setSiliniyorHash(null);
     };
 
     const cikisYap = () => {
@@ -150,10 +178,33 @@ export default function Dashboard() {
                                     <span style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)' }}>{urun.bolge}</span>
                                     <span style={{ fontSize: '0.85rem', color: 'var(--on-surface-variant)' }}>{urun.miktar} {urun.birim}</span>
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.35rem' }}>
-                                        <a href={'/dogrula/' + urun.hash} className="od-link mono-label"
-                                            style={{ fontSize: '0.68rem', letterSpacing: '0.06em' }}>
-                                            {lang === 'tr' ? 'Görüntüle →' : 'View →'}
-                                        </a>
+                                        <div style={{ display: 'flex', gap: '0.7rem' }}>
+                                            <a href={'/dogrula/' + urun.hash} className="od-link mono-label"
+                                                style={{ fontSize: '0.68rem', letterSpacing: '0.06em' }}>
+                                                {lang === 'tr' ? 'Görüntüle →' : 'View →'}
+                                            </a>
+                                            <a href={'/urun-ekle?duzenle=' + urun.hash} className="od-link mono-label"
+                                                style={{ fontSize: '0.68rem', letterSpacing: '0.06em' }}>
+                                                {lang === 'tr' ? 'Düzenle' : 'Edit'}
+                                            </a>
+                                            <button
+                                                type="button"
+                                                onClick={() => urunSil(urun.hash, urun.urun_adi)}
+                                                disabled={siliniyorHash === urun.hash}
+                                                className="mono-label"
+                                                style={{
+                                                    fontSize: '0.68rem', letterSpacing: '0.06em', color: 'var(--error)',
+                                                    background: 'none', border: 'none', padding: 0,
+                                                    cursor: siliniyorHash === urun.hash ? 'not-allowed' : 'pointer',
+                                                    opacity: siliniyorHash === urun.hash ? 0.6 : 1,
+                                                    textDecoration: 'underline',
+                                                }}
+                                            >
+                                                {siliniyorHash === urun.hash
+                                                    ? (lang === 'tr' ? 'Siliniyor...' : 'Deleting...')
+                                                    : (lang === 'tr' ? 'Sil' : 'Delete')}
+                                            </button>
+                                        </div>
                                         {!urun.polygon_tx_hash && (
                                             <button
                                                 onClick={() => blockchaineYaz(urun.hash)}
