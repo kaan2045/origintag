@@ -3,7 +3,7 @@ import { useState } from 'react';
 import SayfaNav from '../components/SayfaNav';
 import { useLanguage } from '../context/LanguageContext';
 
-type Adim = 'email' | 'kod' | 'tamam';
+type Adim = 'email' | 'kod' | 'sifre' | 'tamam';
 
 export default function SifremiUnuttum() {
     const { lang } = useLanguage();
@@ -44,6 +44,30 @@ export default function SifremiUnuttum() {
         setYukleniyor(false);
     };
 
+    const koduDogrula = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setHata(null);
+        setYukleniyor(true);
+        try {
+            const res = await fetch('/api/sifre-sifirla-dogrula', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, kod }),
+            });
+            const data = await res.json();
+            if (data.basari) {
+                setAdim('sifre');
+            } else {
+                setHata(data.hata || (tr ? 'Kod doğrulanamadı' : 'Could not verify code'));
+                // Deneme hakki bittiyse bu kodla devam etmenin anlami yok.
+                if (res.status === 429) setKod('');
+            }
+        } catch {
+            setHata(tr ? 'Bağlantı hatası' : 'Connection error');
+        }
+        setYukleniyor(false);
+    };
+
     const sifreyiDegistir = async (e: React.FormEvent) => {
         e.preventDefault();
         setHata(null);
@@ -67,6 +91,12 @@ export default function SifremiUnuttum() {
                 setAdim('tamam');
             } else {
                 setHata(data.hata || (tr ? 'Şifre değiştirilemedi' : 'Could not reset password'));
+                // Sifre kurallari istemcide zaten kontrol edildi; buradaki ret koddan
+                // (bu arada suresi dolmus olabilir). Kod adimina donup yenisini isteyebilsin.
+                if (res.status === 400 || res.status === 429) {
+                    setKod('');
+                    setAdim('kod');
+                }
             }
         } catch {
             setHata(tr ? 'Bağlantı hatası' : 'Connection error');
@@ -107,14 +137,33 @@ export default function SifremiUnuttum() {
                     )}
 
                     {adim === 'kod' && (
-                        <form onSubmit={sifreyiDegistir}>
+                        <form onSubmit={koduDogrula}>
                             {bilgi && <p style={{ fontSize: '0.86rem', color: 'var(--on-surface-variant)', margin: '0 0 1.5rem', lineHeight: 1.55 }}>{bilgi}</p>}
-                            <div style={{ marginBottom: '1.25rem' }}>
+                            <div style={{ marginBottom: '1.75rem' }}>
                                 <label className="mono-label" style={etiketStili}>{tr ? 'Doğrulama Kodu' : 'Verification Code'}</label>
-                                <input type="text" required inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="000000"
+                                <input type="text" required inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="000000" autoFocus
                                     value={kod} onChange={e => setKod(e.target.value.replace(/\D/g, ''))}
                                     className="od-field" style={{ letterSpacing: '0.4em', fontSize: '1.15rem' }} />
                             </div>
+                            {hata && <p style={{ color: 'var(--error)', fontSize: '0.86rem', margin: '0 0 1.25rem' }}>{hata}</p>}
+                            <button type="submit" disabled={yukleniyor || kod.length !== 6} className="od-btn-primary" style={{ width: '100%', padding: '0.95rem' }}>
+                                {yukleniyor ? (tr ? 'Kontrol ediliyor…' : 'Checking…') : (tr ? 'Devam Et' : 'Continue')}
+                            </button>
+                            <p style={{ fontSize: '0.86rem', color: 'var(--on-surface-variant)', marginTop: '1.5rem', marginBottom: 0 }}>
+                                {tr ? 'Kod gelmedi mi?' : "Didn't get a code?"}{' '}
+                                <button type="button" onClick={() => kodIste()} disabled={yukleniyor} className="od-link"
+                                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>
+                                    {tr ? 'Tekrar gönder' : 'Resend'}
+                                </button>
+                            </p>
+                        </form>
+                    )}
+
+                    {adim === 'sifre' && (
+                        <form onSubmit={sifreyiDegistir}>
+                            <p style={{ fontSize: '0.86rem', color: 'var(--on-surface-variant)', margin: '0 0 1.5rem', lineHeight: 1.55 }}>
+                                {tr ? 'Kod doğrulandı. Şimdi yeni şifreni belirle.' : 'Code verified. Now choose a new password.'}
+                            </p>
                             <div style={{ marginBottom: '1.25rem' }}>
                                 <label className="mono-label" style={etiketStili}>{tr ? 'Yeni Şifre' : 'New Password'}</label>
                                 <input type="password" required autoComplete="new-password" placeholder={tr ? 'En az 8 karakter' : 'At least 8 characters'}
@@ -126,16 +175,9 @@ export default function SifremiUnuttum() {
                                     value={yeniSifreTekrar} onChange={e => setYeniSifreTekrar(e.target.value)} className="od-field" />
                             </div>
                             {hata && <p style={{ color: 'var(--error)', fontSize: '0.86rem', margin: '0 0 1.25rem' }}>{hata}</p>}
-                            <button type="submit" disabled={yukleniyor || kod.length !== 6} className="od-btn-primary" style={{ width: '100%', padding: '0.95rem' }}>
+                            <button type="submit" disabled={yukleniyor} className="od-btn-primary" style={{ width: '100%', padding: '0.95rem' }}>
                                 {yukleniyor ? (tr ? 'Kaydediliyor…' : 'Saving…') : (tr ? 'Şifreyi Değiştir' : 'Reset Password')}
                             </button>
-                            <p style={{ fontSize: '0.86rem', color: 'var(--on-surface-variant)', marginTop: '1.5rem', marginBottom: 0 }}>
-                                {tr ? 'Kod gelmedi mi?' : "Didn't get a code?"}{' '}
-                                <button type="button" onClick={() => kodIste()} disabled={yukleniyor} className="od-link"
-                                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}>
-                                    {tr ? 'Tekrar gönder' : 'Resend'}
-                                </button>
-                            </p>
                         </form>
                     )}
 

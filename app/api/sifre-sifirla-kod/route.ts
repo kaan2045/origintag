@@ -76,21 +76,33 @@ export async function POST(req: NextRequest) {
             [email, kodOzeti(kod)]
         );
 
+        // Spam filtrelerini tetikleyen seyleri bilerek kaldirdik: yalnizca HTML govde
+        // (duz metin surumu yoktu), gonderen adresten farkli bir alan adindan yuklenen
+        // gorsel ve "sifre / hesap" kelimelerini one cikaran bir konu satiri. Asil cozum
+        // gondericiyi @origintag.com.tr'ye (SPF/DKIM) tasimak; bu sadece icerik tarafi.
+        const metin = [
+            `OriginTag doğrulama kodunuz: ${kod}`,
+            '',
+            `Bu kod ${GECERLILIK_DK} dakika geçerlidir ve yalnızca bir kez kullanılabilir.`,
+            'Bu isteği siz yapmadıysanız bu e-postayı yok sayabilirsiniz; hesabınızda hiçbir şey değişmez.',
+            '',
+            'OriginTag',
+            'https://origintag.com.tr',
+        ].join('\n');
+
         await transporter.sendMail({
             from: '"OriginTag" <' + process.env.EMAIL_USER + '>',
             to: email,
-            subject: 'OriginTag - Sifre Sifirlama Kodunuz',
+            subject: `OriginTag doğrulama kodunuz: ${kod}`,
+            text: metin,
             html: `
-        <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 2rem; border: 1px solid #eee; border-radius: 12px;">
-          <img src="https://origintag.com.tr/origin.png" style="height: 50px; margin-bottom: 1rem;" />
-          <h2 style="color: #2D5A27;">Sifre Sifirlama Kodunuz</h2>
-          <p style="color: #555;">OriginTag hesabinizin sifresini yenilemek icin asagidaki kodu kullanin:</p>
-          <div style="font-size: 2.5rem; font-weight: bold; color: #2D5A27; text-align: center; padding: 1rem; background: #f9f7f4; border-radius: 8px; letter-spacing: 0.5rem; margin: 1rem 0;">
-            ${kod}
-          </div>
-          <p style="color: #888; font-size: 0.85rem;">Bu kod ${GECERLILIK_DK} dakika gecerlidir. Sifre sifirlamayi siz istemediyseniz bu emaili dikkate almayin; sifreniz degismez.</p>
-          <hr style="border: none; border-top: 1px solid #eee; margin: 1rem 0;" />
-          <p style="color: #aaa; font-size: 0.75rem;">OriginTag - Geographical Indicator & Traceability</p>
+        <div style="font-family: Arial, sans-serif; max-width: 420px; margin: 0 auto; padding: 24px; color: #1a1f1b;">
+          <p style="font-size: 16px; font-weight: bold; color: #2D5A27; margin: 0 0 16px;">OriginTag</p>
+          <p style="margin: 0 0 12px;">Doğrulama kodunuz:</p>
+          <p style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #2D5A27; margin: 0 0 16px;">${kod}</p>
+          <p style="color: #555; font-size: 14px; margin: 0 0 8px;">Bu kod ${GECERLILIK_DK} dakika geçerlidir ve yalnızca bir kez kullanılabilir.</p>
+          <p style="color: #777; font-size: 13px; margin: 0 0 20px;">Bu isteği siz yapmadıysanız bu e-postayı yok sayabilirsiniz; hesabınızda hiçbir şey değişmez.</p>
+          <p style="color: #999; font-size: 12px; margin: 0;">OriginTag · <a href="https://origintag.com.tr" style="color: #999;">origintag.com.tr</a></p>
         </div>
       `,
         });
