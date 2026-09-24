@@ -62,9 +62,14 @@ export default function Login() {
                             className="od-field" />
                     </div>
                     <div style={{ marginBottom: '1.75rem' }}>
-                        <label className="mono-label" style={{ color: 'var(--on-surface-variant)', display: 'block', marginBottom: '8px', fontSize: '0.66rem' }}>
-                            {lang === 'tr' ? 'Şifre' : 'Password'}
-                        </label>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+                            <label className="mono-label" style={{ color: 'var(--on-surface-variant)', fontSize: '0.66rem' }}>
+                                {lang === 'tr' ? 'Şifre' : 'Password'}
+                            </label>
+                            <a href="/sifremi-unuttum" className="od-link" style={{ fontSize: '0.8rem' }}>
+                                {lang === 'tr' ? 'Şifremi unuttum' : 'Forgot password?'}
+                            </a>
+                        </div>
                         <input type="password" required placeholder={lang === 'tr' ? 'Şifrenizi girin' : 'Enter your password'}
                             value={form.sifre} onChange={e => setForm({ ...form, sifre: e.target.value })}
                             className="od-field" />
