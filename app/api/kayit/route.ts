@@ -31,14 +31,15 @@ export async function POST(req: NextRequest) {
             [ad, soyad, email, firma, sifre_hash]
         );
 
+        // Yeni hesap: oturum_surumu varsayilani 0.
+        const sessionToken = sessionTokenOlustur(result.rows[0].id, 0);
         const response = NextResponse.json({
             basari: true,
             kullanici_id: result.rows[0].id,
             ad: result.rows[0].ad + ' ' + result.rows[0].soyad,
-            // Yeni hesap: oturum_surumu varsayilani 0.
-            sessionToken: sessionTokenOlustur(result.rows[0].id, 0),
+            sessionToken,
         });
-        sessionCookieAyarla(response, result.rows[0].id, 0);
+        sessionCookieAyarla(response, sessionToken);
         return response;
     } catch (err: unknown) {
         console.error('kayit hatasi:', err);

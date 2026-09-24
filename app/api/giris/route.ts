@@ -63,15 +63,15 @@ export async function POST(req: NextRequest) {
 
         await pool.query(`DELETE FROM giris_denemeleri WHERE email = $1`, [email]);
 
-        const surum = await oturumSurumuAl(kullanici.id);
+        const sessionToken = sessionTokenOlustur(kullanici.id, await oturumSurumuAl(kullanici.id));
 
         const response = NextResponse.json({
             basari: true,
             kullanici_id: kullanici.id,
             ad: kullanici.ad + ' ' + kullanici.soyad,
-            sessionToken: sessionTokenOlustur(kullanici.id, surum),
+            sessionToken,
         });
-        sessionCookieAyarla(response, kullanici.id, surum);
+        sessionCookieAyarla(response, sessionToken);
         return response;
     } catch (err: unknown) {
         console.error('giris hatasi:', err);

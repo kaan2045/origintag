@@ -46,8 +46,8 @@ export function sessionTokenOlustur(kullaniciId: number, surum: number): string 
     return `${payload}.${imzala(payload, SECRET)}`;
 }
 
-export function sessionCookieAyarla(res: NextResponse, kullaniciId: number, surum: number) {
-    const token = sessionTokenOlustur(kullaniciId, surum);
+/** Yanit govdesinde donen token'in aynisini cereze yazar (mobil ve web ayni oturumu tasir). */
+export function sessionCookieAyarla(res: NextResponse, token: string) {
 
     res.cookies.set(COOKIE_ADI, token, {
         httpOnly: true,
