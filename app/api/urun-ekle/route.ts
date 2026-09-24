@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import '../../lib/pgTarih';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { ethers } from 'ethers';
