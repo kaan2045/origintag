@@ -13,7 +13,7 @@ export default function GizlilikPolitikasi() {
             <div style={{ maxWidth: '760px', margin: '0 auto', padding: '2rem 1.5rem 6rem', lineHeight: 1.7, fontSize: '0.98rem' }}>
                 <p className="pg-eyebrow">Yasal</p>
                 <h1 className="pg-h1" style={{ marginBottom: '0.5rem' }}>Gizlilik Politikası</h1>
-                <p style={{ color: 'var(--on-surface-variant)', marginBottom: '2.5rem' }}>Son güncelleme: Ağustos 2026</p>
+                <p style={{ color: 'var(--on-surface-variant)', marginBottom: '2.5rem' }}>Son güncelleme: Eylül 2026</p>
 
                 <p style={{ marginBottom: '1.5rem' }}>
                     Bu gizlilik politikası, OriginTag web sitesi (origintag.com.tr) ve OriginTag mobil uygulaması
@@ -70,7 +70,7 @@ export default function GizlilikPolitikasi() {
                 </p>
                 <p style={{ marginBottom: '0.75rem' }}>
                     Hesabınızı ve ona bağlı bütün verileri (ürünler, fotoğraflar, profil bilgileri) mobil uygulamada
-                    Profil &gt; Hesabı Sil adımıyla kendiniz, anında ve kalıcı olarak silebilirsiniz. Silinen ürünlerin
+                    Profil &gt; Hesabı Sil, web panelinde Hesap &gt; Hesabı Sil adımıyla kendiniz, anında ve kalıcı olarak silebilirsiniz. Silinen ürünlerin
                     QR kodları artık doğrulama sayfası göstermez.
                 </p>
                 <p>Bu haklarınızı kullanmak için aşağıdaki iletişim bilgilerinden bize ulaşabilirsiniz.</p>
@@ -79,8 +79,11 @@ export default function GizlilikPolitikasi() {
                     6. Mobil Uygulama İzinleri
                 </h2>
                 <p>
-                    OriginTag mobil uygulaması, ürün eklerken fotoğraf seçebilmeniz için galeri erişim izni ister.
-                    Bu izin yalnızca siz bir fotoğraf seçtiğinizde kullanılır, arka planda veri toplamaz.
+                    OriginTag mobil uygulaması, ürün eklerken fotoğraf seçebilmeniz için galeri erişim izni; ürün
+                    fotoğrafı çekmeniz ve etiketlerdeki QR kodları okutmanız için kamera izni ister. İzinler yalnızca
+                    siz bu işlemleri başlattığınızda kullanılır, arka planda veri toplamaz. QR okuturken kamera
+                    görüntüsü yalnızca telefonda kodu çözmek için işlenir, hiçbir yere gönderilmez. İnternet yokken
+                    eklediğiniz ürünler, gönderilene kadar yalnızca kendi telefonunuzda saklanır.
                 </p>
 
                 <h2 className="pg-h2" style={{ marginTop: "2.5rem", marginBottom: "0.75rem" }}>

@@ -120,6 +120,7 @@ export default function Dashboard() {
             <SayfaNav baglantilar={[
                 { etiket: lang === 'tr' ? 'Seyahat Pasaportları' : 'Travel Passports', href: '/dashboard/travel-passports' },
                 { etiket: 'Hotels', href: '/dashboard/hotels' },
+                { etiket: lang === 'tr' ? 'Hesap' : 'Account', href: '/dashboard/hesap' },
                 { etiket: t('nav.logout'), onClick: cikisYap },
             ]} />
 
