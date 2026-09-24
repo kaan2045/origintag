@@ -68,6 +68,11 @@ export default function GizlilikPolitikasi() {
                     veya (blok zincirine yazılanlar hariç, yukarıda açıklanan kalıcılık nedeniyle) silinmesini talep
                     etme haklarına sahipsiniz.
                 </p>
+                <p style={{ marginBottom: '0.75rem' }}>
+                    Hesabınızı ve ona bağlı bütün verileri (ürünler, fotoğraflar, profil bilgileri) mobil uygulamada
+                    Profil &gt; Hesabı Sil adımıyla kendiniz, anında ve kalıcı olarak silebilirsiniz. Silinen ürünlerin
+                    QR kodları artık doğrulama sayfası göstermez.
+                </p>
                 <p>Bu haklarınızı kullanmak için aşağıdaki iletişim bilgilerinden bize ulaşabilirsiniz.</p>
 
                 <h2 className="pg-h2" style={{ marginTop: "2.5rem", marginBottom: "0.75rem" }}>
