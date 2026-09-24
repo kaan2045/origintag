@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "zincir:cuzdan": "node scripts/cuzdan-olustur.mjs",
+    "zincir:yayinla": "node scripts/kontrat-yayinla.mjs",
+    "zincir:tasi": "node scripts/kayitlari-tasi.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

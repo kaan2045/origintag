@@ -2,8 +2,8 @@ import { Pool } from 'pg';
 import '../../lib/pgTarih';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { ethers } from 'ethers';
 import { istekOturumIdAl } from '../../lib/session';
+import { AKTIF_AG, yazmaSozlesmesi, zincirAgiKolonunuHazirla } from '../../lib/zincir';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -12,17 +12,9 @@ const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
 });
 
-const ABI = [
-    "function kayitEkle(string memory hash, string memory urunAdi, string memory urunTipi) public",
-];
-const CONTRACT_ADDRESS = "0x9Da4e7F749beAaEF618bD2C2Fe456b86e48387A3";
-
 async function polygonaYaz(hash: string, urunAdi: string, urunTipi: string) {
     try {
-        const provider = new ethers.JsonRpcProvider(process.env.POLYGON_RPC_URL);
-        const wallet = new ethers.Wallet(process.env.POLYGON_PRIVATE_KEY!, provider);
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
-
+        const contract = await yazmaSozlesmesi();
         const tx = await contract.kayitEkle(hash, urunAdi, urunTipi);
         await tx.wait();
 
@@ -66,9 +58,10 @@ export async function POST(req: NextRequest) {
 
         // Polygon tx hash'ini veritabanina da kaydet (basarili olduysa)
         if (polygonSonuc.basari && polygonSonuc.txHash) {
+            await zincirAgiKolonunuHazirla(pool);
             await pool.query(
-                `UPDATE urunler SET polygon_tx_hash = $1 WHERE hash = $2`,
-                [polygonSonuc.txHash, hash]
+                `UPDATE urunler SET polygon_tx_hash = $1, zincir_agi = $2 WHERE hash = $3`,
+                [polygonSonuc.txHash, AKTIF_AG, hash]
             );
         }
 

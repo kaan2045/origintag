@@ -7,6 +7,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { urunTemasiniAl } from '../../lib/urunTema';
 import { skorHesapla } from '../../lib/surdurulebilirlik';
 import { qrCiz } from '../../lib/qrLogo';
+import { AG_BILGISI, islemAdresi, kayitAgi } from '../../lib/zincirAdres';
 
 function MedyaGalerisi({ urls, lang }: { urls: string[], lang: string }) {
     const [acik, setAcik] = useState<string | null>(null);
@@ -250,9 +251,18 @@ export default function DogrulamaPage({ params }: { params: Promise<{ hash: stri
                                     : 'The on-chain hash reflects the original record; it was later updated by the producer.'}
                             </div>
                         )}
-                        {urun.polygon_tx_hash && (
+                        {urun.polygon_tx_hash && AG_BILGISI[kayitAgi(urun.zincir_agi)].testAgi && (
+                            // Ana aga gecmeden once yazilan kayitlar: bunu saklamiyoruz, test agi
+                            // kalicilik garantisi vermiyor.
+                            <div style={{ fontSize: '0.72rem', color: 'var(--on-surface-variant)', marginTop: '8px', lineHeight: 1.5 }}>
+                                {lang === 'tr'
+                                    ? 'Bu kayıt Polygon test ağında (Amoy) tutuluyor.'
+                                    : 'This record is kept on the Polygon test network (Amoy).'}
+                            </div>
+                        )}
+                        {/^0x[0-9a-f]{64}$/i.test(urun.polygon_tx_hash || '') && (
                             <a
-                                href={`https://amoy.polygonscan.com/tx/${urun.polygon_tx_hash}`}
+                                href={islemAdresi(urun.zincir_agi, urun.polygon_tx_hash)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="od-btn-secondary mono-label"
