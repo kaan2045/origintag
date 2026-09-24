@@ -5,6 +5,8 @@ export type OnemSeviyesi = 'yuksek' | 'orta' | 'dusuk';
 export interface Oneri {
     tip: string;
     mesaj: string;
+    /** Urun adi olmadan; tek urunun kendi ekraninda gosterilir. */
+    kisaMesaj: string;
     onem: OnemSeviyesi;
 }
 
@@ -28,6 +30,7 @@ export function urunIcinOnerilerUret(urun: UrunOneriGirdisi): Oneri[] {
         oneriler.push({
             tip: 'blockchain_yok',
             mesaj: `${urun.urun_adi}: Blockchain'e henüz yazılmadı`,
+            kisaMesaj: `Blockchain'e henüz yazılmadı`,
             onem: 'yuksek',
         });
     }
@@ -36,6 +39,7 @@ export function urunIcinOnerilerUret(urun: UrunOneriGirdisi): Oneri[] {
         oneriler.push({
             tip: 'sertifika_yok',
             mesaj: `${urun.urun_adi}: Bir sürdürülebilirlik sertifikası (Organik, Fairtrade vb.) eklemeyi değerlendirin`,
+            kisaMesaj: `Bir sürdürülebilirlik sertifikası (Organik, Fairtrade vb.) eklemeyi değerlendirin`,
             onem: 'orta',
         });
     }
@@ -44,6 +48,7 @@ export function urunIcinOnerilerUret(urun: UrunOneriGirdisi): Oneri[] {
         oneriler.push({
             tip: 'kimyasal_bilgisi_eksik',
             mesaj: `${urun.urun_adi}: Kimyasal girdi kullanımını azaltıp belgelemeyi düşünün`,
+            kisaMesaj: `Kimyasal girdi kullanımını azaltıp belgelemeyi düşünün`,
             onem: 'orta',
         });
     }
@@ -52,6 +57,7 @@ export function urunIcinOnerilerUret(urun: UrunOneriGirdisi): Oneri[] {
         oneriler.push({
             tip: 'sulama_verimliligi',
             mesaj: `${urun.urun_adi}: Damla sulamaya geçiş su verimliliğini artırabilir`,
+            kisaMesaj: `Damla sulamaya geçiş su verimliliğini artırabilir`,
             onem: 'dusuk',
         });
     }
@@ -60,6 +66,7 @@ export function urunIcinOnerilerUret(urun: UrunOneriGirdisi): Oneri[] {
         oneriler.push({
             tip: 'adil_calisma_beyani_eksik',
             mesaj: `${urun.urun_adi}: Adil çalışma koşulları beyanı eklemeyi düşünün`,
+            kisaMesaj: `Adil çalışma koşulları beyanı eklemeyi düşünün`,
             onem: 'dusuk',
         });
     }
@@ -68,6 +75,7 @@ export function urunIcinOnerilerUret(urun: UrunOneriGirdisi): Oneri[] {
         oneriler.push({
             tip: 'yenilenebilir_enerji_eksik',
             mesaj: `${urun.urun_adi}: Yenilenebilir enerji kullanımı beyanı eklemeyi düşünün`,
+            kisaMesaj: `Yenilenebilir enerji kullanımı beyanı eklemeyi düşünün`,
             onem: 'dusuk',
         });
     }
