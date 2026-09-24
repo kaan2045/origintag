@@ -46,6 +46,9 @@ export default function GizlilikPolitikasi() {
                 <ul style={{ paddingLeft: '1.25rem' }}>
                     <li><strong>Vercel</strong> — barındırma, dosya (fotoğraf/video) depolama</li>
                     <li><strong>Neon</strong> — veritabanı barındırma</li>
+                    <li><strong>Sentry</strong> — mobil uygulamanın hata raporları. Bir hata olduğunda yalnızca hata
+                        ayrıntısı, cihaz/uygulama sürümü ve sayısal hesap numaranız gönderilir; adınız, e-posta
+                        adresiniz, şifreniz ve girdiğiniz form bilgileri gönderilmez.</li>
                     <li><strong>Polygon (blok zinciri ağı)</strong> — ürün hash&apos;i, ürün adı ve tipi kamuya açık ve
                         kalıcı olarak zincire yazılır; bu kayıt hiçbir zaman silinemez</li>
                 </ul>
