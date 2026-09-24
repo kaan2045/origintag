@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
+import { oturumSurumuKolonunuHazirla } from '../../lib/session';
 import { KOD_HATA_MESAJI, koduDogrula } from '../../lib/sifreSifirlama';
 
 const pool = new Pool({
@@ -39,7 +40,13 @@ export async function POST(req: NextRequest) {
         }
 
         const sifreHash = await bcrypt.hash(yeniSifre, 10);
-        const guncelleme = await pool.query('UPDATE kullanicilar SET sifre_hash = $1 WHERE email = $2', [sifreHash, email]);
+        // oturum_surumu'nu artirmak bu hesaba o ana kadar verilmis butun oturumlari (diger
+        // cihazlar, sifreyi calan kisinin acik oturumu dahil) aninda gecersiz kiliyor.
+        await oturumSurumuKolonunuHazirla();
+        const guncelleme = await pool.query(
+            'UPDATE kullanicilar SET sifre_hash = $1, oturum_surumu = oturum_surumu + 1 WHERE email = $2',
+            [sifreHash, email]
+        );
         if (guncelleme.rowCount === 0) {
             return NextResponse.json({ basari: false, hata: KOD_HATA_MESAJI.hatali.hata }, { status: 400 });
         }

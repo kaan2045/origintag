@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
-import { sessionCookieAyarla, sessionTokenOlustur } from '../../lib/session';
+import { oturumSurumuAl, sessionCookieAyarla, sessionTokenOlustur } from '../../lib/session';
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
@@ -63,13 +63,15 @@ export async function POST(req: NextRequest) {
 
         await pool.query(`DELETE FROM giris_denemeleri WHERE email = $1`, [email]);
 
+        const surum = await oturumSurumuAl(kullanici.id);
+
         const response = NextResponse.json({
             basari: true,
             kullanici_id: kullanici.id,
             ad: kullanici.ad + ' ' + kullanici.soyad,
-            sessionToken: sessionTokenOlustur(kullanici.id),
+            sessionToken: sessionTokenOlustur(kullanici.id, surum),
         });
-        sessionCookieAyarla(response, kullanici.id);
+        sessionCookieAyarla(response, kullanici.id, surum);
         return response;
     } catch (err: unknown) {
         console.error('giris hatasi:', err);

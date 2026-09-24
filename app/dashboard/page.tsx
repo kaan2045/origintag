@@ -27,7 +27,18 @@ export default function Dashboard() {
         }
 
         fetch('/api/urunlerim?kullanici_id=' + id)
-            .then(res => res.json())
+            .then(res => {
+                // Oturum sunucuda gecersiz (orn. sifre baska cihazdan sifirlandi): bos bir
+                // panel gostermek yerine girise gonder. localStorage'daki id sadece bir ipucu.
+                if (res.status === 401) {
+                    localStorage.removeItem('kullanici_id');
+                    localStorage.removeItem('kullanici_ad');
+                    localStorage.removeItem('kullanici_email');
+                    window.location.href = '/login';
+                    return new Promise<never>(() => {});
+                }
+                return res.json();
+            })
             .then(data => {
                 if (data.basari) setUrunler(data.urunler);
                 setYukleniyor(false);

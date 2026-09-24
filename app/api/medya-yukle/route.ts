@@ -6,7 +6,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-    const kullaniciId = istekOturumIdAl(request);
+    const kullaniciId = await istekOturumIdAl(request);
     if (!kullaniciId) {
         return NextResponse.json({ error: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });
     }

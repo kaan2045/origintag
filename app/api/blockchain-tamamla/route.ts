@@ -18,7 +18,7 @@ const CONTRACT_ADDRESS = "0x9Da4e7F749beAaEF618bD2C2Fe456b86e48387A3";
 
 export async function POST(req: NextRequest) {
     try {
-        const kullaniciId = istekOturumIdAl(req);
+        const kullaniciId = await istekOturumIdAl(req);
         if (!kullaniciId) {
             return NextResponse.json({ basari: false, hata: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });
         }

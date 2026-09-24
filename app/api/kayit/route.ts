@@ -35,9 +35,10 @@ export async function POST(req: NextRequest) {
             basari: true,
             kullanici_id: result.rows[0].id,
             ad: result.rows[0].ad + ' ' + result.rows[0].soyad,
-            sessionToken: sessionTokenOlustur(result.rows[0].id),
+            // Yeni hesap: oturum_surumu varsayilani 0.
+            sessionToken: sessionTokenOlustur(result.rows[0].id, 0),
         });
-        sessionCookieAyarla(response, result.rows[0].id);
+        sessionCookieAyarla(response, result.rows[0].id, 0);
         return response;
     } catch (err: unknown) {
         console.error('kayit hatasi:', err);

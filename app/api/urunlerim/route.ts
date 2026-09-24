@@ -9,7 +9,7 @@ const pool = new Pool({
 
 export async function GET(req: NextRequest) {
     try {
-        const kullaniciId = istekOturumIdAl(req);
+        const kullaniciId = await istekOturumIdAl(req);
 
         if (!kullaniciId) {
             return NextResponse.json({ basari: false, hata: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });

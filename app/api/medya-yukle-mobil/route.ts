@@ -24,7 +24,7 @@ const MAKS_BOYUT = 4 * 1024 * 1024;
  * bagimlilik ve protokol eslesmesi gerekmiyor.
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-    const kullaniciId = istekOturumIdAl(request);
+    const kullaniciId = await istekOturumIdAl(request);
     if (!kullaniciId) {
         return NextResponse.json({ basari: false, hata: 'Oturum gecersiz, lutfen tekrar giris yapin' }, { status: 401 });
     }
